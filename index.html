@@ -55,7 +55,7 @@
   }
 
   /* NAV */
-  nav {
+ nav {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
@@ -63,7 +63,7 @@
     background: rgba(10,10,10,0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    transform: translateY(0);
+    transform: translateY(-100%);
     transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
   }
 
@@ -1094,25 +1094,22 @@
   }
 </script>
  <script>
-  let lastScrollY = window.scrollY;
-  let lastMouseY = 0;
-
-  window.addEventListener('scroll', () => {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > lastScrollY && window.scrollY > 80) {
-      nav.style.transform = 'translateY(-100%)';
-    } else {
-      nav.style.transform = 'translateY(0)';
-    }
-    lastScrollY = window.scrollY;
-  });
+const nav = document.querySelector('nav');
 
   document.addEventListener('mousemove', (e) => {
-    const nav = document.querySelector('nav');
     if (e.clientY < 80) {
       nav.style.transform = 'translateY(0)';
+    } else {
+      nav.style.transform = 'translateY(-100%)';
     }
-    lastMouseY = e.clientY;
+  });
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY < 10) {
+      nav.style.transform = 'translateY(0)';
+    } else {
+      nav.style.transform = 'translateY(-100%)';
+    }
   });
 </script>
 </body>
