@@ -63,6 +63,8 @@
     background: rgba(10,10,10,0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
+    transform: translateY(0);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
   }
 
   .logo {
@@ -1090,6 +1092,28 @@
     btn.style.background = '#4caf50';
     setTimeout(() => { btn.textContent = 'Send Message →'; btn.style.background = ''; }, 2500);
   }
+</script>
+ <script>
+  let lastScrollY = window.scrollY;
+  let lastMouseY = 0;
+
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > lastScrollY && window.scrollY > 80) {
+      nav.style.transform = 'translateY(-100%)';
+    } else {
+      nav.style.transform = 'translateY(0)';
+    }
+    lastScrollY = window.scrollY;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    const nav = document.querySelector('nav');
+    if (e.clientY < 80) {
+      nav.style.transform = 'translateY(0)';
+    }
+    lastMouseY = e.clientY;
+  });
 </script>
 </body>
 </html>
