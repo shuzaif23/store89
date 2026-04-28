@@ -1,267 +1,936 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="css/styles.css">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Browse Collection — Store 89</title>
-<link rel="stylesheet" href="css/styles.css">
+<title>B&W Apparels — Store 89</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-.collection-layout { display: grid; grid-template-columns: 240px 1fr; gap: 0; min-height: calc(100vh - var(--nav-height)); }
-.sidebar {
-  border-right: 1px solid var(--border); padding: 2rem 1.5rem;
-  position: sticky; top: var(--nav-height); height: calc(100vh - var(--nav-height));
-  overflow-y: auto; background: var(--off-black);
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #050505;
+  --off-black: #0e0e0e;
+  --card-bg: #111111;
+  --border: #1e1e1e;
+  --accent: #ffffff;
+  --accent-dim: #aaaaaa;
+  --white: #f0f0f0;
+  --muted: #555;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
 }
-.sidebar-section { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
-.sidebar-section:last-child { border-bottom: none; }
-.sidebar-title { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
-.filter-option { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
-.filter-option label { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--white); cursor: pointer; transition: color 0.2s; }
-.filter-option input[type="checkbox"] { appearance: none; width: 14px; height: 14px; border: 1px solid var(--border); background: none; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
-.filter-option input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
-.filter-option input[type="checkbox"]:checked + label { color: var(--accent); }
-.filter-option input[type="radio"] { appearance: none; width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 50%; background: none; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
-.filter-option input[type="radio"]:checked { background: var(--accent); border-color: var(--accent); }
-.price-range-row { display: flex; align-items: center; gap: 0.5rem; }
-.price-input { background: var(--card-bg); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 0.7rem; padding: 0.4rem 0.6rem; width: 80px; outline: none; }
-.price-input:focus { border-color: var(--accent); }
-.collection-main { padding: 2.5rem; }
-.collection-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
-.search-wrap { position: relative; flex: 1; max-width: 400px; }
-.search-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: var(--white); font-family: var(--font-body); font-size: 0.9rem; padding: 0.7rem 1rem 0.7rem 2.8rem; outline: none; transition: border-color 0.2s; }
-.search-input:focus { border-color: var(--accent); }
-.search-icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; pointer-events: none; }
-.sort-select { background: var(--card-bg); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; padding: 0.7rem 1rem; outline: none; transition: border-color 0.2s; cursor: pointer; }
-.sort-select:focus { border-color: var(--accent); }
-.results-count { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
-.no-results { text-align: center; padding: 6rem 2rem; font-family: var(--font-display); font-size: 3rem; color: #2a2a2a; letter-spacing: 0.05em; }
-.mobile-filter-toggle { display: none; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.6rem 1.2rem; border: 1px solid var(--border); color: var(--muted); background: none; transition: all 0.2s; }
-.mobile-filter-toggle:hover { border-color: var(--accent); color: var(--accent); }
-@media (max-width: 900px) {
-  .collection-layout { grid-template-columns: 1fr; }
-  .sidebar { display: none; position: fixed; left: 0; top: 0; bottom: 0; z-index: 400; width: 280px; height: 100vh; padding-top: 5rem; border-right: 1px solid var(--border); transform: translateX(-100%); transition: transform 0.3s; }
-  .sidebar.mobile-open { display: block; transform: translateX(0); }
-  .mobile-filter-toggle { display: block; }
-  .collection-main { padding: 1.5rem; }
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CURSOR */
+.cursor {
+  width: 12px; height: 12px;
+  background: var(--white);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1px solid var(--white);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: difference;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 3rem;
+  background: rgba(5,5,5,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-decoration: none;
+}
+.logo span { color: var(--muted); }
+
+.nav-links {
+  display: flex; gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--white); }
+
+.nav-cart {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.4rem;
+  background: var(--white);
+  color: var(--black);
+  text-decoration: none;
+  font-weight: 700;
+  position: relative;
+}
+.cart-count {
+  position: absolute; top: -6px; right: -6px;
+  background: #ff3c3c; color: #fff;
+  font-size: 0.55rem;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: none; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+
+/* HAMBURGER */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--white); transition: all 0.3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-nav {
+  display: none;
+  position: fixed; inset: 0;
+  background: var(--black);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2.5rem;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.mobile-nav.open { transform: translateX(0); }
+.mobile-nav a {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--white);
+  text-decoration: none;
+}
+.mobile-nav a:hover { color: var(--muted); }
+
+/* HERO — DISTORTED TITLE BLOCK */
+.bw-hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 3rem 5rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.bw-hero-noise {
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.008) 40px, rgba(255,255,255,0.008) 41px);
+  pointer-events: none;
+}
+
+.bw-hero-big {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: clamp(200px, 38vw, 520px);
+  color: #111;
+  line-height: 1;
+  right: -3rem; top: 50%;
+  transform: translateY(-50%);
+  letter-spacing: -0.03em;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.bw-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  position: relative; z-index: 1;
+}
+
+.bw-title {
+  font-family: var(--font-display);
+  font-size: clamp(5.5rem, 14vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  position: relative; z-index: 1;
+}
+.bw-title .stroke {
+  -webkit-text-stroke: 1.5px var(--white);
+  color: transparent;
+}
+
+.bw-hero-meta {
+  display: flex; gap: 3rem; align-items: center;
+  margin-top: 2.5rem;
+  position: relative; z-index: 1;
+  flex-wrap: wrap;
+}
+.bw-hero-meta p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  max-width: 300px;
+  line-height: 1.7;
+}
+.bw-divider { width: 1px; height: 60px; background: var(--border); }
+
+.btn-bw-primary {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 1rem 2.5rem;
+  background: var(--white);
+  color: var(--black);
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-bw-primary:hover { background: #ccc; transform: translate(-2px,-2px); }
+
+.btn-bw-ghost {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+  border: 1px solid var(--border);
+  color: var(--white);
+  background: none;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-bw-ghost:hover { border-color: var(--white); transform: translate(-2px,-2px); }
+
+/* FILTERS */
+.bw-filters-bar {
+  padding: 2rem 3rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;
+}
+.bw-search {
+  flex: 1; min-width: 200px; max-width: 340px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 1.2rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.bw-search:focus { border-color: var(--white); }
+.bw-search::placeholder { color: var(--muted); }
+
+.filter-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--white);
+  color: var(--white);
+  background: rgba(255,255,255,0.05);
+}
+
+.sort-select {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  padding: 0.55rem 0.9rem;
+  outline: none;
+  cursor: pointer;
+}
+.sort-select option { background: var(--off-black); }
+
+/* PRODUCT GRID */
+.bw-grid-section {
+  padding: 4rem 3rem 6rem;
+}
+.bw-grid-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.5rem;
+}
+.bw-grid-title {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  letter-spacing: 0.03em;
+}
+.bw-count {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.bw-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2px;
+}
+
+.bw-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+.bw-card:hover { border-color: var(--white); }
+
+.bw-card-img {
+  aspect-ratio: 1;
+  background: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.bw-card-img svg { transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+.bw-card:hover .bw-card-img svg { transform: scale(1.05); }
+
+.bw-quick {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(4px);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--white);
+  padding: 1rem;
+  text-align: center;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  display: flex; gap: 1rem; justify-content: center;
+}
+.bw-card:hover .bw-quick { transform: translateY(0); }
+.bw-quick-btn {
+  background: none; border: none;
+  color: var(--white); font-family: var(--font-mono);
+  font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; padding: 0.4rem 0.8rem;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.bw-quick-btn:hover { border-color: var(--white); }
+.bw-quick-btn.add { background: var(--white); color: var(--black); font-weight: 700; }
+.bw-quick-btn.add:hover { background: #ccc; }
+
+.bw-card-info {
+  padding: 1.2rem 1.4rem;
+  border-top: 1px solid var(--border);
+}
+.bw-card-name {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+.bw-card-meta {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.bw-card-type {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.bw-card-price {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.bw-badge {
+  position: absolute; top: 1rem; left: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--white);
+  color: var(--black);
+  padding: 0.3rem 0.6rem;
+  font-weight: 700;
+}
+
+/* MODAL / QUICK VIEW */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 2000;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 2rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--off-black);
+  border: 1px solid var(--border);
+  max-width: 760px; width: 100%;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0;
+  position: relative;
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: none; border: 1px solid var(--border);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.modal-close:hover { border-color: var(--white); }
+.modal-img {
+  background: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem;
+  border-right: 1px solid var(--border);
+}
+.modal-details {
+  padding: 3rem 2.5rem;
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+.modal-name {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  line-height: 0.95;
+}
+.modal-price {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.modal-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.size-grid {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+}
+.size-btn {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.size-btn:hover, .size-btn.active {
+  border-color: var(--white);
+  color: var(--white);
+}
+
+/* EMPTY STATE */
+.bw-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 6rem 2rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* FOOTER */
+footer {
+  padding: 3rem;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .mobile-nav { display: flex; }
+  .bw-hero { padding: 0 1.5rem 4rem; }
+  .bw-filters-bar { padding: 1.5rem; }
+  .bw-grid-section { padding: 3rem 1.5rem 4rem; }
+  .modal { grid-template-columns: 1fr; }
+  .modal-img { border-right: none; border-bottom: 1px solid var(--border); padding: 2rem; }
+  footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .bw-products { grid-template-columns: 1fr 1fr; gap: 1px; }
 }
 </style>
 </head>
 <body>
+
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<nav id="mainNav" class="nav-scrolled">
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="collection.html">Collection</a>
+  <a href="custom-studio.html">Customize</a>
+  <a href="bw-collection.html" class="active">B&W Apparels</a>
+  <a href="contact.html">Contact</a>
+  <a href="cart.html">Cart</a>
+</div>
+
+<!-- NAV -->
+<nav>
   <a href="index.html" class="logo">STORE<span>89</span></a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="collection.html" class="active">Browse Collection</a></li>
-    <li><a href="custom-studio.html">Customize Yours</a></li>
-    <li><a href="bw-collection.html">B&amp;W Apparels</a></li>
-    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="collection.html">Collection</a></li>
+    <li><a href="custom-studio.html">Customize</a></li>
+    <li><a href="bw-collection.html" class="active">B&W Apparels</a></li>
+    <li><a href="contact.html">Contact</a></li>
   </ul>
-  <a href="cart.html" class="nav-cart">Cart <span class="cart-badge" id="cartBadge">0</span></a>
-  <button class="hamburger" id="navToggle"><span></span><span></span><span></span></button>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <a href="cart.html" class="nav-cart">
+      CART
+      <span class="cart-count" id="cartBadge">0</span>
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
-<div class="mobile-menu" id="mobileMenu">
-  <a href="index.html">Home</a><a href="collection.html">Collection</a>
-  <a href="custom-studio.html">Customize</a><a href="bw-collection.html">B&amp;W</a>
-  <a href="index.html#contact">Contact</a><a href="cart.html" style="color:var(--accent)">Cart</a>
+
+<!-- HERO -->
+<section class="bw-hero">
+  <div class="bw-hero-noise"></div>
+  <div class="bw-hero-big">BW</div>
+
+  <div class="bw-tag">— Monochrome Collection</div>
+  <h1 class="bw-title">
+    BLACK<br>
+    <span class="stroke">&amp; WHITE</span><br>
+    ONLY
+  </h1>
+
+  <div class="bw-hero-meta">
+    <p>Pure contrast. No distractions.<br>Clothing that speaks in absolutes.</p>
+    <div class="bw-divider"></div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="#products" class="btn-bw-primary">Shop Now</a>
+      <a href="custom-studio.html" class="btn-bw-ghost">Customize</a>
+    </div>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<div class="bw-filters-bar" id="filtersBar">
+  <input type="search" class="bw-search" id="searchInput" placeholder="Search products...">
+  <div class="filter-group" id="catFilter">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="tshirt">T-Shirts</button>
+    <button class="filter-btn" data-cat="poster">Posters</button>
+  </div>
+  <div class="filter-group" id="priceFilter">
+    <button class="filter-btn active" data-price="all">Any Price</button>
+    <button class="filter-btn" data-price="under500">Under ₹500</button>
+    <button class="filter-btn" data-price="500-1000">₹500–₹1000</button>
+    <button class="filter-btn" data-price="over1000">₹1000+</button>
+  </div>
+  <select class="sort-select" id="sortSelect">
+    <option value="default">Sort: Default</option>
+    <option value="price-asc">Price: Low–High</option>
+    <option value="price-desc">Price: High–Low</option>
+    <option value="newest">Newest</option>
+    <option value="popular">Popular</option>
+  </select>
 </div>
 
-<div style="padding-top:var(--nav-height);">
-  <div class="page-header" style="padding-top:3rem;">
-    <div class="section-label">— Full Catalog</div>
-    <h1 class="section-title">BROWSE<br>COLLECTION</h1>
-    <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem;">T-Shirts, Posters & Limited Editions</p>
+<!-- PRODUCTS -->
+<section class="bw-grid-section" id="products">
+  <div class="bw-grid-header">
+    <span class="bw-grid-title">THE COLLECTION</span>
+    <span class="bw-count" id="productCount">12 products</span>
   </div>
-  <div class="collection-layout">
-    <aside class="sidebar" id="filterSidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-title">Category</div>
-        <div class="filter-option"><input type="checkbox" id="f-tee" checked onchange="applyFilters()"><label for="f-tee">T-Shirts</label></div>
-        <div class="filter-option"><input type="checkbox" id="f-poster" checked onchange="applyFilters()"><label for="f-poster">Posters</label></div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">Price Range</div>
-        <div class="price-range-row">
-          <input type="number" class="price-input" id="priceMin" placeholder="₹0" value="0" oninput="applyFilters()">
-          <span style="color:var(--muted);font-size:0.8rem;">—</span>
-          <input type="number" class="price-input" id="priceMax" placeholder="₹1000" value="1000" oninput="applyFilters()">
-        </div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">Style</div>
-        <div class="filter-option"><input type="checkbox" id="f-bw" onchange="applyFilters()"><label for="f-bw">B&amp;W Only</label></div>
-        <div class="filter-option"><input type="checkbox" id="f-new" onchange="applyFilters()"><label for="f-new">New Arrivals</label></div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">Sort By</div>
-        <div class="filter-option"><input type="radio" name="sort" id="sort-pop" value="popular" checked onchange="applyFilters()"><label for="sort-pop">Popular</label></div>
-        <div class="filter-option"><input type="radio" name="sort" id="sort-new" value="newest" onchange="applyFilters()"><label for="sort-new">Newest</label></div>
-        <div class="filter-option"><input type="radio" name="sort" id="sort-plo" value="price-asc" onchange="applyFilters()"><label for="sort-plo">Price: Low → High</label></div>
-        <div class="filter-option"><input type="radio" name="sort" id="sort-phi" value="price-desc" onchange="applyFilters()"><label for="sort-phi">Price: High → Low</label></div>
-      </div>
-      <button class="btn-ghost" onclick="resetFilters()" style="width:100%;justify-content:center;">Reset Filters</button>
-    </aside>
-    <main class="collection-main">
-      <div class="collection-topbar">
-        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;flex:1;">
-          <button class="mobile-filter-toggle" onclick="document.getElementById('filterSidebar').classList.toggle('mobile-open')">⚙ Filters</button>
-          <div class="search-wrap">
-            <span class="search-icon">⌕</span>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search products..." oninput="applyFilters()">
-          </div>
-        </div>
-        <select class="sort-select" id="sortSelect" onchange="applyFilters()">
-          <option value="popular">Popular</option>
-          <option value="newest">Newest</option>
-          <option value="price-asc">Price: Low → High</option>
-          <option value="price-desc">Price: High → Low</option>
-        </select>
-        <span class="results-count" id="resultsCount">12 Products</span>
-      </div>
-      <div class="products-grid" id="collectionGrid"></div>
-      <div id="noResults" class="no-results" style="display:none;">NO RESULTS FOUND</div>
-    </main>
+  <div class="bw-products" id="productGrid">
+    <!-- Injected by JS -->
+  </div>
+</section>
+
+<!-- QUICK VIEW MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕ Close</button>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-details" id="modalDetails"></div>
   </div>
 </div>
 
+<!-- FOOTER -->
 <footer>
-  <a href="index.html" class="logo">STORE<span>89</span></a>
-  <span class="footer-copy">© 2024 Store 89</span>
+  <a href="index.html" class="logo" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.05em;color:#f0f0f0;text-decoration:none;">STORE<span style="color:#555">89</span></a>
+  <span class="footer-copy">© 2024 Store 89 — Monochrome Collection</span>
+  <span class="footer-copy" style="color:#222;">Black. White. Nothing Else.</span>
 </footer>
 
-<div class="modal-overlay" id="quickViewModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeQV()">✕</button>
-    <div style="display:flex;flex-wrap:wrap;">
-      <div id="qvImg" style="flex:1;min-width:220px;background:var(--card-bg);display:flex;align-items:center;justify-content:center;padding:3rem;"></div>
-      <div id="qvInfo" style="flex:1;min-width:220px;padding:2rem;display:flex;flex-direction:column;gap:1rem;"></div>
-    </div>
-  </div>
-</div>
-
-<script src="js/products.js"></script>
-<script src="js/main.js"></script>
 <script>
-function renderCard(p) {
-  const isPoster = p.category === 'poster';
-  const badge = p.badge ? `<div class="product-badge ${p.isNew?'new':p.isBW?'bw':''}">${p.badge}</div>` : '';
-  return `
-    <div class="product-card" onclick="openQV(${p.id})">
-      <div class="product-img">
-        <div class="product-placeholder"><svg width="${isPoster?'90':'120'}" height="${isPoster?'130':'120'}" viewBox="${p.viewBox}">${p.svg}</svg></div>
-        ${badge}
-        <button class="product-quick" onclick="event.stopPropagation();addCard(${p.id})">Add to Cart →</button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">${p.name}</div>
-        <div class="product-meta">
-          <span class="product-type">${isPoster?'Poster':'T-Shirt'}</span>
-          <span class="product-price">₹${p.price.toLocaleString()}</span>
+// ── CURSOR ───────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=(mx-6)+'px';cursor.style.top=(my-6)+'px';
+});
+(function loop(){
+  rx+=(mx-rx-18)*0.12;ry+=(my-ry-18)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(loop);
+})();
+
+// ── HAMBURGER ────────────────────────────────
+const hbg = document.getElementById('hamburger');
+const mnav = document.getElementById('mobileNav');
+hbg.addEventListener('click',()=>{
+  hbg.classList.toggle('open');
+  mnav.classList.toggle('open');
+  document.body.style.overflow = mnav.classList.contains('open')?'hidden':'';
+});
+mnav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  hbg.classList.remove('open');mnav.classList.remove('open');
+  document.body.style.overflow='';
+}));
+
+// ── CART ─────────────────────────────────────
+const CART_KEY='store89_cart';
+function getCart(){try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return[];}}
+function saveCart(c){localStorage.setItem(CART_KEY,JSON.stringify(c));updateBadge();}
+function updateBadge(){
+  const c=getCart();const t=c.reduce((s,i)=>s+i.qty,0);
+  const el=document.getElementById('cartBadge');
+  if(el){el.textContent=t;el.style.display=t>0?'flex':'none';}
+}
+function addToCart(product){
+  const c=getCart();
+  const ex=c.find(i=>i.id===product.id&&i.size===product.size);
+  if(ex){ex.qty++;}else{c.push({...product,qty:1});}
+  saveCart(c);showToast(product.name);
+}
+function showToast(name){
+  let t=document.getElementById('toast');
+  if(!t){
+    t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;bottom:2rem;right:2rem;z-index:9999;background:#f0f0f0;color:#050505;font-family:"Space Mono",monospace;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.9rem 1.6rem;font-weight:700;transform:translateY(100px);opacity:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);';
+    document.body.appendChild(t);
+  }
+  t.textContent='Added: '+name+' →';
+  t.style.transform='translateY(0)';t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.transform='translateY(100px)';t.style.opacity='0';},2500);
+}
+updateBadge();
+
+// ── PRODUCT DATA ─────────────────────────────
+const BW_PRODUCTS = [
+  {id:'bw01',name:'Void Tee',type:'tshirt',cat:'T-Shirt',price:699,badge:'',color:'black',
+   desc:'Heavyweight 220gsm cotton. Oversized fit. Pure black — no print, no logo. Just the fabric.',
+   sizes:['XS','S','M','L','XL','XXL'],popular:true,newest:false,
+   svgFn: ()=>`<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+     <path d="M20 30L5 55 25 62 25 130 95 130 95 62 115 55 100 30 80 20C76 35 44 35 40 20Z" fill="#0a0a0a" stroke="#333" stroke-width="1.5"/>
+   </svg>`},
+  {id:'bw02',name:'Static No.3',type:'tshirt',cat:'T-Shirt',price:799,badge:'NEW',color:'white',
+   desc:'Off-white base, abstract static print front. Limited run. 200gsm combed cotton.',
+   sizes:['S','M','L','XL'],popular:false,newest:true,
+   svgFn: ()=>`<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+     <path d="M20 30L5 55 25 62 25 130 95 130 95 62 115 55 100 30 80 20C76 35 44 35 40 20Z" fill="#ddd" stroke="#aaa" stroke-width="1.5"/>
+     <rect x="30" y="55" width="60" height="40" fill="none" stroke="#555" stroke-width="0.5" stroke-dasharray="3 2" opacity="0.4"/>
+     <text x="60" y="80" font-family="Space Mono,monospace" font-size="8" fill="#888" text-anchor="middle" letter-spacing="2">STATIC</text>
+   </svg>`},
+  {id:'bw03',name:'Contrast Oversized',type:'tshirt',cat:'T-Shirt',price:849,badge:'',color:'black',
+   desc:'Black base, white sleeve tips, dropped shoulder. Graphic printed pocket detail.',
+   sizes:['M','L','XL','XXL'],popular:true,newest:false,
+   svgFn: ()=>`<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+     <path d="M20 30L5 55 25 62 25 130 95 130 95 62 115 55 100 30 80 20C76 35 44 35 40 20Z" fill="#111" stroke="#444" stroke-width="1.5"/>
+     <rect x="30" y="65" width="20" height="20" fill="none" stroke="#fff" stroke-width="1.2" opacity="0.6"/>
+   </svg>`},
+  {id:'bw04',name:'Monolith Tee',type:'tshirt',cat:'T-Shirt',price:649,badge:'',color:'grey',
+   desc:'Charcoal grey heavyweight tee. Minimal logo tag only. Our most understated piece.',
+   sizes:['XS','S','M','L','XL'],popular:false,newest:false,
+   svgFn: ()=>`<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+     <path d="M20 30L5 55 25 62 25 130 95 130 95 62 115 55 100 30 80 20C76 35 44 35 40 20Z" fill="#2a2a2a" stroke="#555" stroke-width="1.5"/>
+     <text x="60" y="95" font-family="Bebas Neue,sans-serif" font-size="11" fill="#444" text-anchor="middle" letter-spacing="3">89</text>
+   </svg>`},
+  {id:'bw05',name:'Signal Tee',type:'tshirt',cat:'T-Shirt',price:749,badge:'POPULAR',color:'white',
+   desc:'White with bold horizontal stripe signal pattern. Boxy cut. Signature Store 89 back print.',
+   sizes:['S','M','L','XL','XXL'],popular:true,newest:false,
+   svgFn: ()=>`<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+     <path d="M20 30L5 55 25 62 25 130 95 130 95 62 115 55 100 30 80 20C76 35 44 35 40 20Z" fill="#e8e8e8" stroke="#aaa" stroke-width="1.5"/>
+     <rect x="25" y="72" width="70" height="5" fill="#222" opacity="0.7"/>
+     <rect x="25" y="82" width="70" height="3" fill="#555" opacity="0.5"/>
+     <rect x="25" y="90" width="70" height="2" fill="#888" opacity="0.4"/>
+   </svg>`},
+  {id:'bw06',name:'Dark Room Tee',type:'tshirt',cat:'T-Shirt',price:899,badge:'LIMITED',color:'black',
+   desc:'Collaboration with local photographers. Dark room print, velvet-matte finish. Ultra limited.',
+   sizes:['S','M','L'],popular:true,newest:true,
+   svgFn: ()=>`<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+     <path d="M20 30L5 55 25 62 25 130 95 130 95 62 115 55 100 30 80 20C76 35 44 35 40 20Z" fill="#080808" stroke="#333" stroke-width="1.5"/>
+     <circle cx="60" cy="78" r="18" fill="none" stroke="#444" stroke-width="1"/>
+     <circle cx="60" cy="78" r="10" fill="none" stroke="#333" stroke-width="0.8"/>
+     <circle cx="60" cy="78" r="4" fill="#222"/>
+   </svg>`},
+  {id:'bw07',name:'Grain Poster',type:'poster',cat:'Poster — A3',price:399,badge:'',color:'black',
+   desc:'Heavily grained black abstract. Fine art print on 250gsm matte stock. Unsigned edition.',
+   sizes:['A4','A3','A2'],popular:false,newest:false,
+   svgFn: ()=>`<svg width="90" height="120" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+     <rect width="90" height="120" fill="#0a0a0a" stroke="#222" stroke-width="1"/>
+     <circle cx="45" cy="55" r="28" fill="none" stroke="#333" stroke-width="8" opacity="0.6"/>
+     <circle cx="45" cy="55" r="14" fill="#1a1a1a"/>
+     <text x="45" y="105" font-family="Space Mono,monospace" font-size="5" fill="#333" text-anchor="middle" letter-spacing="2">GRAIN 001</text>
+   </svg>`},
+  {id:'bw08',name:'Exposure Poster',type:'poster',cat:'Poster — A2',price:549,badge:'NEW',color:'white',
+   desc:'High contrast photography-inspired print. Over-exposed white tones. A2 format.',
+   sizes:['A3','A2'],popular:false,newest:true,
+   svgFn: ()=>`<svg width="90" height="120" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+     <rect width="90" height="120" fill="#f5f5f0" stroke="#ddd" stroke-width="1"/>
+     <rect x="10" y="10" width="70" height="80" fill="none" stroke="#aaa" stroke-width="0.8"/>
+     <line x1="10" y1="50" x2="80" y2="50" stroke="#ccc" stroke-width="0.5"/>
+     <circle cx="45" cy="35" r="15" fill="#ddd"/>
+     <text x="45" y="108" font-family="Space Mono,monospace" font-size="5" fill="#aaa" text-anchor="middle" letter-spacing="2">EXPOSURE</text>
+   </svg>`},
+  {id:'bw09',name:'Architecture No.1',type:'poster',cat:'Poster — A3',price:449,badge:'POPULAR',color:'grey',
+   desc:'Geometric brutalist architecture study. B&W fine art print. Numbered edition of 100.',
+   sizes:['A4','A3','A2'],popular:true,newest:false,
+   svgFn: ()=>`<svg width="90" height="120" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+     <rect width="90" height="120" fill="#111" stroke="#222" stroke-width="1"/>
+     <rect x="20" y="30" width="50" height="70" fill="none" stroke="#333" stroke-width="1"/>
+     <rect x="28" y="40" width="10" height="14" fill="#1e1e1e" stroke="#333" stroke-width="0.5"/>
+     <rect x="42" y="40" width="10" height="14" fill="#1e1e1e" stroke="#333" stroke-width="0.5"/>
+     <rect x="56" y="40" width="10" height="14" fill="#1e1e1e" stroke="#333" stroke-width="0.5"/>
+     <rect x="28" y="60" width="10" height="14" fill="#1e1e1e" stroke="#333" stroke-width="0.5"/>
+     <rect x="42" y="60" width="10" height="14" fill="#1e1e1e" stroke="#333" stroke-width="0.5"/>
+     <rect x="56" y="60" width="10" height="14" fill="#1e1e1e" stroke="#333" stroke-width="0.5"/>
+     <rect x="35" y="84" width="20" height="16" fill="#1a1a1a" stroke="#333" stroke-width="0.5"/>
+     <text x="45" y="115" font-family="Space Mono,monospace" font-size="4.5" fill="#333" text-anchor="middle" letter-spacing="2">ARCH 001</text>
+   </svg>`},
+  {id:'bw10',name:'Void No.4 Poster',type:'poster',cat:'Poster — A3',price:399,badge:'',color:'black',
+   desc:'Ink void series. Textured black with negative space typography. A3 format.',
+   sizes:['A4','A3'],popular:false,newest:false,
+   svgFn: ()=>`<svg width="90" height="120" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+     <rect width="90" height="120" fill="#070707" stroke="#1a1a1a" stroke-width="1"/>
+     <text x="45" y="68" font-family="Bebas Neue,sans-serif" font-size="44" fill="#111" text-anchor="middle" letter-spacing="2">VOID</text>
+     <text x="45" y="85" font-family="Space Mono,monospace" font-size="6" fill="#222" text-anchor="middle" letter-spacing="4">N O . 4</text>
+     <text x="45" y="112" font-family="Space Mono,monospace" font-size="4.5" fill="#222" text-anchor="middle" letter-spacing="2">STORE 89</text>
+   </svg>`},
+  {id:'bw11',name:'Noise Floor Tee',type:'tshirt',cat:'T-Shirt',price:799,badge:'',color:'grey',
+   desc:'All-over noise pattern print on washed grey. Relaxed fit. 190gsm cotton blend.',
+   sizes:['S','M','L','XL'],popular:false,newest:false,
+   svgFn: ()=>`<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+     <path d="M20 30L5 55 25 62 25 130 95 130 95 62 115 55 100 30 80 20C76 35 44 35 40 20Z" fill="#3a3a3a" stroke="#555" stroke-width="1.5"/>
+     <text x="60" y="78" font-family="Space Mono,monospace" font-size="7" fill="#555" text-anchor="middle" letter-spacing="1">NOISE</text>
+     <text x="60" y="90" font-family="Space Mono,monospace" font-size="7" fill="#444" text-anchor="middle" letter-spacing="1">FLOOR</text>
+   </svg>`},
+  {id:'bw12',name:'Halftone Drop',type:'poster',cat:'Poster — A2',price:499,badge:'LIMITED',color:'white',
+   desc:'Halftone gradient drop art. Classic B&W screen-print aesthetic. A2 fine art paper.',
+   sizes:['A3','A2'],popular:true,newest:false,
+   svgFn: ()=>`<svg width="90" height="120" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+     <rect width="90" height="120" fill="#f0f0f0" stroke="#ddd" stroke-width="1"/>
+     <circle cx="25" cy="30" r="8" fill="#111" opacity="0.9"/>
+     <circle cx="45" cy="30" r="6" fill="#111" opacity="0.7"/>
+     <circle cx="65" cy="30" r="4" fill="#111" opacity="0.5"/>
+     <circle cx="25" cy="55" r="6" fill="#111" opacity="0.7"/>
+     <circle cx="45" cy="55" r="4" fill="#111" opacity="0.5"/>
+     <circle cx="65" cy="55" r="2" fill="#111" opacity="0.3"/>
+     <circle cx="25" cy="75" r="4" fill="#111" opacity="0.5"/>
+     <circle cx="45" cy="75" r="2" fill="#111" opacity="0.3"/>
+     <text x="45" y="108" font-family="Space Mono,monospace" font-size="5" fill="#aaa" text-anchor="middle" letter-spacing="2">HALFTONE</text>
+   </svg>`},
+];
+
+// ── FILTER STATE ─────────────────────────────
+let filterCat='all', filterPrice='all', sortBy='default', searchVal='';
+
+function priceMatch(price){
+  if(filterPrice==='all') return true;
+  if(filterPrice==='under500') return price<500;
+  if(filterPrice==='500-1000') return price>=500&&price<=1000;
+  if(filterPrice==='over1000') return price>1000;
+  return true;
+}
+
+function getFiltered(){
+  let p=[...BW_PRODUCTS];
+  if(filterCat!=='all') p=p.filter(x=>x.type===filterCat);
+  p=p.filter(x=>priceMatch(x.price));
+  if(searchVal) p=p.filter(x=>x.name.toLowerCase().includes(searchVal)||x.cat.toLowerCase().includes(searchVal));
+  if(sortBy==='price-asc') p.sort((a,b)=>a.price-b.price);
+  if(sortBy==='price-desc') p.sort((a,b)=>b.price-a.price);
+  if(sortBy==='newest') p.sort((a,b)=>b.newest-a.newest);
+  if(sortBy==='popular') p.sort((a,b)=>b.popular-a.popular);
+  return p;
+}
+
+function renderGrid(){
+  const grid=document.getElementById('productGrid');
+  const count=document.getElementById('productCount');
+  const products=getFiltered();
+  count.textContent=products.length+' product'+(products.length!==1?'s':'');
+  if(!products.length){
+    grid.innerHTML='<div class="bw-empty">No products match your filters.</div>';
+    return;
+  }
+  grid.innerHTML=products.map(p=>`
+    <div class="bw-card" data-id="${p.id}">
+      ${p.badge?`<div class="bw-badge">${p.badge}</div>`:''}
+      <div class="bw-card-img">
+        ${p.svgFn()}
+        <div class="bw-quick">
+          <button class="bw-quick-btn" onclick="openModal('${p.id}')">Quick View</button>
+          <button class="bw-quick-btn add" onclick="handleAdd('${p.id}')">Add to Cart</button>
         </div>
       </div>
-    </div>`;
-}
-
-function applyFilters() {
-  const allP = getProducts();
-  const tee = document.getElementById('f-tee').checked;
-  const poster = document.getElementById('f-poster').checked;
-  const bwOnly = document.getElementById('f-bw').checked;
-  const newOnly = document.getElementById('f-new').checked;
-  const minP = parseFloat(document.getElementById('priceMin').value) || 0;
-  const maxP = parseFloat(document.getElementById('priceMax').value) || 99999;
-  const query = document.getElementById('searchInput').value.toLowerCase().trim();
-  const sortVal = document.getElementById('sortSelect').value;
-
-  let filtered = allP.filter(p => {
-    if (!tee && p.category === 'tee') return false;
-    if (!poster && p.category === 'poster') return false;
-    if (bwOnly && !p.isBW) return false;
-    if (newOnly && !p.isNew) return false;
-    if (p.price < minP || p.price > maxP) return false;
-    if (query && !p.name.toLowerCase().includes(query) && !p.category.toLowerCase().includes(query)) return false;
-    return true;
-  });
-
-  if (sortVal === 'newest') filtered.sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded));
-  else if (sortVal === 'price-asc') filtered.sort((a,b) => a.price - b.price);
-  else if (sortVal === 'price-desc') filtered.sort((a,b) => b.price - a.price);
-
-  document.getElementById('resultsCount').textContent = `${filtered.length} Product${filtered.length !== 1 ? 's' : ''}`;
-  const grid = document.getElementById('collectionGrid');
-  if (filtered.length === 0) {
-    grid.innerHTML = '';
-    document.getElementById('noResults').style.display = 'block';
-  } else {
-    grid.innerHTML = filtered.map(renderCard).join('');
-    document.getElementById('noResults').style.display = 'none';
-  }
-}
-
-function resetFilters() {
-  document.getElementById('f-tee').checked = true;
-  document.getElementById('f-poster').checked = true;
-  document.getElementById('f-bw').checked = false;
-  document.getElementById('f-new').checked = false;
-  document.getElementById('priceMin').value = 0;
-  document.getElementById('priceMax').value = 1000;
-  document.getElementById('searchInput').value = '';
-  document.getElementById('sortSelect').value = 'popular';
-  applyFilters();
-}
-
-function addCard(id) {
-  const p = getProducts().find(x => x.id === id);
-  if (p) Cart.add(p, p.sizes ? p.sizes[0] : 'M');
-}
-
-function openQV(id) {
-  const p = getProducts().find(x => x.id === id);
-  if (!p) return;
-  const isPoster = p.category === 'poster';
-  document.getElementById('qvImg').innerHTML = `<svg width="${isPoster?'120':'150'}" height="${isPoster?'170':'150'}" viewBox="${p.viewBox}">${p.svg}</svg>`;
-  const sizes = p.sizes || (isPoster ? ['A4','A3','A2'] : ['S','M','L','XL']);
-  document.getElementById('qvInfo').innerHTML = `
-    <div>
-      <div class="section-label">— ${isPoster?'Poster':'T-Shirt'}</div>
-      <h2 style="font-family:var(--font-display);font-size:2.2rem;line-height:1;margin-bottom:0.4rem;">${p.name}</h2>
-      <div style="font-family:var(--font-mono);font-size:1rem;color:var(--accent);font-weight:700;margin-bottom:0.5rem;">₹${p.price.toLocaleString()}</div>
-    </div>
-    <p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">${p.desc||''}</p>
-    <div>
-      <div class="form-label" style="margin-bottom:0.5rem;">Size</div>
-      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;" id="qvSizes">
-        ${sizes.map((s,i)=>`<button onclick="pickSize(this)" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;padding:0.45rem 0.9rem;border:1px solid ${i===0?'var(--accent)':'var(--border)'};color:${i===0?'var(--accent)':'var(--muted)'};background:none;transition:all 0.2s;" data-size="${s}" ${i===0?'data-sel=""':''}>${s}</button>`).join('')}
+      <div class="bw-card-info">
+        <div class="bw-card-name">${p.name}</div>
+        <div class="bw-card-meta">
+          <span class="bw-card-type">${p.cat}</span>
+          <span class="bw-card-price">₹${p.price}</span>
+        </div>
       </div>
     </div>
-    <button class="btn-primary" onclick="addQV(${id})" style="justify-content:center;">Add to Cart →</button>`;
-  document.getElementById('quickViewModal').classList.add('open');
+  `).join('');
 }
 
-function pickSize(btn) {
-  document.querySelectorAll('#qvSizes button').forEach(b => { b.style.borderColor='var(--border)'; b.style.color='var(--muted)'; b.removeAttribute('data-sel'); });
-  btn.style.borderColor='var(--accent)'; btn.style.color='var(--accent)'; btn.setAttribute('data-sel','');
+// ── FILTER EVENTS ────────────────────────────
+document.querySelectorAll('#catFilter .filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#catFilter .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    filterCat=btn.dataset.cat;
+    renderGrid();
+  });
+});
+document.querySelectorAll('#priceFilter .filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#priceFilter .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    filterPrice=btn.dataset.price;
+    renderGrid();
+  });
+});
+document.getElementById('sortSelect').addEventListener('change',e=>{sortBy=e.target.value;renderGrid();});
+document.getElementById('searchInput').addEventListener('input',e=>{searchVal=e.target.value.toLowerCase();renderGrid();});
+
+// ── MODAL ────────────────────────────────────
+let selectedSize = '';
+function openModal(id){
+  const p=BW_PRODUCTS.find(x=>x.id===id);
+  if(!p)return;
+  selectedSize=p.sizes[0]||'';
+  document.getElementById('modalImg').innerHTML=p.svgFn();
+  document.getElementById('modalDetails').innerHTML=`
+    <div>
+      <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.25em;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem">${p.cat}</div>
+      <div class="modal-name">${p.name}</div>
+    </div>
+    <div class="modal-price">₹${p.price}</div>
+    <p class="modal-desc">${p.desc}</p>
+    <div>
+      <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;margin-bottom:0.7rem">Select Size</div>
+      <div class="size-grid">
+        ${p.sizes.map(s=>`<button class="size-btn${s===selectedSize?' active':''}" onclick="selectSize(this,'${s}')">${s}</button>`).join('')}
+      </div>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <button class="btn-bw-primary" onclick="handleAdd('${p.id}')">Add to Cart</button>
+      <a href="cart.html" class="btn-bw-ghost">View Cart</a>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function selectSize(el,size){
+  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');selectedSize=size;
+}
+document.getElementById('modalClose').addEventListener('click',closeModal);
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target.id==='modalOverlay')closeModal();});
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
 }
 
-function addQV(id) {
-  const p = getProducts().find(x => x.id === id);
-  const sel = document.querySelector('#qvSizes [data-sel]');
-  Cart.add(p, sel ? sel.dataset.size : (p.sizes?.[0] || 'M'));
-  closeQV();
+function handleAdd(id){
+  const p=BW_PRODUCTS.find(x=>x.id===id);
+  if(!p)return;
+  addToCart({id:p.id,name:p.name,price:p.price,size:selectedSize||p.sizes[0],type:p.type,cat:p.cat});
 }
 
-function closeQV() { document.getElementById('quickViewModal').classList.remove('open'); }
-document.getElementById('quickViewModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeQV(); });
-
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('category') === 'tee') document.getElementById('f-poster').checked = false;
-else if (urlParams.get('category') === 'poster') document.getElementById('f-tee').checked = false;
-
-applyFilters();
+renderGrid();
 </script>
-</body>
-</html>
 <script src="js/products.js"></script>
 <script src="js/main.js"></script>
+</body>
+</html>
