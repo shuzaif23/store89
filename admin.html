@@ -509,7 +509,20 @@
 </div>
 
 <!-- ===================== JAVASCRIPT ===================== -->
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyByc62uc1v97pf5ZV26ycLA0SPmfsD5pTU",
+  authDomain: "store890007.firebaseapp.com",
+  projectId: "store890007",
+  storageBucket: "store890007.firebasestorage.app",
+  messagingSenderId: "987669883544",
+  appId: "1:987669883544:web:dbdff7958f416b6089beed"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
   // ---- CREDENTIALS ----
   const ADMIN_USER = 'store89admin';
   const ADMIN_PASS = 'Scarface@123';
@@ -571,7 +584,7 @@
     if (u === ADMIN_USER && p === ADMIN_PASS) {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminApp').style.display = 'block';
-      renderAll();
+      loadFromFirebase();
     } else {
       err.style.display = 'block';
       document.getElementById('loginPass').value = '';
@@ -600,7 +613,23 @@
       if (document.getElementById('loginScreen').style.display !== 'none') doLogin();
     }
   });
-
+// ---- FIREBASE LOAD ----
+  async function loadFromFirebase() {
+    const [pSnap, cSnap] = await Promise.all([
+      getDocs(collection(db, 'products')),
+      getDocs(collection(db, 'categories'))
+    ]);
+    products   = pSnap.docs.map(d => ({ ...d.data(), id: d.id }));
+    categories = cSnap.docs.map(d => ({ ...d.data(), firestoreId: d.id }));
+    if (categories.length === 0) {
+      const defaults = ['New Arrivals','Tops','Bottoms','Dresses','Ethnic Wear','Outerwear','Co-ord Sets','Loungewear','Activewear','Accessories','Sale'];
+      for (const [i, name] of defaults.entries()) {
+        const ref = await addDoc(collection(db, 'categories'), { name, slug: slugify(name), desc:'', order: i+1, nav:'Yes', status:'Active' });
+        categories.push({ name, slug: slugify(name), desc:'', order: i+1, nav:'Yes', status:'Active', firestoreId: ref.id });
+      }
+    }
+    renderAll();
+  }
   // ---- NAVIGATION ----
   function showPage(id, el) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -708,38 +737,37 @@
     document.getElementById('pDesc').value   = '';
     openModal('productModal');
   }
-
-  function saveProduct() {
+async function saveProduct() {
     const name  = document.getElementById('pName').value.trim();
     const price = parseInt(document.getElementById('pPrice').value);
     const stock = parseInt(document.getElementById('pStock').value);
     const mrp   = parseInt(document.getElementById('pMrp').value) || 0;
     const sku   = document.getElementById('pSku').value.trim();
-    if (!name || !price || isNaN(stock)) { alert('Please fill all required fields (Name, Price, Stock).'); return; }
+    if (!name || !price || isNaN(stock)) { alert('Please fill Name, Price & Stock.'); return; }
     const emojis = ['👗','🧥','👘','👖','👚','🎀','🩱','👙','🩲','🧣','👒'];
+    const data = {
+      name, price, mrp, stock, sku,
+      cat:    document.getElementById('pCat').value,
+      status: document.getElementById('pStatus').value,
+      emoji:  editingId ? products.find(x => x.id === editingId).emoji : emojis[Math.floor(Math.random() * emojis.length)]
+    };
     if (editingId) {
+      await setDoc(doc(db, 'products', editingId), data);
       const p = products.find(x => x.id === editingId);
-      p.name = name; p.cat = document.getElementById('pCat').value;
-      p.price = price; p.mrp = mrp; p.stock = stock;
-      p.status = document.getElementById('pStatus').value; p.sku = sku;
+      Object.assign(p, data);
     } else {
-      products.push({
-        id: Date.now(), name,
-        cat: document.getElementById('pCat').value,
-        price, mrp, stock, sku,
-        status: document.getElementById('pStatus').value,
-        emoji: emojis[Math.floor(Math.random() * emojis.length)]
-      });
+      const ref = await addDoc(collection(db, 'products'), data);
+      products.push({ ...data, id: ref.id });
     }
     closeModal('productModal');
     renderAll();
   }
-
-  function deleteProduct(id) {
-    if (confirm('Delete this product? This cannot be undone.')) {
-      products = products.filter(p => p.id !== id);
-      renderAll();
-    }
+ 
+async function deleteProduct(id) {
+    if (!confirm('Delete this product? This cannot be undone.')) return;
+    await deleteDoc(doc(db, 'products', id));
+    products = products.filter(p => p.id !== id);
+    renderAll();
   }
 
   // ---- CATEGORIES ----
@@ -799,39 +827,37 @@
     document.getElementById('catStatus').value = c.status;
     openModal('catModal');
   }
-
-  function saveCategory() {
-    const n     = document.getElementById('catName').value.trim();
-    const slug  = document.getElementById('catSlug').value.trim() || slugify(n);
-    const desc  = document.getElementById('catDesc').value.trim();
-    const order = parseInt(document.getElementById('catOrder').value) || categories.length + 1;
-    const nav   = document.getElementById('catNav').value;
+async function saveCategory() {
+    const n      = document.getElementById('catName').value.trim();
+    const slug   = document.getElementById('catSlug').value.trim() || slugify(n);
+    const desc   = document.getElementById('catDesc').value.trim();
+    const order  = parseInt(document.getElementById('catOrder').value) || categories.length + 1;
+    const nav    = document.getElementById('catNav').value;
     const status = document.getElementById('catStatus').value;
     if (!n) { alert('Please enter a category name.'); return; }
-
+    const data = { name: n, slug, desc, order, nav, status };
     if (editingCatI !== null) {
-      // editing existing
-      categories[editingCatI] = { name: n, slug, desc, order, nav, status };
+      const fid = categories[editingCatI].firestoreId;
+      await setDoc(doc(db, 'categories', fid), data);
+      categories[editingCatI] = { ...data, firestoreId: fid };
     } else {
-      // adding new
-      if (categories.find(c => c.name.toLowerCase() === n.toLowerCase())) {
-        alert('Category already exists.'); return;
-      }
-      categories.push({ name: n, slug, desc, order, nav, status });
+      if (categories.find(c => c.name.toLowerCase() === n.toLowerCase())) { alert('Category already exists.'); return; }
+      const ref = await addDoc(collection(db, 'categories'), data);
+      categories.push({ ...data, firestoreId: ref.id });
     }
     closeModal('catModal');
     rebuildCatDropdown();
     renderCategories();
   }
-
-  function deleteCat(i) {
-    const catName = categories[i].name;
-    const inUse = products.filter(p => p.cat === catName).length;
+async function deleteCat(i) {
+    const cat = categories[i];
+    const inUse = products.filter(p => p.cat === cat.name).length;
     if (inUse > 0) {
-      if (!confirm(`"${catName}" has ${inUse} product(s) assigned. Delete anyway? Those products will keep the category label.`)) return;
+      if (!confirm(`"${cat.name}" has ${inUse} product(s). Delete anyway?`)) return;
     } else {
-      if (!confirm(`Delete category "${catName}"?`)) return;
+      if (!confirm(`Delete category "${cat.name}"?`)) return;
     }
+    await deleteDoc(doc(db, 'categories', cat.firestoreId));
     categories.splice(i, 1);
     rebuildCatDropdown();
     renderCategories();
