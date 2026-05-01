@@ -125,6 +125,9 @@
   /* DASHBOARD GRID */
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
+  /* CATEGORY CARDS */
+  .cat-meta { font-size: 11px; color: #555; margin-top: 3px; }
+
   @media (max-width: 900px) {
     .stat-grid { grid-template-columns: repeat(2, 1fr); }
     .dash-grid { grid-template-columns: 1fr; }
@@ -277,13 +280,23 @@
       <div class="page-header">
         <div>
           <div class="page-title">Categories</div>
-          <div class="page-sub">Manage product categories</div>
+          <div class="page-sub" id="catCountLabel">Manage product categories for store89.in</div>
         </div>
         <button class="btn btn-gold" onclick="openAddCat()">+ Add Category</button>
       </div>
       <div class="card" style="padding:0;overflow:hidden;">
         <table>
-          <thead><tr><th style="padding:12px 16px;">CATEGORY NAME</th><th>PRODUCTS</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+          <thead>
+            <tr>
+              <th style="padding:12px 16px;">CATEGORY NAME</th>
+              <th>SLUG / URL</th>
+              <th>PRODUCTS</th>
+              <th>DISPLAY ORDER</th>
+              <th>SHOW IN NAV</th>
+              <th>STATUS</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
           <tbody id="categoriesTable"></tbody>
         </table>
       </div>
@@ -385,13 +398,14 @@
         <div class="card-title">Store Information</div>
         <div class="form-grid">
           <div class="form-group"><label class="form-label">STORE NAME</label><input class="form-control" value="Store89 Fashion" /></div>
-          <div class="form-group"><label class="form-label">STORE EMAIL</label><input class="form-control" value="hello@store89.com" /></div>
+          <div class="form-group"><label class="form-label">WEBSITE</label><input class="form-control" value="store89.in" /></div>
+          <div class="form-group"><label class="form-label">STORE EMAIL</label><input class="form-control" value="hello@store89.in" /></div>
           <div class="form-group"><label class="form-label">PHONE NUMBER</label><input class="form-control" value="+91 98765 43210" /></div>
           <div class="form-group"><label class="form-label">CURRENCY</label>
             <select class="form-control"><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select>
           </div>
-          <div class="form-group fullwidth"><label class="form-label">STORE ADDRESS</label><input class="form-control" value="Jammu, Jammu &amp; Kashmir, India" /></div>
           <div class="form-group"><label class="form-label">GST NUMBER</label><input class="form-control" placeholder="Enter GST number" /></div>
+          <div class="form-group fullwidth"><label class="form-label">STORE ADDRESS</label><input class="form-control" value="Jammu, Jammu &amp; Kashmir, India" /></div>
           <div class="form-group"><label class="form-label">STORE TAGLINE</label><input class="form-control" placeholder="e.g. Fashion for Everyone" /></div>
         </div>
       </div>
@@ -427,10 +441,7 @@
     <div class="form-grid">
       <div class="form-group fullwidth"><label class="form-label">PRODUCT NAME *</label><input class="form-control" id="pName" placeholder="e.g. Floral Maxi Dress" /></div>
       <div class="form-group"><label class="form-label">CATEGORY *</label>
-        <select class="form-control" id="pCat">
-          <option>Tops</option><option>Bottoms</option><option>Dresses</option>
-          <option>Outerwear</option><option>Ethnic Wear</option><option>Accessories</option>
-        </select>
+        <select class="form-control" id="pCat"></select>
       </div>
       <div class="form-group"><label class="form-label">PRICE (₹) *</label><input class="form-control" id="pPrice" type="number" placeholder="1999" /></div>
       <div class="form-group"><label class="form-label">ORIGINAL / MRP (₹)</label><input class="form-control" id="pMrp" type="number" placeholder="2499" /></div>
@@ -451,20 +462,28 @@
   </div>
 </div>
 
-<!-- ADD CATEGORY -->
+<!-- ADD / EDIT CATEGORY -->
 <div class="modal-overlay" id="catModal">
   <div class="modal modal-sm">
     <div class="modal-header">
-      <div class="modal-title">Add Category</div>
+      <div class="modal-title" id="catModalTitle">Add Category</div>
       <button class="close-btn" onclick="closeModal('catModal')">&#x2715;</button>
     </div>
     <div class="form-group"><label class="form-label">CATEGORY NAME *</label><input class="form-control" id="catName" placeholder="e.g. Summer Collection" /></div>
+    <div class="form-group"><label class="form-label">URL SLUG</label><input class="form-control" id="catSlug" placeholder="e.g. summer-collection" /></div>
+    <div class="form-group"><label class="form-label">DESCRIPTION</label><input class="form-control" id="catDesc" placeholder="Short description (optional)" /></div>
+    <div class="form-grid" style="gap:0.8rem;">
+      <div class="form-group"><label class="form-label">DISPLAY ORDER</label><input class="form-control" id="catOrder" type="number" placeholder="1" min="1" /></div>
+      <div class="form-group"><label class="form-label">SHOW IN NAV</label>
+        <select class="form-control" id="catNav"><option value="Yes">Yes</option><option value="No">No</option></select>
+      </div>
+    </div>
     <div class="form-group"><label class="form-label">STATUS</label>
       <select class="form-control" id="catStatus"><option>Active</option><option>Hidden</option></select>
     </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('catModal')">Cancel</button>
-      <button class="btn btn-gold" onclick="saveCategory()">Add Category</button>
+      <button class="btn btn-gold" id="catSaveBtn" onclick="saveCategory()">Add Category</button>
     </div>
   </div>
 </div>
@@ -495,6 +514,22 @@
   const ADMIN_USER = 'store89admin';
   const ADMIN_PASS = 'Scarface@123';
 
+  // ---- CATEGORIES — store89.in catalogue ----
+  // Edit these to match your actual website navigation categories
+  let categories = [
+    { name: 'New Arrivals',     slug: 'new-arrivals',     desc: 'Latest additions to the store',          order: 1, nav: 'Yes', status: 'Active' },
+    { name: 'Tops',             slug: 'tops',              desc: 'T-shirts, shirts, blouses & more',        order: 2, nav: 'Yes', status: 'Active' },
+    { name: 'Bottoms',          slug: 'bottoms',           desc: 'Jeans, trousers, skirts & palazzos',      order: 3, nav: 'Yes', status: 'Active' },
+    { name: 'Dresses',          slug: 'dresses',           desc: 'Casual, formal & party dresses',          order: 4, nav: 'Yes', status: 'Active' },
+    { name: 'Ethnic Wear',      slug: 'ethnic-wear',       desc: 'Kurtis, sarees, lehengas & suits',        order: 5, nav: 'Yes', status: 'Active' },
+    { name: 'Outerwear',        slug: 'outerwear',         desc: 'Jackets, coats, blazers & cardigans',     order: 6, nav: 'Yes', status: 'Active' },
+    { name: 'Co-ord Sets',      slug: 'coord-sets',        desc: 'Matching two-piece & three-piece sets',   order: 7, nav: 'Yes', status: 'Active' },
+    { name: 'Loungewear',       slug: 'loungewear',        desc: 'Comfortable everyday & home wear',        order: 8, nav: 'Yes', status: 'Active' },
+    { name: 'Activewear',       slug: 'activewear',        desc: 'Leggings, sports bras & gym wear',        order: 9, nav: 'Yes', status: 'Active' },
+    { name: 'Accessories',      slug: 'accessories',       desc: 'Scarves, bags, belts & jewellery',        order: 10, nav: 'Yes', status: 'Active' },
+    { name: 'Sale',             slug: 'sale',              desc: 'Discounted & clearance items',            order: 11, nav: 'Yes', status: 'Active' },
+  ];
+
   // ---- DATA STORE ----
   let products = [
     { id:1,  name:'Floral Maxi Dress',      cat:'Dresses',     price:2499, mrp:3299, stock:24, status:'Active',       sku:'DR-FLR-001', emoji:'👗' },
@@ -507,17 +542,8 @@
     { id:8,  name:'Palazzo Pants - Ivory',   cat:'Bottoms',     price:1599, mrp:1999, stock:15, status:'Active',       sku:'BT-PPI-008', emoji:'👗' },
     { id:9,  name:'Embroidered Kurta Set',   cat:'Ethnic Wear', price:4299, mrp:5499, stock:10, status:'Active',       sku:'EW-EKS-009', emoji:'👘' },
     { id:10, name:'Satin Slip Dress',        cat:'Dresses',     price:3299, mrp:4199, stock:8,  status:'Active',       sku:'DR-SSD-010', emoji:'👗' },
-    { id:11, name:'Sports Leggings',         cat:'Bottoms',     price:1299, mrp:1699, stock:35, status:'Active',       sku:'BT-SL-011',  emoji:'🩱' },
+    { id:11, name:'Sports Leggings',         cat:'Activewear',  price:1299, mrp:1699, stock:35, status:'Active',       sku:'AW-SL-011',  emoji:'🩱' },
     { id:12, name:'Trench Coat - Camel',     cat:'Outerwear',   price:7999, mrp:9999, stock:5,  status:'Active',       sku:'OW-TCC-012', emoji:'🧥' }
-  ];
-
-  let categories = [
-    { name:'Tops', count:1, status:'Active' },
-    { name:'Bottoms', count:3, status:'Active' },
-    { name:'Dresses', count:3, status:'Active' },
-    { name:'Outerwear', count:3, status:'Active' },
-    { name:'Ethnic Wear', count:2, status:'Active' },
-    { name:'Accessories', count:1, status:'Active' }
   ];
 
   let coupons = [
@@ -534,7 +560,8 @@
     { id:'#ORD005', customer:'Sneha Verma',  items:2, amount:4199, date:'27 Apr 2026', status:'Delivered' }
   ];
 
-  let editingId = null;
+  let editingId   = null;
+  let editingCatI = null;
 
   // ---- LOGIN / LOGOUT ----
   function doLogin() {
@@ -592,6 +619,7 @@
 
   // ---- RENDER ALL ----
   function renderAll() {
+    rebuildCatDropdown();
     renderProducts();
     renderCategories();
     renderPricing();
@@ -603,6 +631,22 @@
   function updateDashCount() {
     document.getElementById('dashProdCount').textContent = products.length;
     document.getElementById('prodCountLabel').textContent = products.length + ' products in catalogue';
+    const activeCats = categories.filter(c => c.status === 'Active').length;
+    document.getElementById('catCountLabel').textContent =
+      categories.length + ' categories · ' + activeCats + ' active · store89.in';
+  }
+
+  // ---- SYNC CATEGORY DROPDOWN in product modal ----
+  function rebuildCatDropdown() {
+    const sel = document.getElementById('pCat');
+    const current = sel.value;
+    sel.innerHTML = categories
+      .filter(c => c.status === 'Active')
+      .sort((a, b) => a.order - b.order)
+      .map(c => `<option value="${c.name}">${c.name}</option>`)
+      .join('');
+    // restore selection if still valid
+    if ([...sel.options].some(o => o.value === current)) sel.value = current;
   }
 
   // ---- PRODUCTS ----
@@ -642,7 +686,7 @@
     editingId = null;
     document.getElementById('productModalTitle').textContent = 'Add New Product';
     ['pName','pPrice','pMrp','pStock','pSize','pSku','pDesc'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('pCat').value = 'Tops';
+    rebuildCatDropdown();
     document.getElementById('pStatus').value = 'Active';
     openModal('productModal');
   }
@@ -652,6 +696,7 @@
     if (!p) return;
     editingId = id;
     document.getElementById('productModalTitle').textContent = 'Edit Product';
+    rebuildCatDropdown();
     document.getElementById('pName').value   = p.name;
     document.getElementById('pCat').value    = p.cat;
     document.getElementById('pPrice').value  = p.price;
@@ -700,40 +745,96 @@
   // ---- CATEGORIES ----
   function renderCategories() {
     const tb = document.getElementById('categoriesTable');
-    tb.innerHTML = categories.map((c, i) => `
+    const sorted = [...categories].sort((a, b) => a.order - b.order);
+    tb.innerHTML = sorted.map((c, i) => {
+      const realIdx = categories.indexOf(c);
+      const prodCount = products.filter(p => p.cat === c.name).length;
+      return `
       <tr>
-        <td style="padding:10px 16px;">${c.name}</td>
-        <td>${products.filter(p => p.cat === c.name).length}</td>
+        <td style="padding:10px 16px;">
+          <div style="font-size:13px;color:#e0e0e0;font-weight:500;">${c.name}</div>
+          ${c.desc ? `<div class="cat-meta">${c.desc}</div>` : ''}
+        </td>
+        <td><span style="font-family:monospace;font-size:12px;color:#666;">/${c.slug || slugify(c.name)}</span></td>
+        <td>${prodCount > 0 ? prodCount : '<span style="color:#444;">—</span>'}</td>
+        <td style="text-align:center;">${c.order}</td>
+        <td>${c.nav === 'Yes' ? '<span class="badge badge-blue">Yes</span>' : '<span style="color:#444;font-size:12px;">No</span>'}</td>
         <td>${c.status === 'Active' ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-yellow">Hidden</span>'}</td>
         <td>
           <div class="action-btns">
-            <button class="icon-btn del" onclick="deleteCat(${i})" title="Delete">&#x2715;</button>
+            <button class="icon-btn" onclick="editCat(${realIdx})" title="Edit">&#x270E;</button>
+            <button class="icon-btn del" onclick="deleteCat(${realIdx})" title="Delete">&#x2715;</button>
           </div>
         </td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
+    updateDashCount();
+  }
+
+  function slugify(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
 
   function openAddCat() {
-    document.getElementById('catName').value = '';
+    editingCatI = null;
+    document.getElementById('catModalTitle').textContent = 'Add Category';
+    document.getElementById('catSaveBtn').textContent = 'Add Category';
+    ['catName','catSlug','catDesc'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('catOrder').value = categories.length + 1;
+    document.getElementById('catNav').value = 'Yes';
     document.getElementById('catStatus').value = 'Active';
     openModal('catModal');
   }
 
+  function editCat(i) {
+    editingCatI = i;
+    const c = categories[i];
+    document.getElementById('catModalTitle').textContent = 'Edit Category';
+    document.getElementById('catSaveBtn').textContent = 'Save Changes';
+    document.getElementById('catName').value   = c.name;
+    document.getElementById('catSlug').value   = c.slug || '';
+    document.getElementById('catDesc').value   = c.desc || '';
+    document.getElementById('catOrder').value  = c.order || '';
+    document.getElementById('catNav').value    = c.nav || 'Yes';
+    document.getElementById('catStatus').value = c.status;
+    openModal('catModal');
+  }
+
   function saveCategory() {
-    const n = document.getElementById('catName').value.trim();
+    const n     = document.getElementById('catName').value.trim();
+    const slug  = document.getElementById('catSlug').value.trim() || slugify(n);
+    const desc  = document.getElementById('catDesc').value.trim();
+    const order = parseInt(document.getElementById('catOrder').value) || categories.length + 1;
+    const nav   = document.getElementById('catNav').value;
+    const status = document.getElementById('catStatus').value;
     if (!n) { alert('Please enter a category name.'); return; }
-    if (categories.find(c => c.name.toLowerCase() === n.toLowerCase())) { alert('Category already exists.'); return; }
-    categories.push({ name: n, count: 0, status: document.getElementById('catStatus').value });
+
+    if (editingCatI !== null) {
+      // editing existing
+      categories[editingCatI] = { name: n, slug, desc, order, nav, status };
+    } else {
+      // adding new
+      if (categories.find(c => c.name.toLowerCase() === n.toLowerCase())) {
+        alert('Category already exists.'); return;
+      }
+      categories.push({ name: n, slug, desc, order, nav, status });
+    }
     closeModal('catModal');
+    rebuildCatDropdown();
     renderCategories();
-    // add to product dropdown
-    const opt = document.createElement('option');
-    opt.value = n; opt.textContent = n;
-    document.getElementById('pCat').appendChild(opt);
   }
 
   function deleteCat(i) {
-    if (confirm('Delete this category?')) { categories.splice(i, 1); renderCategories(); }
+    const catName = categories[i].name;
+    const inUse = products.filter(p => p.cat === catName).length;
+    if (inUse > 0) {
+      if (!confirm(`"${catName}" has ${inUse} product(s) assigned. Delete anyway? Those products will keep the category label.`)) return;
+    } else {
+      if (!confirm(`Delete category "${catName}"?`)) return;
+    }
+    categories.splice(i, 1);
+    rebuildCatDropdown();
+    renderCategories();
   }
 
   // ---- PRICING ----
@@ -835,6 +936,13 @@
   function deleteCoupon(i) {
     if (confirm('Delete this coupon?')) { coupons.splice(i, 1); renderCoupons(); }
   }
+
+  // auto-fill slug when typing category name (add mode only)
+  document.getElementById('catName').addEventListener('input', function() {
+    if (editingCatI === null) {
+      document.getElementById('catSlug').value = slugify(this.value);
+    }
+  });
 </script>
 
 </body>
