@@ -21,14 +21,8 @@ html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:var(--font-body);overflow-x:hidden;min-height:100vh;}
 
 /* ── LOGIN SCREEN ── */
-#loginScreen{
-  position:fixed;inset:0;background:var(--black);z-index:9999;
-  display:flex;align-items:center;justify-content:center;flex-direction:column;
-}
-.login-box{
-  background:var(--card-bg);border:1px solid var(--border);
-  padding:3.5rem;max-width:420px;width:100%;margin:1rem;
-}
+#loginScreen{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.login-box{background:var(--card-bg);border:1px solid var(--border);padding:3.5rem;max-width:420px;width:100%;margin:1rem;}
 .login-brand{font-family:var(--font-display);font-size:3.5rem;letter-spacing:0.05em;margin-bottom:0.5rem;}
 .login-brand span{color:var(--accent);}
 .login-sub{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2.5rem;}
@@ -40,6 +34,13 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .login-btn:hover{background:#d4eb00;transform:translate(-2px,-2px);}
 .login-err{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-top:0.8rem;display:none;}
 .login-hint{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--muted);margin-top:1.5rem;line-height:1.8;border-top:1px solid var(--border);padding-top:1.2rem;}
+
+/* ── LOADING OVERLAY ── */
+#loadingOverlay{position:fixed;inset:0;background:rgba(8,8,8,0.85);z-index:8000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
+#loadingOverlay.show{display:flex;}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-txt{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);}
 
 /* ── ADMIN LAYOUT ── */
 #adminApp{display:none;}
@@ -60,6 +61,10 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .sidebar-bottom{margin-top:auto;padding:1.5rem;border-top:1px solid var(--border);}
 .logout-btn{width:100%;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.7rem;cursor:pointer;transition:all 0.2s;}
 .logout-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+.firebase-status{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 0;color:var(--muted);display:flex;align-items:center;gap:0.5rem;margin-bottom:0.8rem;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+.status-dot.connected{background:var(--success);}
+.status-dot.error{background:var(--accent2);}
 
 /* ── MAIN CONTENT ── */
 .admin-main{padding:2.5rem 3rem;overflow-y:auto;}
@@ -96,6 +101,7 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .admin-btn.ghost:hover{border-color:var(--accent);color:var(--accent);}
 .admin-btn.danger{background:none;border:1px solid var(--border);color:var(--muted);}
 .admin-btn.danger:hover{border-color:var(--accent2);color:var(--accent2);}
+.admin-btn:disabled{opacity:0.4;cursor:not-allowed;}
 table{width:100%;border-collapse:collapse;}
 th{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);padding:0.9rem 1.5rem;text-align:left;border-bottom:1px solid var(--border);}
 td{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.9rem;vertical-align:middle;}
@@ -122,6 +128,10 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .sf-input::placeholder{color:var(--muted);}
 select.sf-input option{background:var(--off-black);}
 .sf-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+/* ── UPLOAD PROGRESS ── */
+.upload-progress{background:var(--black);border:1px solid var(--border);height:4px;margin-top:0.5rem;display:none;}
+.upload-progress-bar{height:100%;background:var(--accent);width:0%;transition:width 0.3s;}
 
 /* ── NOTIFICATION ── */
 .notif{position:fixed;top:2rem;right:2rem;z-index:9999;background:var(--accent);color:var(--black);font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.9rem 1.5rem;font-weight:700;transform:translateY(-80px);opacity:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);}
@@ -167,6 +177,12 @@ select.sf-input option{background:var(--off-black);}
   </div>
 </div>
 
+<!-- ══ LOADING OVERLAY ══ -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-txt" id="loadingTxt">Connecting to Firebase...</div>
+</div>
+
 <!-- ══ ADMIN APP ══ -->
 <div id="adminApp">
   <div class="admin-layout">
@@ -175,7 +191,7 @@ select.sf-input option{background:var(--off-black);}
     <aside class="sidebar">
       <div class="sidebar-brand">
         <div class="sidebar-brand-logo">STORE<span>89</span></div>
-        <div class="sidebar-tag">Admin Panel v1.1</div>
+        <div class="sidebar-tag">Admin Panel v2.0 — Firebase</div>
       </div>
 
       <div class="nav-section-title">Main</div>
@@ -195,6 +211,10 @@ select.sf-input option{background:var(--off-black);}
       </ul>
 
       <div class="sidebar-bottom">
+        <div class="firebase-status">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusTxt">Connecting...</span>
+        </div>
         <button class="logout-btn" onclick="doLogout()">↩ Logout</button>
       </div>
     </aside>
@@ -215,12 +235,12 @@ select.sf-input option{background:var(--off-black);}
           <div class="stat-card accent-stat">
             <div class="stat-val" id="statRevenue">₹0</div>
             <div class="stat-label">Total Revenue</div>
-            <div class="stat-change" style="color:var(--accent)">↑ Based on local orders</div>
+            <div class="stat-change" style="color:var(--accent)">↑ Live from Firestore</div>
           </div>
           <div class="stat-card green-stat">
             <div class="stat-val" id="statOrders">0</div>
             <div class="stat-label">Total Orders</div>
-            <div class="stat-change" style="color:var(--success)">Stored locally</div>
+            <div class="stat-change" style="color:var(--success)">Live from Firestore</div>
           </div>
           <div class="stat-card">
             <div class="stat-val" id="statProducts">0</div>
@@ -228,15 +248,15 @@ select.sf-input option{background:var(--off-black);}
             <div class="stat-change" style="color:var(--muted)">Across all categories</div>
           </div>
           <div class="stat-card orange-stat">
-            <div class="stat-val" id="statCart">0</div>
-            <div class="stat-label">Items in Cart</div>
-            <div class="stat-change" style="color:var(--warning)">Active session</div>
+            <div class="stat-val" id="statPending">0</div>
+            <div class="stat-label">Pending Orders</div>
+            <div class="stat-change" style="color:var(--warning)">Needs attention</div>
           </div>
         </div>
         <div class="table-wrap">
           <div class="table-header"><div class="table-title">RECENT ORDERS</div></div>
           <div id="recentOrders" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">
-            No orders yet. Orders placed via checkout will appear here.
+            Loading orders...
           </div>
         </div>
       </div>
@@ -253,9 +273,7 @@ select.sf-input option{background:var(--off-black);}
           </div>
           <table>
             <thead>
-              <tr>
-                <th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
-              </tr>
+              <tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody id="productsTable"></tbody>
           </table>
@@ -268,10 +286,18 @@ select.sf-input option{background:var(--off-black);}
           <div class="table-header">
             <div class="table-title">ALL ORDERS</div>
             <div class="table-actions">
+              <select class="admin-search" id="orderStatusFilter" onchange="renderOrders()" style="width:160px;">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
               <button class="admin-btn ghost" onclick="exportOrders()">Export CSV</button>
             </div>
           </div>
-          <div id="ordersTable" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">No orders found.</div>
+          <div id="ordersTable" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">Loading orders...</div>
         </div>
       </div>
 
@@ -291,7 +317,6 @@ select.sf-input option{background:var(--off-black);}
 
       <!-- ── CUSTOM STUDIO ── -->
       <div class="tab-panel" id="tab-studio">
-
         <div class="table-wrap" style="margin-bottom:2rem;">
           <div class="table-header">
             <div class="table-title">STUDIO DEFAULTS</div>
@@ -300,33 +325,15 @@ select.sf-input option{background:var(--off-black);}
           <div style="padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
             <div>
               <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;">T-Shirt Defaults</div>
-              <div style="margin-bottom:1rem;">
-                <label class="sf-label">Base Price (₹)</label>
-                <input class="sf-input" id="studioTeePriceDefault" type="number" value="899">
-              </div>
-              <div style="margin-bottom:1rem;">
-                <label class="sf-label">Default Colors (hex, comma-separated)</label>
-                <input class="sf-input" id="studioTeeColors" type="text" value="#111,#f5f5f0,#1a3a2a,#3a1a1a,#1a1a3a,#e8ff00,#ff3c3c,#6effc0">
-              </div>
-              <div>
-                <label class="sf-label">Available Sizes (comma-separated)</label>
-                <input class="sf-input" id="studioTeeSizes" type="text" value="XS,S,M,L,XL,XXL">
-              </div>
+              <div style="margin-bottom:1rem;"><label class="sf-label">Base Price (₹)</label><input class="sf-input" id="studioTeePriceDefault" type="number" value="899"></div>
+              <div style="margin-bottom:1rem;"><label class="sf-label">Default Colors (hex, comma-separated)</label><input class="sf-input" id="studioTeeColors" type="text" value="#111,#f5f5f0,#1a3a2a,#3a1a1a,#1a1a3a,#e8ff00,#ff3c3c,#6effc0"></div>
+              <div><label class="sf-label">Available Sizes (comma-separated)</label><input class="sf-input" id="studioTeeSizes" type="text" value="XS,S,M,L,XL,XXL"></div>
             </div>
             <div>
               <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;">Poster Defaults</div>
-              <div style="margin-bottom:1rem;">
-                <label class="sf-label">Base Price (₹)</label>
-                <input class="sf-input" id="studioPosterPriceDefault" type="number" value="649">
-              </div>
-              <div style="margin-bottom:1rem;">
-                <label class="sf-label">Background Colors (hex, comma-separated)</label>
-                <input class="sf-input" id="studioPosterColors" type="text" value="#fff,#111,#1a1a2a,#2a1a1a,#e8ff00">
-              </div>
-              <div>
-                <label class="sf-label">Available Sizes (comma-separated)</label>
-                <input class="sf-input" id="studioPosterSizes" type="text" value="A4,A3,A2">
-              </div>
+              <div style="margin-bottom:1rem;"><label class="sf-label">Base Price (₹)</label><input class="sf-input" id="studioPosterPriceDefault" type="number" value="649"></div>
+              <div style="margin-bottom:1rem;"><label class="sf-label">Background Colors (hex, comma-separated)</label><input class="sf-input" id="studioPosterColors" type="text" value="#fff,#111,#1a1a2a,#2a1a1a,#e8ff00"></div>
+              <div><label class="sf-label">Available Sizes (comma-separated)</label><input class="sf-input" id="studioPosterSizes" type="text" value="A4,A3,A2"></div>
             </div>
           </div>
           <div style="padding:0 2rem 2rem;">
@@ -382,6 +389,10 @@ select.sf-input option{background:var(--off-black);}
             <label class="admin-btn primary" style="cursor:pointer;">
               + Upload Image <input type="file" id="imgUpload" multiple accept="image/*" style="display:none" onchange="handleImgUpload(this)">
             </label>
+          </div>
+          <div id="uploadProgressWrap" style="padding:0 1.5rem;display:none;">
+            <div class="upload-progress" style="display:block;"><div class="upload-progress-bar" id="uploadBar"></div></div>
+            <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);margin-top:0.4rem;" id="uploadProgressTxt">Uploading...</div>
           </div>
           <div id="imageGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1px;padding:1px;"></div>
           <div id="noImages" style="padding:2.5rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;">No images uploaded yet.</div>
@@ -463,10 +474,11 @@ select.sf-input option{background:var(--off-black);}
           <input type="file" id="prodImg" accept="image/*" style="display:none" onchange="previewImg(this)">
           <span id="imgLabel">Click to upload image (JPG, PNG, SVG)</span>
         </label>
+        <div class="upload-progress" id="prodImgProgress"><div class="upload-progress-bar" id="prodImgBar"></div></div>
         <img id="imgPreview" src="" alt="" style="display:none;width:100%;max-height:160px;object-fit:contain;margin-top:0.8rem;border:1px solid var(--border);background:var(--black);">
       </div>
       <div style="display:flex;gap:1rem;margin-top:0.5rem;">
-        <button class="admin-btn primary" style="flex:1;" onclick="saveProduct()">Save Product</button>
+        <button class="admin-btn primary" style="flex:1;" id="saveProdBtn" onclick="saveProduct()">Save Product</button>
         <button class="admin-btn ghost" onclick="closeSheet('productSheet')">Cancel</button>
       </div>
     </div>
@@ -503,25 +515,20 @@ select.sf-input option{background:var(--off-black);}
       <div><label class="sf-label">Template Name *</label><input class="sf-input" id="tmplName" type="text" placeholder="Minimal Black Tee"></div>
       <div>
         <label class="sf-label">Type *</label>
-        <select class="sf-input" id="tmplType">
-          <option value="tee">T-Shirt</option>
-          <option value="poster">Poster</option>
-        </select>
+        <select class="sf-input" id="tmplType"><option value="tee">T-Shirt</option><option value="poster">Poster</option></select>
       </div>
-      <div>
-        <label class="sf-label">Tags (comma-separated)</label>
-        <input class="sf-input" id="tmplTags" type="text" placeholder="minimal, dark, streetwear">
-      </div>
+      <div><label class="sf-label">Tags (comma-separated)</label><input class="sf-input" id="tmplTags" type="text" placeholder="minimal, dark, streetwear"></div>
       <div>
         <label class="sf-label">Template Image *</label>
         <label style="display:flex;align-items:center;gap:1rem;padding:1rem;border:1px dashed var(--border);cursor:pointer;font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);">
           <input type="file" id="tmplImg" accept="image/*" style="display:none" onchange="previewTmplImg(this)">
           <span id="tmplImgLabel">Click to upload template image</span>
         </label>
+        <div class="upload-progress" id="tmplImgProgress"><div class="upload-progress-bar" id="tmplImgBar"></div></div>
         <img id="tmplImgPreview" src="" alt="" style="display:none;width:100%;max-height:200px;object-fit:contain;margin-top:0.8rem;border:1px solid var(--border);background:var(--black);">
       </div>
       <div style="display:flex;gap:1rem;margin-top:0.5rem;">
-        <button class="admin-btn primary" style="flex:1;" onclick="saveTemplate()">Save Template</button>
+        <button class="admin-btn primary" style="flex:1;" id="saveTmplBtn" onclick="saveTemplate()">Save Template</button>
         <button class="admin-btn ghost" onclick="closeSheet('templateSheet')">Cancel</button>
       </div>
     </div>
@@ -531,9 +538,57 @@ select.sf-input option{background:var(--off-black);}
 <!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
 
+<!-- ══ FIREBASE SDK ══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs,
+  deleteDoc, updateDoc, query, orderBy, limit, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+// ── FIREBASE CONFIG ──
+const firebaseConfig = {
+  apiKey: "AIzaSyByc62uc1v97pf5ZV26ycLA0SPmfsD5pTU",
+  authDomain: "store890007.firebaseapp.com",
+  databaseURL: "https://store890007-default-rtdb.firebaseio.com",
+  projectId: "store890007",
+  storageBucket: "store890007.firebasestorage.app",
+  messagingSenderId: "987669883544",
+  appId: "1:987669883544:web:dbdff7958f416b6089beed"
+};
+
+const app     = initializeApp(firebaseConfig);
+const db      = getFirestore(app);
+const storage = getStorage(app);
+
+// ── EXPOSE TO GLOBAL SCOPE ──
+window._db      = db;
+window._storage = storage;
+window._fb = {
+  collection, doc, addDoc, setDoc, getDoc, getDocs,
+  deleteDoc, updateDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
+  storageRef, uploadBytesResumable, getDownloadURL, deleteObject
+};
+
+// ── SET FIREBASE STATUS ──
+document.getElementById('statusDot').classList.add('connected');
+document.getElementById('statusTxt').textContent = 'Firebase Connected';
+
+// ── AUTO LOGIN CHECK ──
+const ADMIN_KEY = 'store89_admin_auth';
+if (localStorage.getItem(ADMIN_KEY) === '1') {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminApp').style.display = 'block';
+  window.initAdmin();
+}
+</script>
+
 <script>
 // ══════════════════════════════════════════════
-// AUTH — from original admin (v1.0)
+// AUTH
 // ══════════════════════════════════════════════
 const ADMIN_KEY = 'store89_admin_auth';
 const DEFAULT_CREDS = { user: 'admin', pass: 'store89admin' };
@@ -548,8 +603,6 @@ function doLogin() {
   const p = document.getElementById('loginPass').value;
   const creds = getStoredCreds();
   const err = document.getElementById('loginErr');
-  const ui = document.getElementById('loginUser');
-  const pi = document.getElementById('loginPass');
 
   if (u === creds.user && p === creds.pass) {
     localStorage.setItem(ADMIN_KEY, '1');
@@ -559,12 +612,14 @@ function doLogin() {
     initAdmin();
   } else {
     err.style.display = 'block';
-    ui.classList.add('error'); pi.classList.add('error');
-    setTimeout(() => { ui.classList.remove('error'); pi.classList.remove('error'); }, 1500);
+    ['loginUser','loginPass'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.add('error');
+      setTimeout(() => el.classList.remove('error'), 1500);
+    });
   }
 }
 
-// Enter key on password field
 document.getElementById('loginPass').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();
 });
@@ -577,54 +632,190 @@ function doLogout() {
   document.getElementById('loginPass').value = '';
 }
 
-// Auto-login if session is still active
-if (localStorage.getItem(ADMIN_KEY) === '1') {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('adminApp').style.display = 'block';
-  // initAdmin() will be called after DOM is ready; defer slightly
-  document.addEventListener('DOMContentLoaded', initAdmin);
+// ══════════════════════════════════════════════
+// LOADING HELPERS
+// ══════════════════════════════════════════════
+function showLoading(txt = 'Loading...') {
+  document.getElementById('loadingTxt').textContent = txt;
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('show');
 }
 
 // ══════════════════════════════════════════════
-// DATA LAYER
+// IN-MEMORY CACHE
 // ══════════════════════════════════════════════
-const PRODS_KEY          = 'store89_admin_products';
-const CATS_KEY           = 'store89_admin_cats';
-const CART_KEY           = 'store89_cart';
-const TEMPLATES_KEY      = 'store89_studio_templates';
-const STUDIO_SETTINGS_KEY= 'store89_studio_settings';
+let _products  = [];
+let _categories = [];
+let _orders    = [];
+let _templates = [];
+let _images    = [];
 
-function getProducts() { try { return JSON.parse(localStorage.getItem(PRODS_KEY)) || []; } catch { return []; } }
-function saveProducts(p) { localStorage.setItem(PRODS_KEY, JSON.stringify(p)); }
+// ══════════════════════════════════════════════
+// FIREBASE HELPERS
+// ══════════════════════════════════════════════
+function db() { return window._db; }
+function fb() { return window._fb; }
+function storage() { return window._storage; }
 
-function getCats() {
-  try {
-    return JSON.parse(localStorage.getItem(CATS_KEY)) || [
-      { id: 'c1', name: 'T-Shirts',    slug: 'tshirts',    status: 'active' },
-      { id: 'c2', name: 'Posters',     slug: 'posters',    status: 'active' },
-      { id: 'c3', name: 'B&W T-Shirts',slug: 'bw-tshirts', status: 'active' },
-      { id: 'c4', name: 'B&W Posters', slug: 'bw-posters', status: 'active' },
-    ];
-  } catch { return []; }
+async function fsGet(collName) {
+  const { getDocs, collection, query, orderBy } = fb();
+  const q = query(collection(db(), collName), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
-function saveCats(c) { localStorage.setItem(CATS_KEY, JSON.stringify(c)); }
-function getTemplates() { try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY)) || []; } catch { return []; } }
-function saveTemplates(t) { localStorage.setItem(TEMPLATES_KEY, JSON.stringify(t)); }
+
+async function fsSet(collName, id, data) {
+  const { doc, setDoc, serverTimestamp } = fb();
+  await setDoc(doc(db(), collName, id), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+}
+
+async function fsAdd(collName, data) {
+  const { addDoc, collection, serverTimestamp } = fb();
+  const ref = await addDoc(collection(db(), collName), { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+  return ref.id;
+}
+
+async function fsDel(collName, id) {
+  const { doc, deleteDoc } = fb();
+  await deleteDoc(doc(db(), collName, id));
+}
+
+// Upload file to Firebase Storage, return download URL
+function uploadFile(file, path, progressBar) {
+  return new Promise((resolve, reject) => {
+    const { storageRef, uploadBytesResumable, getDownloadURL } = fb();
+    const ref = storageRef(storage(), path);
+    const task = uploadBytesResumable(ref, file);
+    if (progressBar) { progressBar.parentElement.style.display = 'block'; }
+    task.on('state_changed',
+      snap => {
+        const pct = (snap.bytesTransferred / snap.totalBytes) * 100;
+        if (progressBar) progressBar.style.width = pct + '%';
+      },
+      reject,
+      async () => {
+        const url = await getDownloadURL(task.snapshot.ref);
+        if (progressBar) { progressBar.parentElement.style.display = 'none'; progressBar.style.width = '0%'; }
+        resolve(url);
+      }
+    );
+  });
+}
 
 // ══════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════
-function initAdmin() {
+window.initAdmin = async function() {
   document.getElementById('adminDate').textContent = new Date().toLocaleDateString('en-IN', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
-  loadStudioSettings();
-  renderDashboard();
-  renderProducts();
-  renderCategories();
-  renderOrders();
-  renderImages();
-  renderTemplates();
+
+  showLoading('Loading store data...');
+  try {
+    await Promise.all([
+      loadProducts(),
+      loadCategories(),
+      loadOrders(),
+      loadTemplates(),
+      loadImages(),
+      loadSettings(),
+      loadStudioSettings(),
+      loadHomepageSettings()
+    ]);
+    renderDashboard();
+    renderProducts();
+    renderCategories();
+    renderOrders();
+    renderTemplates();
+    renderImages();
+  } catch(e) {
+    console.error('Init error:', e);
+    notify('Firebase error: ' + e.message, 'error');
+  }
+  hideLoading();
+};
+
+// ══════════════════════════════════════════════
+// DATA LOADERS
+// ══════════════════════════════════════════════
+async function loadProducts() {
+  try { _products = await fsGet('products'); } catch(e) { _products = []; console.error(e); }
+}
+async function loadCategories() {
+  try {
+    _categories = await fsGet('categories');
+    if (!_categories.length) {
+      // Seed default categories
+      const defaults = [
+        { name: 'T-Shirts', slug: 'tshirt', status: 'active' },
+        { name: 'Posters', slug: 'poster', status: 'active' },
+        { name: 'B&W T-Shirts', slug: 'bw-tshirt', status: 'active' },
+        { name: 'B&W Posters', slug: 'bw-poster', status: 'active' },
+      ];
+      for (const c of defaults) { await fsAdd('categories', c); }
+      _categories = await fsGet('categories');
+    }
+  } catch(e) { _categories = []; console.error(e); }
+}
+async function loadOrders() {
+  try { _orders = await fsGet('orders'); } catch(e) { _orders = []; console.error(e); }
+}
+async function loadTemplates() {
+  try { _templates = await fsGet('templates'); } catch(e) { _templates = []; console.error(e); }
+}
+async function loadImages() {
+  try { _images = await fsGet('images'); } catch(e) { _images = []; console.error(e); }
+}
+
+async function loadSettings() {
+  try {
+    const { doc, getDoc } = fb();
+    const snap = await getDoc(doc(db(), 'settings', 'store'));
+    if (snap.exists()) {
+      const s = snap.data();
+      if (s.storeName) document.getElementById('setStoreName').value = s.storeName;
+      if (s.email)     document.getElementById('setEmail').value = s.email;
+      if (s.whatsApp)  document.getElementById('setWhatsApp').value = s.whatsApp;
+      if (s.location)  document.getElementById('setLocation').value = s.location;
+      if (s.shippingThreshold) document.getElementById('setShipThresh').value = s.shippingThreshold;
+      if (s.shippingCost)      document.getElementById('setShipCost').value = s.shippingCost;
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function loadStudioSettings() {
+  try {
+    const { doc, getDoc } = fb();
+    const snap = await getDoc(doc(db(), 'settings', 'studio'));
+    if (snap.exists()) {
+      const s = snap.data();
+      if (s.teePrice)    document.getElementById('studioTeePriceDefault').value = s.teePrice;
+      if (s.teeColors)   document.getElementById('studioTeeColors').value = s.teeColors;
+      if (s.teeSizes)    document.getElementById('studioTeeSizes').value = s.teeSizes;
+      if (s.posterPrice) document.getElementById('studioPosterPriceDefault').value = s.posterPrice;
+      if (s.posterColors)document.getElementById('studioPosterColors').value = s.posterColors;
+      if (s.posterSizes) document.getElementById('studioPosterSizes').value = s.posterSizes;
+      if (s.note)        document.getElementById('studioNote').value = s.note;
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function loadHomepageSettings() {
+  try {
+    const { doc, getDoc } = fb();
+    const snap = await getDoc(doc(db(), 'settings', 'homepage'));
+    if (snap.exists()) {
+      const s = snap.data();
+      if (s.headline1) document.getElementById('hpHeadline1').value = s.headline1;
+      if (s.headline2) document.getElementById('hpHeadline2').value = s.headline2;
+      if (s.subtitle)  document.getElementById('hpSubtitle').value = s.subtitle;
+      if (s.cta1)      document.getElementById('hpCta1').value = s.cta1;
+      if (s.cta2)      document.getElementById('hpCta2').value = s.cta2;
+      if (s.announce)  document.getElementById('hpAnnounce').value = s.announce;
+    }
+  } catch(e) { console.error(e); }
 }
 
 // ══════════════════════════════════════════════
@@ -648,38 +839,48 @@ function showTab(id, link) {
 // DASHBOARD
 // ══════════════════════════════════════════════
 function renderDashboard() {
-  const prods = getProducts();
-  const cart  = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-  const lastOrder = JSON.parse(localStorage.getItem('store89_last_order'));
-
-  document.getElementById('statProducts').textContent = prods.length;
-  document.getElementById('statCart').textContent = cart.reduce((s, i) => s + i.qty, 0);
-  document.getElementById('statOrders').textContent = lastOrder ? 1 : 0;
-  document.getElementById('statRevenue').textContent = lastOrder ? '₹' + lastOrder.total.toLocaleString('en-IN') : '₹0';
+  document.getElementById('statProducts').textContent = _products.length;
+  const totalRevenue = _orders.reduce((s, o) => s + (o.total || 0), 0);
+  const pendingOrders = _orders.filter(o => o.status === 'pending' || !o.status).length;
+  document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString('en-IN');
+  document.getElementById('statOrders').textContent = _orders.length;
+  document.getElementById('statPending').textContent = pendingOrders;
 
   const ro = document.getElementById('recentOrders');
-  if (lastOrder) {
-    ro.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
-    <tr>
-      <td style="font-family:var(--font-mono);font-size:0.72rem;">${lastOrder.id}</td>
-      <td>${lastOrder.customer.name}</td>
-      <td style="font-family:var(--font-mono);font-size:0.7rem;">${lastOrder.items.length} item(s)</td>
-      <td style="font-family:var(--font-mono);font-size:0.82rem;font-weight:700;">₹${lastOrder.total.toLocaleString('en-IN')}</td>
-      <td><span class="badge green">${lastOrder.payment.toUpperCase()}</span></td>
-      <td style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);">${new Date(lastOrder.timestamp).toLocaleDateString('en-IN')}</td>
-    </tr></tbody></table>`;
+  const recent = _orders.slice(0, 10);
+  if (!recent.length) {
+    ro.innerHTML = '<span style="color:var(--muted)">No orders yet. Orders placed via checkout will appear here.</span>';
+    return;
   }
+  ro.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>
+    ${recent.map(o => `<tr>
+      <td style="font-family:var(--font-mono);font-size:0.7rem;">${o.id}</td>
+      <td>${o.customer?.name || '—'}<br><span style="font-size:0.75rem;color:var(--muted)">${o.customer?.email || ''}</span></td>
+      <td style="font-family:var(--font-mono);font-size:0.7rem;">${(o.items||[]).length} item(s)</td>
+      <td style="font-family:var(--font-mono);font-size:0.82rem;font-weight:700;">₹${(o.total||0).toLocaleString('en-IN')}</td>
+      <td><span class="badge ${statusBadge(o.status)}">${o.status || 'pending'}</span></td>
+      <td style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);">${o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('en-IN') : '—'}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function statusBadge(s) {
+  if (s === 'delivered') return 'green';
+  if (s === 'shipped') return 'blue';
+  if (s === 'confirmed') return 'yellow';
+  if (s === 'cancelled') return 'red';
+  return 'grey';
 }
 
 // ══════════════════════════════════════════════
 // PRODUCTS
 // ══════════════════════════════════════════════
 let editingProdId = null;
-let currentProdImgData = '';
+let pendingProdFile = null;
 
 function renderProducts() {
   const q = (document.getElementById('prodSearch')?.value || '').toLowerCase();
-  const prods = getProducts().filter(p => !q || p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
+  const prods = _products.filter(p => !q || p.name?.toLowerCase().includes(q) || p.cat?.toLowerCase().includes(q));
   const tbody = document.getElementById('productsTable');
 
   if (!prods.length) {
@@ -691,8 +892,8 @@ function renderProducts() {
     <tr>
       <td>
         <div style="display:flex;align-items:center;gap:0.8rem;">
-          ${p.imageData
-            ? `<img src="${p.imageData}" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border);" alt="">`
+          ${p.imageUrl
+            ? `<img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border);" alt="">`
             : `<div style="width:40px;height:40px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:var(--muted);font-family:var(--font-mono);">NO IMG</div>`}
           <div>
             <strong style="font-family:var(--font-display);font-size:1.1rem;letter-spacing:0.03em;">${p.name}</strong><br>
@@ -700,8 +901,8 @@ function renderProducts() {
           </div>
         </div>
       </td>
-      <td><span class="badge grey">${p.cat}</span></td>
-      <td style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;">₹${parseInt(p.price).toLocaleString('en-IN')}</td>
+      <td><span class="badge grey">${p.cat || '—'}</span></td>
+      <td style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;">₹${parseInt(p.price||0).toLocaleString('en-IN')}</td>
       <td style="font-family:var(--font-mono);font-size:0.8rem;">${p.stock || 'N/A'}</td>
       <td><span class="badge ${p.status === 'active' ? 'green' : p.status === 'draft' ? 'yellow' : 'red'}">${p.status || 'active'}</span></td>
       <td>
@@ -716,7 +917,7 @@ function renderProducts() {
 
 function openAddProduct() {
   editingProdId = null;
-  currentProdImgData = '';
+  pendingProdFile = null;
   document.getElementById('sheetTitle').textContent = 'ADD PRODUCT';
   document.getElementById('prodId').value = '';
   ['prodName','prodPrice','prodStock','prodSizes','prodBadge','prodDesc'].forEach(id => document.getElementById(id).value = '');
@@ -729,10 +930,10 @@ function openAddProduct() {
 }
 
 function openEditProduct(id) {
-  const p = getProducts().find(x => x.id === id);
+  const p = _products.find(x => x.id === id);
   if (!p) return;
   editingProdId = id;
-  currentProdImgData = p.imageData || '';
+  pendingProdFile = null;
   document.getElementById('sheetTitle').textContent = 'EDIT PRODUCT';
   document.getElementById('prodId').value = p.id;
   document.getElementById('prodName').value = p.name || '';
@@ -743,9 +944,9 @@ function openEditProduct(id) {
   document.getElementById('prodBadge').value = p.badge || '';
   document.getElementById('prodDesc').value = p.desc || '';
   document.getElementById('prodStatus').value = p.status || 'active';
-  if (p.imageData) {
+  if (p.imageUrl) {
     const img = document.getElementById('imgPreview');
-    img.src = p.imageData; img.style.display = 'block';
+    img.src = p.imageUrl; img.style.display = 'block';
     document.getElementById('imgLabel').textContent = 'Image loaded — click to replace';
   } else {
     document.getElementById('imgPreview').style.display = 'none';
@@ -754,55 +955,78 @@ function openEditProduct(id) {
   document.getElementById('productSheet').classList.add('open');
 }
 
-function saveProduct() {
+async function saveProduct() {
   const name  = document.getElementById('prodName').value.trim();
   const price = document.getElementById('prodPrice').value;
   if (!name || !price) { notify('Name and price are required.', 'error'); return; }
 
-  const prods = getProducts();
-  const data = {
-    id:        editingProdId || ('p' + Date.now()),
-    name,
-    cat:       document.getElementById('prodCat').value,
-    price:     parseInt(price),
-    stock:     document.getElementById('prodStock').value,
-    sizes:     document.getElementById('prodSizes').value,
-    badge:     document.getElementById('prodBadge').value,
-    desc:      document.getElementById('prodDesc').value,
-    status:    document.getElementById('prodStatus').value,
-    imageData: currentProdImgData,
-    updatedAt: new Date().toISOString()
-  };
+  const btn = document.getElementById('saveProdBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
 
-  if (editingProdId) {
-    const idx = prods.findIndex(x => x.id === editingProdId);
-    if (idx > -1) prods[idx] = data;
-  } else {
-    prods.unshift(data);
+  try {
+    let imageUrl = editingProdId ? (_products.find(p => p.id === editingProdId)?.imageUrl || '') : '';
+
+    // Upload image to Storage if new file selected
+    if (pendingProdFile) {
+      const bar = document.getElementById('prodImgBar');
+      imageUrl = await uploadFile(pendingProdFile, `products/${Date.now()}_${pendingProdFile.name}`, bar);
+    }
+
+    const data = {
+      name,
+      cat:    document.getElementById('prodCat').value,
+      price:  parseInt(price),
+      stock:  document.getElementById('prodStock').value,
+      sizes:  document.getElementById('prodSizes').value,
+      badge:  document.getElementById('prodBadge').value,
+      desc:   document.getElementById('prodDesc').value,
+      status: document.getElementById('prodStatus').value,
+      imageUrl,
+    };
+
+    if (editingProdId) {
+      await fsSet('products', editingProdId, data);
+      const idx = _products.findIndex(x => x.id === editingProdId);
+      if (idx > -1) _products[idx] = { ..._products[idx], ...data };
+      notify('Product updated!');
+    } else {
+      const newId = await fsAdd('products', data);
+      _products.unshift({ id: newId, ...data });
+      notify('Product added!');
+    }
+
+    renderProducts(); renderDashboard();
+    closeSheet('productSheet');
+  } catch(e) {
+    console.error(e);
+    notify('Error saving product: ' + e.message, 'error');
   }
-  saveProducts(prods);
-  renderProducts(); renderDashboard();
-  closeSheet('productSheet');
-  notify(editingProdId ? 'Product updated!' : 'Product added!');
+
+  btn.disabled = false; btn.textContent = 'Save Product';
 }
 
-function deleteProduct(id) {
+async function deleteProduct(id) {
   if (!confirm('Delete this product? This cannot be undone.')) return;
-  saveProducts(getProducts().filter(p => p.id !== id));
-  renderProducts(); renderDashboard();
-  notify('Product deleted.', 'error');
+  try {
+    await fsDel('products', id);
+    _products = _products.filter(p => p.id !== id);
+    renderProducts(); renderDashboard();
+    notify('Product deleted.', 'error');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
 function previewImg(input) {
   if (input.files && input.files[0]) {
-    const r = new FileReader();
-    r.onload = e => {
-      currentProdImgData = e.target.result;
+    pendingProdFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = e => {
       const img = document.getElementById('imgPreview');
       img.src = e.target.result; img.style.display = 'block';
       document.getElementById('imgLabel').textContent = input.files[0].name;
     };
-    r.readAsDataURL(input.files[0]);
+    reader.readAsDataURL(input.files[0]);
   }
 }
 
@@ -810,13 +1034,11 @@ function previewImg(input) {
 // CATEGORIES
 // ══════════════════════════════════════════════
 function renderCategories() {
-  const cats  = getCats();
-  const prods = getProducts();
-  document.getElementById('categoriesTable').innerHTML = cats.map(c => `
+  document.getElementById('categoriesTable').innerHTML = _categories.map(c => `
     <tr>
       <td><strong style="font-family:var(--font-display);font-size:1.1rem;">${c.name}</strong></td>
       <td style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">/${c.slug}</td>
-      <td style="font-family:var(--font-mono);font-size:0.8rem;">${prods.filter(p => p.cat === c.slug).length}</td>
+      <td style="font-family:var(--font-mono);font-size:0.8rem;">${_products.filter(p => p.cat === c.slug).length}</td>
       <td><span class="badge ${c.status === 'active' ? 'green' : 'grey'}">${c.status}</span></td>
       <td><button class="admin-btn danger" style="padding:0.4rem 0.8rem;" onclick="deleteCategory('${c.id}')">Del</button></td>
     </tr>
@@ -829,46 +1051,99 @@ function openAddCategory() {
   document.getElementById('categorySheet').classList.add('open');
 }
 
-function saveCategory() {
+async function saveCategory() {
   const name = document.getElementById('catName').value.trim();
   const slug = document.getElementById('catSlug').value.trim();
   if (!name || !slug) { notify('Name and slug are required.', 'error'); return; }
-  const cats = getCats();
-  cats.push({ id: 'c' + Date.now(), name, slug, status: document.getElementById('catStatus').value });
-  saveCats(cats); renderCategories(); closeSheet('categorySheet'); notify('Category added!');
+  try {
+    const newId = await fsAdd('categories', { name, slug, status: document.getElementById('catStatus').value });
+    _categories.push({ id: newId, name, slug, status: document.getElementById('catStatus').value });
+    renderCategories();
+    closeSheet('categorySheet');
+    notify('Category added!');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
-function deleteCategory(id) {
+async function deleteCategory(id) {
   if (!confirm('Delete this category?')) return;
-  saveCats(getCats().filter(c => c.id !== id)); renderCategories(); notify('Category deleted.', 'error');
+  try {
+    await fsDel('categories', id);
+    _categories = _categories.filter(c => c.id !== id);
+    renderCategories();
+    notify('Category deleted.', 'error');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
 // ══════════════════════════════════════════════
 // ORDERS
 // ══════════════════════════════════════════════
 function renderOrders() {
-  const lastOrder = JSON.parse(localStorage.getItem('store89_last_order'));
+  const filter = document.getElementById('orderStatusFilter')?.value || 'all';
+  const orders = filter === 'all' ? _orders : _orders.filter(o => (o.status || 'pending') === filter);
   const el = document.getElementById('ordersTable');
-  if (!lastOrder) {
-    el.innerHTML = '<p style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);">No orders found. Orders placed will appear here.</p>';
+
+  if (!orders.length) {
+    el.innerHTML = '<p style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);">No orders found.</p>';
     return;
   }
-  el.innerHTML = `<table><thead><tr><th>ID</th><th>Customer</th><th>Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
-  <tr>
-    <td style="font-family:var(--font-mono);font-size:0.7rem;">${lastOrder.id}</td>
-    <td>${lastOrder.customer.name}<br><span style="font-size:0.75rem;color:var(--muted)">${lastOrder.customer.email}</span></td>
-    <td style="font-size:0.8rem;color:var(--muted);max-width:180px;">${lastOrder.customer.address}</td>
-    <td>${lastOrder.items.map(i => `<div style="font-size:0.8rem">${i.name} x${i.qty}</div>`).join('')}</td>
-    <td style="font-family:var(--font-mono);font-weight:700;">₹${lastOrder.total.toLocaleString('en-IN')}</td>
-    <td><span class="badge green">${lastOrder.payment.toUpperCase()}</span></td>
-    <td style="font-family:var(--font-mono);font-size:0.62rem;color:var(--muted)">${new Date(lastOrder.timestamp).toLocaleDateString('en-IN')}</td>
-  </tr></tbody></table>`;
+
+  el.innerHTML = `<table><thead><tr>
+    <th>ID</th><th>Customer</th><th>Address</th><th>Items</th><th>Total</th><th>Status</th><th>Payment</th><th>Date</th><th>Action</th>
+  </tr></thead><tbody>
+  ${orders.map(o => `<tr>
+    <td style="font-family:var(--font-mono);font-size:0.7rem;">${o.id}</td>
+    <td>${o.customer?.name || '—'}<br><span style="font-size:0.75rem;color:var(--muted)">${o.customer?.email || ''}</span><br><span style="font-size:0.72rem;color:var(--muted)">${o.customer?.phone || ''}</span></td>
+    <td style="font-size:0.8rem;color:var(--muted);max-width:180px;">${o.customer?.address || '—'}</td>
+    <td>${(o.items||[]).map(i => `<div style="font-size:0.8rem">${i.name} x${i.qty}</div>`).join('')}</td>
+    <td style="font-family:var(--font-mono);font-weight:700;">₹${(o.total||0).toLocaleString('en-IN')}</td>
+    <td>
+      <select onchange="updateOrderStatus('${o.id}', this.value)" style="background:var(--black);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:0.6rem;padding:0.3rem 0.5rem;cursor:pointer;">
+        ${['pending','confirmed','shipped','delivered','cancelled'].map(s =>
+          `<option value="${s}" ${(o.status||'pending')===s?'selected':''}>${s.toUpperCase()}</option>`
+        ).join('')}
+      </select>
+    </td>
+    <td><span class="badge green">${(o.payment||'').toUpperCase()}</span></td>
+    <td style="font-family:var(--font-mono);font-size:0.62rem;color:var(--muted)">${o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('en-IN') : '—'}</td>
+    <td><button class="admin-btn danger" style="padding:0.3rem 0.6rem;font-size:0.55rem;" onclick="deleteOrder('${o.id}')">Del</button></td>
+  </tr>`).join('')}
+  </tbody></table>`;
+}
+
+async function updateOrderStatus(id, status) {
+  try {
+    await fsSet('orders', id, { status });
+    const o = _orders.find(x => x.id === id);
+    if (o) o.status = status;
+    renderDashboard();
+    notify('Order status updated to ' + status + '!');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
+}
+
+async function deleteOrder(id) {
+  if (!confirm('Delete this order?')) return;
+  try {
+    await fsDel('orders', id);
+    _orders = _orders.filter(o => o.id !== id);
+    renderOrders(); renderDashboard();
+    notify('Order deleted.', 'error');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
 function exportOrders() {
-  const lastOrder = JSON.parse(localStorage.getItem('store89_last_order'));
-  if (!lastOrder) { notify('No orders to export.', 'error'); return; }
-  const csv = `Order ID,Customer,Email,Phone,Address,Items,Total,Payment,Date\n${lastOrder.id},${lastOrder.customer.name},${lastOrder.customer.email},${lastOrder.customer.phone},"${lastOrder.customer.address}","${lastOrder.items.map(i => i.name + ' x' + i.qty).join('; ')}",${lastOrder.total},${lastOrder.payment},${lastOrder.timestamp}`;
+  if (!_orders.length) { notify('No orders to export.', 'error'); return; }
+  const rows = _orders.map(o =>
+    `${o.id},${o.customer?.name||''},${o.customer?.email||''},${o.customer?.phone||''},"${o.customer?.address||''}","${(o.items||[]).map(i=>i.name+' x'+i.qty).join('; ')}",${o.total||0},${o.payment||''},${o.status||'pending'}`
+  );
+  const csv = 'Order ID,Customer,Email,Phone,Address,Items,Total,Payment,Status\n' + rows.join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'store89_orders.csv'; a.click();
   notify('Exported!');
@@ -877,60 +1152,79 @@ function exportOrders() {
 // ══════════════════════════════════════════════
 // IMAGES
 // ══════════════════════════════════════════════
-let uploadedImages = JSON.parse(localStorage.getItem('store89_admin_images')) || [];
-
 function renderImages() {
   const grid  = document.getElementById('imageGrid');
   const noImg = document.getElementById('noImages');
-  if (!uploadedImages.length) { grid.style.display = 'none'; noImg.style.display = 'block'; return; }
+  if (!_images.length) { grid.style.display = 'none'; noImg.style.display = 'block'; return; }
   noImg.style.display = 'none'; grid.style.display = 'grid';
-  grid.innerHTML = uploadedImages.map((img, i) => `
+  grid.innerHTML = _images.map(img => `
     <div style="position:relative;background:var(--off-black);aspect-ratio:1;border:1px solid var(--border);overflow:hidden;">
-      <img src="${img.data}" alt="${img.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+      <img src="${img.url}" alt="${img.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
       <div style="position:absolute;inset:0;background:rgba(0,0,0,0.7);opacity:0;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;"
         onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
         <span style="font-family:var(--font-mono);font-size:0.55rem;color:var(--white);letter-spacing:0.1em;text-align:center;padding:0 0.5rem;">${img.name}</span>
-        <button onclick="deleteImage(${i})" style="font-family:var(--font-mono);font-size:0.55rem;background:var(--accent2);color:#fff;border:none;padding:0.3rem 0.7rem;cursor:pointer;">Remove</button>
+        <button onclick="copyImageUrl('${img.url}')" style="font-family:var(--font-mono);font-size:0.55rem;background:var(--accent);color:var(--black);border:none;padding:0.3rem 0.7rem;cursor:pointer;font-weight:700;">Copy URL</button>
+        <button onclick="deleteImage('${img.id}','${img.storagePath||''}')" style="font-family:var(--font-mono);font-size:0.55rem;background:var(--accent2);color:#fff;border:none;padding:0.3rem 0.7rem;cursor:pointer;">Remove</button>
       </div>
     </div>
   `).join('');
 }
 
-function handleImgUpload(input) {
-  Array.from(input.files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      uploadedImages.push({ name: file.name, data: e.target.result, size: file.size });
-      localStorage.setItem('store89_admin_images', JSON.stringify(uploadedImages));
-      renderImages();
-    };
-    reader.readAsDataURL(file);
-  });
-  notify('Images uploaded!');
+async function handleImgUpload(input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+  const progressWrap = document.getElementById('uploadProgressWrap');
+  const bar = document.getElementById('uploadBar');
+  const txt = document.getElementById('uploadProgressTxt');
+  progressWrap.style.display = 'block';
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    txt.textContent = `Uploading ${i+1}/${files.length}: ${file.name}`;
+    try {
+      const path = `images/${Date.now()}_${file.name}`;
+      const url = await uploadFile(file, path, bar);
+      const newId = await fsAdd('images', { name: file.name, url, storagePath: path, size: file.size });
+      _images.unshift({ id: newId, name: file.name, url, storagePath: path });
+    } catch(e) {
+      notify('Upload failed: ' + e.message, 'error');
+    }
+  }
+
+  progressWrap.style.display = 'none';
+  renderImages();
+  notify(files.length + ' image(s) uploaded!');
 }
 
-function deleteImage(idx) {
-  uploadedImages.splice(idx, 1);
-  localStorage.setItem('store89_admin_images', JSON.stringify(uploadedImages));
-  renderImages();
+async function deleteImage(id, storagePath) {
+  if (!confirm('Remove this image?')) return;
+  try {
+    await fsDel('images', id);
+    if (storagePath) {
+      try {
+        const { storageRef, deleteObject } = fb();
+        await deleteObject(storageRef(storage(), storagePath));
+      } catch(e) { console.warn('Storage delete failed:', e); }
+    }
+    _images = _images.filter(img => img.id !== id);
+    renderImages();
+    notify('Image removed.', 'error');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
+}
+
+function copyImageUrl(url) {
+  navigator.clipboard.writeText(url).then(() => notify('URL copied!')).catch(() => {
+    prompt('Copy this URL:', url);
+  });
 }
 
 // ══════════════════════════════════════════════
 // CUSTOM STUDIO
 // ══════════════════════════════════════════════
-function loadStudioSettings() {
-  const s = JSON.parse(localStorage.getItem(STUDIO_SETTINGS_KEY)) || {};
-  if (s.teePrice)    document.getElementById('studioTeePriceDefault').value = s.teePrice;
-  if (s.teeColors)   document.getElementById('studioTeeColors').value = s.teeColors;
-  if (s.teeSizes)    document.getElementById('studioTeeSizes').value = s.teeSizes;
-  if (s.posterPrice) document.getElementById('studioPosterPriceDefault').value = s.posterPrice;
-  if (s.posterColors)document.getElementById('studioPosterColors').value = s.posterColors;
-  if (s.posterSizes) document.getElementById('studioPosterSizes').value = s.posterSizes;
-  if (s.note)        document.getElementById('studioNote').value = s.note;
-}
-
-function saveStudioSettings() {
-  const s = {
+async function saveStudioSettings() {
+  const data = {
     teePrice:    document.getElementById('studioTeePriceDefault').value,
     teeColors:   document.getElementById('studioTeeColors').value,
     teeSizes:    document.getElementById('studioTeeSizes').value,
@@ -939,17 +1233,21 @@ function saveStudioSettings() {
     posterSizes: document.getElementById('studioPosterSizes').value,
     note:        document.getElementById('studioNote').value,
   };
-  localStorage.setItem(STUDIO_SETTINGS_KEY, JSON.stringify(s));
-  notify('Studio settings saved! Changes will reflect in Custom Studio.');
+  try {
+    await fsSet('settings', 'studio', data);
+    notify('Studio settings saved! Your website will reflect these changes.');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
 // ── TEMPLATES ──
-let currentTmplImgData = '';
+let pendingTmplFile = null;
 let editingTmplId = null;
 
 function renderTemplates() {
   const filter    = document.getElementById('templateTypeFilter')?.value || 'all';
-  const templates = getTemplates().filter(t => filter === 'all' || t.type === filter);
+  const templates = _templates.filter(t => filter === 'all' || t.type === filter);
   const grid      = document.getElementById('templateGrid');
   const noTmpl    = document.getElementById('noTemplates');
 
@@ -957,8 +1255,8 @@ function renderTemplates() {
   noTmpl.style.display = 'none';
   grid.innerHTML = templates.map(t => `
     <div class="template-card">
-      ${t.imageData
-        ? `<img src="${t.imageData}" alt="${t.name}" loading="lazy">`
+      ${t.imageUrl
+        ? `<img src="${t.imageUrl}" alt="${t.name}" loading="lazy">`
         : `<div style="aspect-ratio:3/4;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);">NO IMAGE</div>`}
       <div class="tc-info">
         <div class="tc-name">${t.name}</div>
@@ -967,14 +1265,14 @@ function renderTemplates() {
           ${t.tags ? `<span style="font-family:var(--font-mono);font-size:0.52rem;color:var(--muted);">${t.tags}</span>` : ''}
         </div>
       </div>
-      <button class="tc-del" onclick="deleteTemplate('${t.id}')">✕ Remove</button>
+      <button class="tc-del" onclick="deleteTemplate('${t.id}','${t.storagePath||''}')">✕ Remove</button>
     </div>
   `).join('');
 }
 
 function openAddTemplate() {
   editingTmplId = null;
-  currentTmplImgData = '';
+  pendingTmplFile = null;
   document.getElementById('templateSheetTitle').textContent = 'ADD TEMPLATE';
   document.getElementById('tmplId').value = '';
   document.getElementById('tmplName').value = '';
@@ -986,32 +1284,31 @@ function openAddTemplate() {
   document.getElementById('templateSheet').classList.add('open');
 }
 
-function handleTemplateUpload(input) {
-  Array.from(input.files).forEach((file, idx) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const templates = getTemplates();
-      templates.unshift({
-        id: 't' + Date.now() + idx,
-        name: file.name.replace(/\.[^.]+$/, ''),
-        type: 'tee',
-        tags: '',
-        imageData: e.target.result,
-        createdAt: new Date().toISOString()
-      });
-      saveTemplates(templates);
-      renderTemplates();
-    };
-    reader.readAsDataURL(file);
-  });
-  notify(input.files.length + ' template(s) uploaded!');
+async function handleTemplateUpload(input) {
+  const files = Array.from(input.files);
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    try {
+      const path = `templates/${Date.now()}_${i}_${file.name}`;
+      showLoading(`Uploading ${i+1}/${files.length}...`);
+      const url = await uploadFile(file, path, null);
+      const data = { name: file.name.replace(/\.[^.]+$/, ''), type: 'tee', tags: '', imageUrl: url, storagePath: path };
+      const newId = await fsAdd('templates', data);
+      _templates.unshift({ id: newId, ...data });
+    } catch(e) {
+      notify('Upload failed: ' + e.message, 'error');
+    }
+  }
+  hideLoading();
+  renderTemplates();
+  notify(files.length + ' template(s) uploaded!');
 }
 
 function previewTmplImg(input) {
   if (input.files && input.files[0]) {
+    pendingTmplFile = input.files[0];
     const r = new FileReader();
     r.onload = e => {
-      currentTmplImgData = e.target.result;
       const img = document.getElementById('tmplImgPreview');
       img.src = e.target.result; img.style.display = 'block';
       document.getElementById('tmplImgLabel').textContent = input.files[0].name;
@@ -1020,42 +1317,73 @@ function previewTmplImg(input) {
   }
 }
 
-function saveTemplate() {
+async function saveTemplate() {
   const name = document.getElementById('tmplName').value.trim();
   if (!name) { notify('Template name is required.', 'error'); return; }
-  if (!currentTmplImgData) { notify('Please upload a template image.', 'error'); return; }
-  const templates = getTemplates();
-  const data = {
-    id: editingTmplId || ('t' + Date.now()),
-    name,
-    type: document.getElementById('tmplType').value,
-    tags: document.getElementById('tmplTags').value,
-    imageData: currentTmplImgData,
-    createdAt: new Date().toISOString()
-  };
-  if (editingTmplId) {
-    const idx = templates.findIndex(x => x.id === editingTmplId);
-    if (idx > -1) templates[idx] = data;
-  } else {
-    templates.unshift(data);
+  if (!pendingTmplFile && !editingTmplId) { notify('Please upload a template image.', 'error'); return; }
+
+  const btn = document.getElementById('saveTmplBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  try {
+    let imageUrl = editingTmplId ? (_templates.find(t => t.id === editingTmplId)?.imageUrl || '') : '';
+    let storagePath = editingTmplId ? (_templates.find(t => t.id === editingTmplId)?.storagePath || '') : '';
+
+    if (pendingTmplFile) {
+      const bar = document.getElementById('tmplImgBar');
+      storagePath = `templates/${Date.now()}_${pendingTmplFile.name}`;
+      imageUrl = await uploadFile(pendingTmplFile, storagePath, bar);
+    }
+
+    const data = {
+      name,
+      type: document.getElementById('tmplType').value,
+      tags: document.getElementById('tmplTags').value,
+      imageUrl,
+      storagePath,
+    };
+
+    if (editingTmplId) {
+      await fsSet('templates', editingTmplId, data);
+      const idx = _templates.findIndex(t => t.id === editingTmplId);
+      if (idx > -1) _templates[idx] = { ..._templates[idx], ...data };
+    } else {
+      const newId = await fsAdd('templates', data);
+      _templates.unshift({ id: newId, ...data });
+    }
+
+    renderTemplates();
+    closeSheet('templateSheet');
+    notify('Template saved!');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
   }
-  saveTemplates(templates);
-  renderTemplates();
-  closeSheet('templateSheet');
-  notify('Template saved!');
+
+  btn.disabled = false; btn.textContent = 'Save Template';
 }
 
-function deleteTemplate(id) {
+async function deleteTemplate(id, storagePath) {
   if (!confirm('Remove this template?')) return;
-  saveTemplates(getTemplates().filter(t => t.id !== id));
-  renderTemplates();
-  notify('Template removed.', 'error');
+  try {
+    await fsDel('templates', id);
+    if (storagePath) {
+      try {
+        const { storageRef, deleteObject } = fb();
+        await deleteObject(storageRef(storage(), storagePath));
+      } catch(e) { console.warn('Storage delete failed:', e); }
+    }
+    _templates = _templates.filter(t => t.id !== id);
+    renderTemplates();
+    notify('Template removed.', 'error');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
 // ══════════════════════════════════════════════
 // HOMEPAGE
 // ══════════════════════════════════════════════
-function saveHomepage() {
+async function saveHomepage() {
   const data = {
     headline1: document.getElementById('hpHeadline1').value,
     headline2: document.getElementById('hpHeadline2').value,
@@ -1064,14 +1392,18 @@ function saveHomepage() {
     cta2:      document.getElementById('hpCta2').value,
     announce:  document.getElementById('hpAnnounce').value,
   };
-  localStorage.setItem('store89_homepage', JSON.stringify(data));
-  notify('Homepage content saved!');
+  try {
+    await fsSet('settings', 'homepage', data);
+    notify('Homepage content saved! Your website will reflect these changes.');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
 // ══════════════════════════════════════════════
 // SETTINGS
 // ══════════════════════════════════════════════
-function saveSettings() {
+async function saveSettings() {
   const newUser = document.getElementById('setUser').value.trim();
   const newPass = document.getElementById('setPass').value;
   const creds   = getStoredCreds();
@@ -1081,19 +1413,23 @@ function saveSettings() {
       user: newUser || creds.user,
       pass: newPass || creds.pass
     }));
-    notify('Credentials updated! You may need to re-login.');
   }
 
-  const settings = {
-    storeName:        document.getElementById('setStoreName').value,
-    email:            document.getElementById('setEmail').value,
-    whatsApp:         document.getElementById('setWhatsApp').value,
-    location:         document.getElementById('setLocation').value,
-    shippingThreshold:document.getElementById('setShipThresh').value,
-    shippingCost:     document.getElementById('setShipCost').value,
+  const data = {
+    storeName:         document.getElementById('setStoreName').value,
+    email:             document.getElementById('setEmail').value,
+    whatsApp:          document.getElementById('setWhatsApp').value,
+    location:          document.getElementById('setLocation').value,
+    shippingThreshold: document.getElementById('setShipThresh').value,
+    shippingCost:      document.getElementById('setShipCost').value,
   };
-  localStorage.setItem('store89_settings', JSON.stringify(settings));
-  if (!newUser && !newPass) notify('Settings saved!');
+
+  try {
+    await fsSet('settings', 'store', data);
+    notify('Settings saved! Your website will use these values.');
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1110,15 +1446,8 @@ function notify(msg, type = '') {
   n.textContent = msg;
   n.className = 'notif show' + (type ? ' ' + type : '');
   clearTimeout(n._t);
-  n._t = setTimeout(() => n.classList.remove('show'), 3000);
-}
-
-// Run initAdmin on first load if already authenticated
-if (document.getElementById('adminApp').style.display === 'block') {
-  initAdmin();
+  n._t = setTimeout(() => n.classList.remove('show'), 3500);
 }
 </script>
-<script src="js/products.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>
