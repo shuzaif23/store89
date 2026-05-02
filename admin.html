@@ -969,6 +969,26 @@ async function deleteCat(i) {
       document.getElementById('catSlug').value = slugify(this.value);
     }
   });
+ // ---- EXPOSE FUNCTIONS GLOBALLY ----
+  window.doLogin        = doLogin;
+  window.doLogout       = doLogout;
+  window.showPage       = showPage;
+  window.openModal      = openModal;
+  window.closeModal     = closeModal;
+  window.openAddProduct = openAddProduct;
+  window.editProduct    = editProduct;
+  window.saveProduct    = saveProduct;
+  window.deleteProduct  = deleteProduct;
+  window.openAddCat     = openAddCat;
+  window.editCat        = editCat;
+  window.saveCategory   = saveCategory;
+  window.deleteCat      = deleteCat;
+  window.savePrices     = savePrices;
+  window.updateOrderStatus = updateOrderStatus;
+  window.openAddCoupon  = openAddCoupon;
+  window.saveCoupon     = saveCoupon;
+  window.deleteCoupon   = deleteCoupon;
+  window.changePassword = changePassword;
 </script>
 
 </body>
