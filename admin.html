@@ -755,7 +755,6 @@ window.openAddProduct = openAddProduct;
   document.getElementById('pStatus').value = 'Active';
   openModal('productModal');
 }
-  }
 
   function editProduct(id) {
   const p = products.find(x => x.id === id);
@@ -786,7 +785,7 @@ window.openAddProduct = openAddProduct;
   }
   openModal('productModal');
 }
-  }
+ 
 window.previewImage = function(e) {
   const file = e.target.files[0];
   if (!file) return;
