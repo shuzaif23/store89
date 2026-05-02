@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="css/styles.css">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Store 89</title>
-<!-- No index, no follow for admin pages -->
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -23,16 +20,8 @@
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:var(--font-body);overflow-x:hidden;min-height:100vh;}
 
-/* LOGIN SCREEN */
-#loginScreen{
-  position:fixed;inset:0;background:var(--black);z-index:9999;
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;
-}
-.login-box{
-  background:var(--card-bg);border:1px solid var(--border);
-  padding:3.5rem;max-width:420px;width:100%;margin:1rem;
-}
+#loginScreen{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.login-box{background:var(--card-bg);border:1px solid var(--border);padding:3.5rem;max-width:420px;width:100%;margin:1rem;}
 .login-brand{font-family:var(--font-display);font-size:3.5rem;letter-spacing:0.05em;margin-bottom:0.5rem;}
 .login-brand span{color:var(--accent);}
 .login-sub{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2.5rem;}
@@ -45,11 +34,9 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .login-err{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-top:0.8rem;display:none;}
 .login-hint{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--muted);margin-top:1.5rem;line-height:1.8;border-top:1px solid var(--border);padding-top:1.2rem;}
 
-/* ADMIN LAYOUT */
 #adminApp{display:none;}
 .admin-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
 
-/* SIDEBAR */
 .sidebar{background:var(--off-black);border-right:1px solid var(--border);padding:2rem 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
 .sidebar-brand{padding:0 2rem 2rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;}
 .sidebar-brand-logo{font-family:var(--font-display);font-size:2rem;letter-spacing:0.05em;}
@@ -65,18 +52,15 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .logout-btn{width:100%;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.7rem;cursor:pointer;transition:all 0.2s;}
 .logout-btn:hover{border-color:var(--accent2);color:var(--accent2);}
 
-/* MAIN CONTENT */
 .admin-main{padding:2.5rem 3rem;overflow-y:auto;}
 .admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
 .admin-page-title{font-family:var(--font-display);font-size:3rem;letter-spacing:0.03em;line-height:1;}
 .admin-breadcrumb{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem;}
 .admin-date{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
 
-/* PANEL SECTIONS */
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
 
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:3rem;}
 .stat-card{background:var(--card-bg);border:1px solid var(--border);padding:1.8rem;position:relative;overflow:hidden;}
 .stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border);}
@@ -88,11 +72,10 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .stat-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);}
 .stat-change{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;margin-top:0.5rem;}
 
-/* TABLES */
 .table-wrap{background:var(--card-bg);border:1px solid var(--border);margin-bottom:2rem;}
-.table-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;border-bottom:1px solid var(--border);}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:0.8rem;}
 .table-title{font-family:var(--font-display);font-size:1.5rem;letter-spacing:0.03em;}
-.table-actions{display:flex;gap:0.8rem;}
+.table-actions{display:flex;gap:0.8rem;flex-wrap:wrap;}
 .admin-btn{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.6rem 1.2rem;cursor:pointer;transition:all 0.2s;border:none;}
 .admin-btn.primary{background:var(--accent);color:var(--black);font-weight:700;}
 .admin-btn.primary:hover{background:#d4eb00;}
@@ -110,8 +93,8 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .badge.yellow{background:rgba(232,255,0,0.1);color:var(--accent);border:1px solid rgba(232,255,0,0.3);}
 .badge.red{background:rgba(255,60,60,0.1);color:var(--accent2);border:1px solid rgba(255,60,60,0.3);}
 .badge.grey{background:rgba(136,136,136,0.1);color:var(--muted);border:1px solid var(--border);}
+.badge.blue{background:rgba(56,142,255,0.1);color:#389fff;border:1px solid rgba(56,142,255,0.3);}
 
-/* MODAL / FORM SHEET */
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:5000;display:none;align-items:flex-end;justify-content:flex-end;}
 .sheet-overlay.open{display:flex;}
 .sheet{background:var(--off-black);border-left:1px solid var(--border);width:520px;max-width:100%;height:100vh;overflow-y:auto;padding:2.5rem;display:flex;flex-direction:column;gap:1.5rem;}
@@ -126,17 +109,28 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 select.sf-input option{background:var(--off-black);}
 .sf-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 
-/* NOTIFICATION */
 .notif{position:fixed;top:2rem;right:2rem;z-index:9999;background:var(--accent);color:var(--black);font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.9rem 1.5rem;font-weight:700;transform:translateY(-80px);opacity:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);}
 .notif.show{transform:translateY(0);opacity:1;}
 .notif.error{background:var(--accent2);color:#fff;}
 
-/* SEARCH BAR */
 .admin-search{background:var(--card-bg);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.1em;padding:0.65rem 1.1rem;outline:none;width:240px;transition:border-color 0.2s;}
 .admin-search:focus{border-color:var(--accent);}
 .admin-search::placeholder{color:var(--muted);}
 
-/* RESPONSIVE */
+/* Studio admin styles */
+.template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;padding:1.5rem;}
+.template-card{background:var(--black);border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
+.template-card:hover{border-color:var(--accent);}
+.template-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;}
+.template-card .tc-info{padding:0.8rem;}
+.template-card .tc-name{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--white);margin-bottom:0.3rem;}
+.template-card .tc-type{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.12em;color:var(--muted);}
+.template-card .tc-del{position:absolute;top:0.5rem;right:0.5rem;background:var(--accent2);color:#fff;border:none;font-family:var(--font-mono);font-size:0.55rem;padding:0.25rem 0.5rem;cursor:pointer;opacity:0;transition:opacity 0.2s;}
+.template-card:hover .tc-del{opacity:1;}
+.color-swatch-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.color-swatch:hover,.color-swatch.active{border-color:var(--white);transform:scale(1.15);}
+
 @media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:900px){.admin-layout{grid-template-columns:1fr;}.sidebar{display:none;}.admin-main{padding:1.5rem;}}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.admin-main{padding:1rem;}.sheet{width:100%;}}
@@ -144,7 +138,6 @@ select.sf-input option{background:var(--off-black);}
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-brand">STORE<span>89</span></div>
@@ -152,7 +145,7 @@ select.sf-input option{background:var(--off-black);}
     <label class="login-label" for="loginUser">Username</label>
     <input class="login-input" id="loginUser" type="text" placeholder="admin" autocomplete="username">
     <label class="login-label" for="loginPass">Password</label>
-    <input class="login-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <input class="login-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
     <button class="login-btn" onclick="doLogin()">Access Admin Panel →</button>
     <div class="login-err" id="loginErr">✕ Invalid credentials. Try again.</div>
     <div class="login-hint">
@@ -163,17 +156,14 @@ select.sf-input option{background:var(--off-black);}
   </div>
 </div>
 
-<!-- ADMIN APP -->
 <div id="adminApp">
   <div class="admin-layout">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-brand">
         <div class="sidebar-brand-logo">STORE<span>89</span></div>
-        <div class="sidebar-tag">Admin Panel v1.0</div>
+        <div class="sidebar-tag">Admin Panel v1.1</div>
       </div>
-
       <div class="nav-section-title">Main</div>
       <ul class="sidebar-nav">
         <li><a href="#" class="active" onclick="showTab('dashboard',this)"><span class="nav-icon">◈</span> Dashboard</a></li>
@@ -183,17 +173,16 @@ select.sf-input option{background:var(--off-black);}
       </ul>
       <div class="nav-section-title">Content</div>
       <ul class="sidebar-nav">
+        <li><a href="#" onclick="showTab('studio',this)"><span class="nav-icon">⊞</span> Custom Studio</a></li>
         <li><a href="#" onclick="showTab('homepage',this)"><span class="nav-icon">⊞</span> Homepage</a></li>
         <li><a href="#" onclick="showTab('images',this)"><span class="nav-icon">◻</span> Images</a></li>
         <li><a href="#" onclick="showTab('settings',this)"><span class="nav-icon">◻</span> Settings</a></li>
       </ul>
-
       <div class="sidebar-bottom">
         <button class="logout-btn" onclick="doLogout()">↩ Logout</button>
       </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="admin-main">
       <div class="admin-topbar">
         <div>
@@ -203,7 +192,7 @@ select.sf-input option{background:var(--off-black);}
         <div class="admin-date" id="adminDate"></div>
       </div>
 
-      <!-- ── DASHBOARD ── -->
+      <!-- DASHBOARD -->
       <div class="tab-panel active" id="tab-dashboard">
         <div class="stats-grid">
           <div class="stat-card accent-stat">
@@ -227,18 +216,13 @@ select.sf-input option{background:var(--off-black);}
             <div class="stat-change" style="color:var(--warning)">Active session</div>
           </div>
         </div>
-
         <div class="table-wrap">
-          <div class="table-header">
-            <div class="table-title">RECENT ORDERS</div>
-          </div>
-          <div id="recentOrders" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">
-            No orders yet. Orders placed via checkout will appear here.
-          </div>
+          <div class="table-header"><div class="table-title">RECENT ORDERS</div></div>
+          <div id="recentOrders" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">No orders yet.</div>
         </div>
       </div>
 
-      <!-- ── PRODUCTS ── -->
+      <!-- PRODUCTS -->
       <div class="tab-panel" id="tab-products">
         <div class="table-wrap">
           <div class="table-header">
@@ -251,12 +235,7 @@ select.sf-input option{background:var(--off-black);}
           <table>
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
               </tr>
             </thead>
             <tbody id="productsTable"></tbody>
@@ -264,7 +243,7 @@ select.sf-input option{background:var(--off-black);}
         </div>
       </div>
 
-      <!-- ── ORDERS ── -->
+      <!-- ORDERS -->
       <div class="tab-panel" id="tab-orders">
         <div class="table-wrap">
           <div class="table-header">
@@ -273,13 +252,11 @@ select.sf-input option{background:var(--off-black);}
               <button class="admin-btn ghost" onclick="exportOrders()">Export CSV</button>
             </div>
           </div>
-          <div id="ordersTable" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">
-            No orders found.
-          </div>
+          <div id="ordersTable" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">No orders found.</div>
         </div>
       </div>
 
-      <!-- ── CATEGORIES ── -->
+      <!-- CATEGORIES -->
       <div class="tab-panel" id="tab-categories">
         <div class="table-wrap">
           <div class="table-header">
@@ -293,45 +270,98 @@ select.sf-input option{background:var(--off-black);}
         </div>
       </div>
 
-      <!-- ── HOMEPAGE ── -->
+      <!-- CUSTOM STUDIO ADMIN -->
+      <div class="tab-panel" id="tab-studio">
+
+        <!-- Studio Settings -->
+        <div class="table-wrap" style="margin-bottom:2rem;">
+          <div class="table-header">
+            <div class="table-title">STUDIO DEFAULTS</div>
+            <button class="admin-btn primary" onclick="saveStudioSettings()">Save Defaults</button>
+          </div>
+          <div style="padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+            <div>
+              <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;">T-Shirt Defaults</div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Base Price (₹)</label>
+                <input class="sf-input" id="studioTeePriceDefault" type="number" value="899">
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Default Colors (hex, comma-separated)</label>
+                <input class="sf-input" id="studioTeeColors" type="text" value="#111,#f5f5f0,#1a3a2a,#3a1a1a,#1a1a3a,#e8ff00,#ff3c3c,#6effc0">
+              </div>
+              <div>
+                <label class="sf-label">Available Sizes (comma-separated)</label>
+                <input class="sf-input" id="studioTeeSizes" type="text" value="XS,S,M,L,XL,XXL">
+              </div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;">Poster Defaults</div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Base Price (₹)</label>
+                <input class="sf-input" id="studioPosterPriceDefault" type="number" value="649">
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Background Colors (hex, comma-separated)</label>
+                <input class="sf-input" id="studioPosterColors" type="text" value="#fff,#111,#1a1a2a,#2a1a1a,#e8ff00">
+              </div>
+              <div>
+                <label class="sf-label">Available Sizes (comma-separated)</label>
+                <input class="sf-input" id="studioPosterSizes" type="text" value="A4,A3,A2">
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 2rem 2rem;">
+            <label class="sf-label">Studio Processing Time Note</label>
+            <input class="sf-input" id="studioNote" type="text" value="Custom prints are processed within 3–5 working days.">
+          </div>
+        </div>
+
+        <!-- Templates Manager -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">DESIGN TEMPLATES</div>
+            <div class="table-actions">
+              <select class="admin-search" id="templateTypeFilter" onchange="renderTemplates()" style="width:140px;">
+                <option value="all">All Types</option>
+                <option value="tee">T-Shirt</option>
+                <option value="poster">Poster</option>
+              </select>
+              <label class="admin-btn ghost" style="cursor:pointer;display:flex;align-items:center;">
+                ↑ Upload Template
+                <input type="file" multiple accept="image/*" style="display:none" onchange="handleTemplateUpload(this)">
+              </label>
+              <button class="admin-btn primary" onclick="openAddTemplate()">+ Add Template</button>
+            </div>
+          </div>
+          <div id="templateGrid" class="template-grid"></div>
+          <div id="noTemplates" style="padding:2.5rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;display:none;">No templates yet. Add templates for customers to use in the studio.</div>
+        </div>
+      </div>
+
+      <!-- HOMEPAGE -->
       <div class="tab-panel" id="tab-homepage">
         <div class="table-wrap">
-          <div class="table-header"><div class="table-title">HOMEPAGE CONTENT</div>
+          <div class="table-header">
+            <div class="table-title">HOMEPAGE CONTENT</div>
             <button class="admin-btn primary" onclick="saveHomepage()">Save Changes</button>
           </div>
           <div style="padding:2rem;display:flex;flex-direction:column;gap:1.5rem;">
-            <div>
-              <label class="sf-label">Hero Headline (Line 1)</label>
-              <input class="sf-input" id="hpHeadline1" type="text" value="WEAR">
-            </div>
-            <div>
-              <label class="sf-label">Hero Headline (Line 2)</label>
-              <input class="sf-input" id="hpHeadline2" type="text" value="LOUD">
-            </div>
-            <div>
-              <label class="sf-label">Hero Subtitle</label>
-              <input class="sf-input" id="hpSubtitle" type="text" value="Premium custom tees & posters. Your design, our craft.">
-            </div>
-            <div>
-              <label class="sf-label">CTA Button 1 Text</label>
-              <input class="sf-input" id="hpCta1" type="text" value="Browse Collection">
-            </div>
-            <div>
-              <label class="sf-label">CTA Button 2 Text</label>
-              <input class="sf-input" id="hpCta2" type="text" value="Customize Yours">
-            </div>
-            <div>
-              <label class="sf-label">Announcement Bar Text</label>
-              <input class="sf-input" id="hpAnnounce" type="text" placeholder="Free shipping on orders above ₹999...">
-            </div>
+            <div><label class="sf-label">Hero Headline (Line 1)</label><input class="sf-input" id="hpHeadline1" type="text" value="WEAR"></div>
+            <div><label class="sf-label">Hero Headline (Line 2)</label><input class="sf-input" id="hpHeadline2" type="text" value="LOUD"></div>
+            <div><label class="sf-label">Hero Subtitle</label><input class="sf-input" id="hpSubtitle" type="text" value="Premium custom tees & posters. Your design, our craft."></div>
+            <div><label class="sf-label">CTA Button 1 Text</label><input class="sf-input" id="hpCta1" type="text" value="Browse Collection"></div>
+            <div><label class="sf-label">CTA Button 2 Text</label><input class="sf-input" id="hpCta2" type="text" value="Customize Yours"></div>
+            <div><label class="sf-label">Announcement Bar Text</label><input class="sf-input" id="hpAnnounce" type="text" placeholder="Free shipping on orders above ₹999..."></div>
           </div>
         </div>
       </div>
 
-      <!-- ── IMAGES ── -->
+      <!-- IMAGES -->
       <div class="tab-panel" id="tab-images">
         <div class="table-wrap">
-          <div class="table-header"><div class="table-title">IMAGE LIBRARY</div>
+          <div class="table-header">
+            <div class="table-title">IMAGE LIBRARY</div>
             <label class="admin-btn primary" style="cursor:pointer;">
               + Upload Image <input type="file" id="imgUpload" multiple accept="image/*" style="display:none" onchange="handleImgUpload(this)">
             </label>
@@ -341,10 +371,11 @@ select.sf-input option{background:var(--off-black);}
         </div>
       </div>
 
-      <!-- ── SETTINGS ── -->
+      <!-- SETTINGS -->
       <div class="tab-panel" id="tab-settings">
         <div class="table-wrap">
-          <div class="table-header"><div class="table-title">STORE SETTINGS</div>
+          <div class="table-header">
+            <div class="table-title">STORE SETTINGS</div>
             <button class="admin-btn primary" onclick="saveSettings()">Save Settings</button>
           </div>
           <div style="padding:2rem;display:flex;flex-direction:column;gap:2rem;">
@@ -393,10 +424,7 @@ select.sf-input option{background:var(--off-black);}
         <div><label class="sf-label">Price (₹) *</label><input class="sf-input" id="prodPrice" type="number" placeholder="699"></div>
       </div>
       <div class="sf-row">
-        <div>
-          <label class="sf-label">Stock *</label>
-          <input class="sf-input" id="prodStock" type="number" placeholder="50">
-        </div>
+        <div><label class="sf-label">Stock *</label><input class="sf-input" id="prodStock" type="number" placeholder="50"></div>
         <div>
           <label class="sf-label">Status</label>
           <select class="sf-input" id="prodStatus">
@@ -448,11 +476,44 @@ select.sf-input option{background:var(--off-black);}
   </div>
 </div>
 
-<!-- NOTIFICATION -->
+<!-- TEMPLATE SHEET -->
+<div class="sheet-overlay" id="templateSheet">
+  <div class="sheet" style="position:relative;">
+    <button class="sheet-close" onclick="closeSheet('templateSheet')">✕ Close</button>
+    <div class="sheet-title" id="templateSheetTitle">ADD TEMPLATE</div>
+    <div class="sheet-form">
+      <input type="hidden" id="tmplId">
+      <div><label class="sf-label">Template Name *</label><input class="sf-input" id="tmplName" type="text" placeholder="Minimal Black Tee"></div>
+      <div>
+        <label class="sf-label">Type *</label>
+        <select class="sf-input" id="tmplType">
+          <option value="tee">T-Shirt</option>
+          <option value="poster">Poster</option>
+        </select>
+      </div>
+      <div>
+        <label class="sf-label">Tags (comma-separated)</label>
+        <input class="sf-input" id="tmplTags" type="text" placeholder="minimal, dark, streetwear">
+      </div>
+      <div>
+        <label class="sf-label">Template Image *</label>
+        <label style="display:flex;align-items:center;gap:1rem;padding:1rem;border:1px dashed var(--border);cursor:pointer;font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);">
+          <input type="file" id="tmplImg" accept="image/*" style="display:none" onchange="previewTmplImg(this)">
+          <span id="tmplImgLabel">Click to upload template image</span>
+        </label>
+        <img id="tmplImgPreview" src="" alt="" style="display:none;width:100%;max-height:200px;object-fit:contain;margin-top:0.8rem;border:1px solid var(--border);background:var(--black);">
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+        <button class="admin-btn primary" style="flex:1;" onclick="saveTemplate()">Save Template</button>
+        <button class="admin-btn ghost" onclick="closeSheet('templateSheet')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="notif" id="notif"></div>
 
 <script>
-// ── AUTH ──────────────────────────────────────
 const ADMIN_KEY='store89_admin_auth';
 const DEFAULT_CREDS={user:'admin',pass:'store89admin'};
 
@@ -468,7 +529,6 @@ function doLogin(){
   const err=document.getElementById('loginErr');
   const ui=document.getElementById('loginUser');
   const pi=document.getElementById('loginPass');
-
   if(u===creds.user&&p===creds.pass){
     localStorage.setItem(ADMIN_KEY,'1');
     err.style.display='none';
@@ -491,17 +551,18 @@ function doLogout(){
   document.getElementById('loginPass').value='';
 }
 
-// Check if already logged in
 if(localStorage.getItem(ADMIN_KEY)==='1'){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminApp').style.display='block';
   initAdmin();
 }
 
-// ── DATA LAYER ─────────────────────────────────
+// DATA LAYER
 const PRODS_KEY='store89_admin_products';
 const CATS_KEY='store89_admin_cats';
 const CART_KEY='store89_cart';
+const TEMPLATES_KEY='store89_studio_templates';
+const STUDIO_SETTINGS_KEY='store89_studio_settings';
 
 function getProducts(){try{return JSON.parse(localStorage.getItem(PRODS_KEY))||[];}catch{return[];}}
 function saveProducts(p){localStorage.setItem(PRODS_KEY,JSON.stringify(p));}
@@ -512,25 +573,26 @@ function getCats(){try{return JSON.parse(localStorage.getItem(CATS_KEY))||[
   {id:'c4',name:'B&W Posters',slug:'bw-posters',status:'active'},
 ];}catch{return[];}}
 function saveCats(c){localStorage.setItem(CATS_KEY,JSON.stringify(c));}
+function getTemplates(){try{return JSON.parse(localStorage.getItem(TEMPLATES_KEY))||[];}catch{return[];}}
+function saveTemplates(t){localStorage.setItem(TEMPLATES_KEY,JSON.stringify(t));}
 
-// ── INIT ──────────────────────────────────────
 function initAdmin(){
   document.getElementById('adminDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  renderDashboard();renderProducts();renderCategories();renderOrders();renderImages();
+  loadStudioSettings();
+  renderDashboard();renderProducts();renderCategories();renderOrders();renderImages();renderTemplates();
 }
 
-// ── TABS ──────────────────────────────────────
 function showTab(id,link){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelector('#tab-'+id).classList.add('active');
   document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
   if(link)link.classList.add('active');
-  const titles={dashboard:'DASHBOARD',products:'PRODUCTS',orders:'ORDERS',categories:'CATEGORIES',homepage:'HOMEPAGE',images:'IMAGES',settings:'SETTINGS'};
+  const titles={dashboard:'DASHBOARD',products:'PRODUCTS',orders:'ORDERS',categories:'CATEGORIES',studio:'CUSTOM STUDIO',homepage:'HOMEPAGE',images:'IMAGES',settings:'SETTINGS'};
   document.getElementById('pageTitle').textContent=titles[id]||id.toUpperCase();
   document.getElementById('pageBreadcrumb').textContent='Store 89 / Admin / '+(titles[id]||id);
 }
 
-// ── DASHBOARD ────────────────────────────────
+// DASHBOARD
 function renderDashboard(){
   const prods=getProducts();
   const cart=JSON.parse(localStorage.getItem(CART_KEY))||[];
@@ -539,10 +601,9 @@ function renderDashboard(){
   document.getElementById('statCart').textContent=cart.reduce((s,i)=>s+i.qty,0);
   document.getElementById('statOrders').textContent=lastOrder?1:0;
   document.getElementById('statRevenue').textContent=lastOrder?'₹'+lastOrder.total.toLocaleString('en-IN'):'₹0';
-
   const ro=document.getElementById('recentOrders');
   if(lastOrder){
-    ro.innerHTML=`<table style="width:100%;"><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
+    ro.innerHTML=`<table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
     <tr>
       <td style="font-family:var(--font-mono);font-size:0.72rem;">${lastOrder.id}</td>
       <td>${lastOrder.customer.name}</td>
@@ -554,8 +615,10 @@ function renderDashboard(){
   }
 }
 
-// ── PRODUCTS ─────────────────────────────────
+// PRODUCTS — FIX: image data is now stored alongside product data
 let editingProdId=null;
+let currentProdImgData=''; // holds base64 of uploaded image
+
 function renderProducts(){
   const q=(document.getElementById('prodSearch')?.value||'').toLowerCase();
   const prods=getProducts().filter(p=>!q||p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
@@ -566,7 +629,15 @@ function renderProducts(){
   }
   tbody.innerHTML=prods.map(p=>`
     <tr>
-      <td><strong style="font-family:var(--font-display);font-size:1.1rem;letter-spacing:0.03em;">${p.name}</strong><br><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);">${p.id}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          ${p.imageData ? `<img src="${p.imageData}" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border);" alt="">` : `<div style="width:40px;height:40px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:var(--muted);font-family:var(--font-mono);">NO IMG</div>`}
+          <div>
+            <strong style="font-family:var(--font-display);font-size:1.1rem;letter-spacing:0.03em;">${p.name}</strong><br>
+            <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);">${p.id}</span>
+          </div>
+        </div>
+      </td>
       <td><span class="badge grey">${p.cat}</span></td>
       <td style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;">₹${parseInt(p.price).toLocaleString('en-IN')}</td>
       <td style="font-family:var(--font-mono);font-size:0.8rem;">${p.stock||'N/A'}</td>
@@ -583,13 +654,15 @@ function renderProducts(){
 
 function openAddProduct(){
   editingProdId=null;
+  currentProdImgData='';
   document.getElementById('sheetTitle').textContent='ADD PRODUCT';
   document.getElementById('prodId').value='';
   ['prodName','prodPrice','prodStock','prodSizes','prodBadge','prodDesc'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('prodCat').value='';
   document.getElementById('prodStatus').value='active';
   document.getElementById('imgPreview').style.display='none';
-  document.getElementById('imgLabel').textContent='Click to upload image';
+  document.getElementById('imgPreview').src='';
+  document.getElementById('imgLabel').textContent='Click to upload image (JPG, PNG, SVG)';
   document.getElementById('productSheet').classList.add('open');
 }
 
@@ -597,6 +670,7 @@ function openEditProduct(id){
   const p=getProducts().find(x=>x.id===id);
   if(!p)return;
   editingProdId=id;
+  currentProdImgData=p.imageData||'';
   document.getElementById('sheetTitle').textContent='EDIT PRODUCT';
   document.getElementById('prodId').value=p.id;
   document.getElementById('prodName').value=p.name||'';
@@ -607,9 +681,18 @@ function openEditProduct(id){
   document.getElementById('prodBadge').value=p.badge||'';
   document.getElementById('prodDesc').value=p.desc||'';
   document.getElementById('prodStatus').value=p.status||'active';
+  if(p.imageData){
+    const img=document.getElementById('imgPreview');
+    img.src=p.imageData;img.style.display='block';
+    document.getElementById('imgLabel').textContent='Image loaded — click to replace';
+  } else {
+    document.getElementById('imgPreview').style.display='none';
+    document.getElementById('imgLabel').textContent='Click to upload image (JPG, PNG, SVG)';
+  }
   document.getElementById('productSheet').classList.add('open');
 }
 
+// FIX: saveProduct now properly includes imageData in the saved object
 function saveProduct(){
   const name=document.getElementById('prodName').value.trim();
   const price=document.getElementById('prodPrice').value;
@@ -617,18 +700,21 @@ function saveProduct(){
   const prods=getProducts();
   const data={
     id:editingProdId||('p'+Date.now()),
-    name,cat:document.getElementById('prodCat').value,
-    price:parseInt(price),stock:document.getElementById('prodStock').value,
+    name,
+    cat:document.getElementById('prodCat').value,
+    price:parseInt(price),
+    stock:document.getElementById('prodStock').value,
     sizes:document.getElementById('prodSizes').value,
     badge:document.getElementById('prodBadge').value,
     desc:document.getElementById('prodDesc').value,
     status:document.getElementById('prodStatus').value,
+    imageData:currentProdImgData,   // ← THE FIX: was missing before
     updatedAt:new Date().toISOString()
   };
   if(editingProdId){
     const idx=prods.findIndex(x=>x.id===editingProdId);
     if(idx>-1)prods[idx]=data;
-  }else{
+  } else {
     prods.unshift(data);
   }
   saveProducts(prods);
@@ -644,7 +730,21 @@ function deleteProduct(id){
   notify('Product deleted.','error');
 }
 
-// ── CATEGORIES ───────────────────────────────
+// FIX: previewImg now saves image data to currentProdImgData
+function previewImg(input){
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      currentProdImgData=e.target.result; // ← THE FIX: save to variable
+      const img=document.getElementById('imgPreview');
+      img.src=e.target.result;img.style.display='block';
+      document.getElementById('imgLabel').textContent=input.files[0].name;
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+
+// CATEGORIES
 function renderCategories(){
   const cats=getCats();
   const prods=getProducts();
@@ -672,12 +772,12 @@ function deleteCategory(id){
   saveCats(getCats().filter(c=>c.id!==id));renderCategories();notify('Category deleted.','error');
 }
 
-// ── ORDERS ───────────────────────────────────
+// ORDERS
 function renderOrders(){
   const lastOrder=JSON.parse(localStorage.getItem('store89_last_order'));
   const el=document.getElementById('ordersTable');
-  if(!lastOrder){el.innerHTML='<p style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);">No orders found. Orders placed will appear here.</p>';return;}
-  el.innerHTML=`<table style="width:100%;"><thead><tr><th>ID</th><th>Customer</th><th>Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
+  if(!lastOrder){el.innerHTML='<p style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);">No orders found.</p>';return;}
+  el.innerHTML=`<table><thead><tr><th>ID</th><th>Customer</th><th>Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
   <tr>
     <td style="font-family:var(--font-mono);font-size:0.7rem;">${lastOrder.id}</td>
     <td>${lastOrder.customer.name}<br><span style="font-size:0.75rem;color:var(--muted)">${lastOrder.customer.email}</span></td>
@@ -698,7 +798,7 @@ function exportOrders(){
   notify('Exported!');
 }
 
-// ── IMAGES ───────────────────────────────────
+// IMAGES
 let uploadedImages=JSON.parse(localStorage.getItem('store89_admin_images'))||[];
 function renderImages(){
   const grid=document.getElementById('imageGrid');
@@ -706,7 +806,7 @@ function renderImages(){
   if(!uploadedImages.length){grid.style.display='none';noImg.style.display='block';return;}
   noImg.style.display='none';grid.style.display='grid';
   grid.innerHTML=uploadedImages.map((img,i)=>`
-    <div style="position:relative;background:var(--off-black);aspect-ratio:1;border:1px solid var(--border);overflow:hidden;group">
+    <div style="position:relative;background:var(--off-black);aspect-ratio:1;border:1px solid var(--border);overflow:hidden;">
       <img src="${img.data}" alt="${img.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
       <div style="position:absolute;inset:0;background:rgba(0,0,0,0.7);opacity:0;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;"
         onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
@@ -716,7 +816,6 @@ function renderImages(){
     </div>
   `).join('');
 }
-
 function handleImgUpload(input){
   Array.from(input.files).forEach(file=>{
     const reader=new FileReader();
@@ -729,14 +828,147 @@ function handleImgUpload(input){
   });
   notify('Images uploaded!');
 }
-
 function deleteImage(idx){
   uploadedImages.splice(idx,1);
   localStorage.setItem('store89_admin_images',JSON.stringify(uploadedImages));
   renderImages();
 }
 
-// ── HOMEPAGE SAVE ─────────────────────────────
+// CUSTOM STUDIO ADMIN
+function loadStudioSettings(){
+  const s=JSON.parse(localStorage.getItem(STUDIO_SETTINGS_KEY))||{};
+  if(s.teePrice)document.getElementById('studioTeePriceDefault').value=s.teePrice;
+  if(s.teeColors)document.getElementById('studioTeeColors').value=s.teeColors;
+  if(s.teeSizes)document.getElementById('studioTeeSizes').value=s.teeSizes;
+  if(s.posterPrice)document.getElementById('studioPosterPriceDefault').value=s.posterPrice;
+  if(s.posterColors)document.getElementById('studioPosterColors').value=s.posterColors;
+  if(s.posterSizes)document.getElementById('studioPosterSizes').value=s.posterSizes;
+  if(s.note)document.getElementById('studioNote').value=s.note;
+}
+
+function saveStudioSettings(){
+  const s={
+    teePrice:document.getElementById('studioTeePriceDefault').value,
+    teeColors:document.getElementById('studioTeeColors').value,
+    teeSizes:document.getElementById('studioTeeSizes').value,
+    posterPrice:document.getElementById('studioPosterPriceDefault').value,
+    posterColors:document.getElementById('studioPosterColors').value,
+    posterSizes:document.getElementById('studioPosterSizes').value,
+    note:document.getElementById('studioNote').value,
+  };
+  localStorage.setItem(STUDIO_SETTINGS_KEY,JSON.stringify(s));
+  notify('Studio settings saved! Changes will reflect in Custom Studio.');
+}
+
+// TEMPLATES
+let currentTmplImgData='';
+let editingTmplId=null;
+
+function renderTemplates(){
+  const filter=document.getElementById('templateTypeFilter')?.value||'all';
+  const templates=getTemplates().filter(t=>filter==='all'||t.type===filter);
+  const grid=document.getElementById('templateGrid');
+  const noTmpl=document.getElementById('noTemplates');
+  if(!templates.length){
+    grid.innerHTML='';noTmpl.style.display='block';return;
+  }
+  noTmpl.style.display='none';
+  grid.innerHTML=templates.map(t=>`
+    <div class="template-card">
+      ${t.imageData ? `<img src="${t.imageData}" alt="${t.name}" loading="lazy">` : `<div style="aspect-ratio:3/4;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);">NO IMAGE</div>`}
+      <div class="tc-info">
+        <div class="tc-name">${t.name}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span class="badge ${t.type==='tee'?'yellow':'blue'}" style="font-size:0.5rem;">${t.type==='tee'?'T-SHIRT':'POSTER'}</span>
+          ${t.tags ? `<span style="font-family:var(--font-mono);font-size:0.52rem;color:var(--muted);">${t.tags}</span>` : ''}
+        </div>
+      </div>
+      <button class="tc-del" onclick="deleteTemplate('${t.id}')">✕ Remove</button>
+    </div>
+  `).join('');
+}
+
+function openAddTemplate(){
+  editingTmplId=null;
+  currentTmplImgData='';
+  document.getElementById('templateSheetTitle').textContent='ADD TEMPLATE';
+  document.getElementById('tmplId').value='';
+  document.getElementById('tmplName').value='';
+  document.getElementById('tmplTags').value='';
+  document.getElementById('tmplType').value='tee';
+  document.getElementById('tmplImgPreview').style.display='none';
+  document.getElementById('tmplImgPreview').src='';
+  document.getElementById('tmplImgLabel').textContent='Click to upload template image';
+  document.getElementById('templateSheet').classList.add('open');
+}
+
+function handleTemplateUpload(input){
+  Array.from(input.files).forEach((file,idx)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const templates=getTemplates();
+      templates.unshift({
+        id:'t'+Date.now()+idx,
+        name:file.name.replace(/\.[^.]+$/,''),
+        type:'tee',
+        tags:'',
+        imageData:e.target.result,
+        createdAt:new Date().toISOString()
+      });
+      saveTemplates(templates);
+      renderTemplates();
+    };
+    reader.readAsDataURL(file);
+  });
+  notify(input.files.length+' template(s) uploaded!');
+}
+
+function previewTmplImg(input){
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      currentTmplImgData=e.target.result;
+      const img=document.getElementById('tmplImgPreview');
+      img.src=e.target.result;img.style.display='block';
+      document.getElementById('tmplImgLabel').textContent=input.files[0].name;
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+
+function saveTemplate(){
+  const name=document.getElementById('tmplName').value.trim();
+  if(!name){notify('Template name is required.','error');return;}
+  if(!currentTmplImgData){notify('Please upload a template image.','error');return;}
+  const templates=getTemplates();
+  const data={
+    id:editingTmplId||('t'+Date.now()),
+    name,
+    type:document.getElementById('tmplType').value,
+    tags:document.getElementById('tmplTags').value,
+    imageData:currentTmplImgData,
+    createdAt:new Date().toISOString()
+  };
+  if(editingTmplId){
+    const idx=templates.findIndex(x=>x.id===editingTmplId);
+    if(idx>-1)templates[idx]=data;
+  } else {
+    templates.unshift(data);
+  }
+  saveTemplates(templates);
+  renderTemplates();
+  closeSheet('templateSheet');
+  notify('Template saved!');
+}
+
+function deleteTemplate(id){
+  if(!confirm('Remove this template?'))return;
+  saveTemplates(getTemplates().filter(t=>t.id!==id));
+  renderTemplates();
+  notify('Template removed.','error');
+}
+
+// HOMEPAGE
 function saveHomepage(){
   const data={
     headline1:document.getElementById('hpHeadline1').value,
@@ -750,7 +982,7 @@ function saveHomepage(){
   notify('Homepage content saved!');
 }
 
-// ── SETTINGS SAVE ─────────────────────────────
+// SETTINGS
 function saveSettings(){
   const newUser=document.getElementById('setUser').value.trim();
   const newPass=document.getElementById('setPass').value;
@@ -771,7 +1003,7 @@ function saveSettings(){
   notify('Settings saved!');
 }
 
-// ── UTILS ─────────────────────────────────────
+// UTILS
 function closeSheet(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.sheet-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
@@ -781,21 +1013,8 @@ function notify(msg,type=''){
   n.className='notif show'+(type?' '+type:'');
   clearTimeout(n._t);n._t=setTimeout(()=>n.classList.remove('show'),3000);
 }
-
-function previewImg(input){
-  if(input.files&&input.files[0]){
-    const r=new FileReader();
-    r.onload=e=>{
-      const img=document.getElementById('imgPreview');
-      img.src=e.target.result;img.style.display='block';
-      document.getElementById('imgLabel').textContent=input.files[0].name;
-    };
-    r.readAsDataURL(input.files[0]);
-  }
-}
 </script>
 <script src="js/products.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
-
