@@ -564,7 +564,15 @@ const storage = getStorage(app);
     { name: 'Accessories',      slug: 'accessories',       desc: 'Scarves, bags, belts & jewellery',        order: 10, nav: 'Yes', status: 'Active' },
     { name: 'Sale',             slug: 'sale',              desc: 'Discounted & clearance items',            order: 11, nav: 'Yes', status: 'Active' },
   ];
-
+window.doLogin  = doLogin;
+window.doLogout = doLogout;
+window.showPage = showPage;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.saveProduct = saveProduct;
+window.deleteProduct = deleteProduct;
+window.openAddProduct = openAddProduct;
+// add any other functions called from onclick= in your HTML
   // ---- DATA STORE ----
   let products = [
     { id:1,  name:'Floral Maxi Dress',      cat:'Dresses',     price:2499, mrp:3299, stock:24, status:'Active',       sku:'DR-FLR-001', emoji:'👗' },
