@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Custom Studio — Store 89</title>
-<link rel="stylesheet" href="css/styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 <style>
 .studio-layout { display: grid; grid-template-columns: 300px 1fr 280px; height: calc(100vh - var(--nav-height)); overflow: hidden; }
@@ -52,6 +51,55 @@
 .qty-btn { width: 28px; height: 28px; border: 1px solid var(--border); background: none; color: var(--white); font-size: 1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
 .qty-btn:hover { border-color: var(--accent); color: var(--accent); }
 .qty-num { font-family: var(--font-mono); font-size: 0.8rem; min-width: 1.5rem; text-align: center; }
+
+/* ── Template Panel ──────────────────────────── */
+.tmpl-btn { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.55rem 1rem; border: 1px solid var(--border); color: var(--muted); background: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; width: 100%; text-align: left; }
+.tmpl-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,255,0,0.04); }
+.tmpl-btn .tmpl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.2); }
+
+/* ── Template Modal ──────────────────────────── */
+.tmpl-modal-backdrop { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+.tmpl-modal-backdrop.open { opacity: 1; pointer-events: all; }
+.tmpl-modal { width: min(96vw, 1100px); height: min(88vh, 720px); background: #0d0d0d; border: 1px solid #222; display: grid; grid-template-columns: 230px 1fr; overflow: hidden; }
+.tmpl-sidebar { border-right: 1px solid #222; overflow-y: auto; display: flex; flex-direction: column; background: #111; }
+.tmpl-sidebar-header { padding: 1.2rem 1.2rem 0.8rem; border-bottom: 1px solid #222; }
+.tmpl-sidebar-title { font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.06em; }
+.tmpl-sidebar-sub { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+.tmpl-search { padding: 0.8rem; border-bottom: 1px solid #222; }
+.tmpl-search input { width: 100%; background: #161616; border: 1px solid #222; color: var(--white); font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; padding: 0.5rem 0.7rem; outline: none; }
+.tmpl-search input:focus { border-color: var(--accent); }
+.tmpl-search input::placeholder { color: var(--muted); }
+.tmpl-cat { display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 1.2rem; border-bottom: 1px solid #1a1a1a; cursor: pointer; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); transition: all 0.15s; }
+.tmpl-cat:hover { color: var(--white); background: rgba(255,255,255,0.02); }
+.tmpl-cat.active { color: var(--accent); background: rgba(232,255,0,0.06); border-left: 2px solid var(--accent); padding-left: calc(1.2rem - 2px); }
+.tmpl-cat-icon { font-size: 0.9rem; flex-shrink: 0; }
+.tmpl-cat-count { margin-left: auto; font-size: 0.52rem; color: #333; background: #1a1a1a; padding: 0.15rem 0.4rem; }
+.tmpl-main { display: flex; flex-direction: column; overflow: hidden; }
+.tmpl-main-header { padding: 1rem 1.2rem; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.tmpl-close-btn { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em; padding: 0.35rem 0.8rem; border: 1px solid #333; color: var(--muted); background: none; cursor: pointer; transition: all 0.2s; }
+.tmpl-close-btn:hover { border-color: #ff3c3c; color: #ff3c3c; }
+.tmpl-filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; padding: 0.7rem 1.2rem; border-bottom: 1px solid #222; flex-shrink: 0; }
+.tmpl-ftag { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.25rem 0.6rem; border: 1px solid #222; color: var(--muted); background: none; cursor: pointer; transition: all 0.15s; }
+.tmpl-ftag.active, .tmpl-ftag:hover { border-color: var(--accent); color: var(--accent); }
+.tmpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1px; background: #1a1a1a; overflow-y: auto; flex: 1; }
+.tmpl-card { background: #111; position: relative; cursor: pointer; overflow: hidden; display: flex; flex-direction: column; transition: all 0.18s; }
+.tmpl-card-canvas-wrap { height: 190px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+.tmpl-card-canvas-wrap canvas { transition: transform 0.3s; }
+.tmpl-card:hover .tmpl-card-canvas-wrap canvas { transform: scale(1.05); }
+.tmpl-card-meta { padding: 0.6rem 0.8rem; border-top: 1px solid #1a1a1a; }
+.tmpl-card-name { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); margin-bottom: 0.25rem; }
+.tmpl-card-tags { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.tmpl-card-tag { font-family: var(--font-mono); font-size: 0.48rem; letter-spacing: 0.08em; color: var(--muted); background: #1a1a1a; padding: 0.12rem 0.35rem; }
+.tmpl-card-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.82); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; opacity: 0; transition: opacity 0.18s; z-index: 2; }
+.tmpl-card:hover .tmpl-card-overlay { opacity: 1; }
+.tmpl-use-btn { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.5rem 1.3rem; background: var(--accent); color: #000; border: none; cursor: pointer; font-weight: 700; transition: opacity 0.15s; }
+.tmpl-use-btn:hover { opacity: 0.9; }
+.tmpl-badge { position: absolute; top: 0.5rem; right: 0.5rem; font-family: var(--font-mono); font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.18rem 0.4rem; font-weight: 700; z-index: 1; }
+.tmpl-badge.hot { background: #ff3c3c; color: #fff; }
+.tmpl-badge.new { background: var(--accent); color: #000; }
+.tmpl-empty { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.8rem; color: var(--muted); flex: 1; padding: 3rem; text-align: center; }
+.tmpl-cat-label { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.05em; }
+
 @media (max-width: 1100px) { .studio-layout { grid-template-columns: 260px 1fr 240px; } }
 @media (max-width: 900px) {
   .studio-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; height: auto; overflow: visible; }
@@ -187,6 +235,14 @@
         <button class="size-btn" id="btnBack" onclick="switchSide('back',this)">Back</button>
       </div>
     </div>
+
+    <!-- ★ TEMPLATES PANEL ★ -->
+    <div class="panel-section">
+      <div class="panel-label">Start from a Template</div>
+      <div style="display:flex;flex-direction:column;gap:0.3rem;margin-top:0.5rem;" id="tmplQuickCats"></div>
+      <button class="add-text-btn" onclick="openTemplateModal()" style="width:100%;margin-top:0.8rem;text-align:center;padding:0.6rem;">Browse All Templates →</button>
+    </div>
+
   </aside>
 
   <div class="studio-canvas-area">
@@ -252,8 +308,41 @@
 </div>
 </div>
 
+<!-- ★ TEMPLATE MODAL ★ -->
+<div class="tmpl-modal-backdrop" id="tmplModalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="tmpl-modal">
+    <div class="tmpl-sidebar">
+      <div class="tmpl-sidebar-header">
+        <div class="tmpl-sidebar-title">TEMPLATES</div>
+        <div class="tmpl-sidebar-sub">Pick your occasion</div>
+      </div>
+      <div class="tmpl-search">
+        <input type="text" id="tmplSearchInput" placeholder="Search templates..." oninput="tmplDoSearch(this.value)">
+      </div>
+      <div id="tmplCatList"></div>
+    </div>
+    <div class="tmpl-main">
+      <div class="tmpl-main-header">
+        <div>
+          <div class="tmpl-cat-label" id="tmplCatTitle">ALL TEMPLATES</div>
+          <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;color:var(--muted);margin-top:0.2rem;" id="tmplCatDesc">Browse all occasions</div>
+        </div>
+        <button class="tmpl-close-btn" onclick="closeTemplateModal()">✕ CLOSE</button>
+      </div>
+      <div class="tmpl-filter-row" id="tmplFilterRow"></div>
+      <div class="tmpl-grid" id="tmplGrid"></div>
+      <div class="tmpl-empty" id="tmplEmpty" style="display:none;">
+        <div style="font-size:2rem;opacity:0.2;">◻</div>
+        <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;">No templates found</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/products.js"></script>
 <script src="js/main.js"></script>
+
+<!-- ★ STUDIO LOGIC ★ -->
 <script>
 let currentProduct = 'tee', currentSide = 'front', currentFont = 'Bebas Neue', selectedSize = 'M', qty = 1;
 const basePrice = { tee: 899, poster: 649 };
@@ -265,6 +354,7 @@ window.addEventListener('DOMContentLoaded', () => {
   addPlaceholder(tCanvas, 'YOUR DESIGN', '#e8ff00');
   addPlaceholder(pCanvas, 'YOUR POSTER', '#111111');
   updateOrderPanel();
+  buildQuickCats();
 });
 
 function addPlaceholder(canvas, text, color) {
@@ -394,8 +484,231 @@ function placeCustomOrder() {
   setTimeout(() => { window.location.href = 'cart.html'; }, 800);
 }
 </script>
-  <script src="js/products.js"></script>
-<script src="js/main.js"></script>
+
+<!-- ★ TEMPLATE SYSTEM SCRIPT ★ -->
+<script>
+const TMPL_CATS = [
+  { id:'all',       icon:'◈', label:'All Templates',   desc:'Browse every occasion and style' },
+  { id:'birthday',  icon:'◎', label:'Birthday',        desc:'Party, celebration, surprise themes' },
+  { id:'wedding',   icon:'◇', label:'Wedding',         desc:'Elegant bridal & anniversary designs' },
+  { id:'concert',   icon:'▷', label:'Concert & Music', desc:'Gigs, festivals, band merch' },
+  { id:'sports',    icon:'◆', label:'Sports',          desc:'Team jerseys, fan gear, tournaments' },
+  { id:'college',   icon:'△', label:'College Fests',   desc:'Techfest, cultural, farewell, batch' },
+  { id:'festival',  icon:'✦', label:'Festivals',       desc:'Diwali, Holi, Eid, Christmas' },
+  { id:'corporate', icon:'▣', label:'Corporate',       desc:'Brand events, team outings, conference' },
+  { id:'pride',     icon:'◑', label:'Pride & Cause',   desc:'Identity, movements, awareness' },
+  { id:'retro',     icon:'▧', label:'Retro / Vintage', desc:'Distressed, old-school, nostalgic vibes' },
+  { id:'minimal',   icon:'○', label:'Minimal Drop',    desc:'Clean type-only, editorial looks' },
+  { id:'streetwear',icon:'◉', label:'Streetwear',      desc:'Urban, grunge, skate culture' },
+];
+
+const TMPL_LIST = [
+  { id:1,  cat:'birthday',  name:'NEON BDAY BASH',    tags:['neon','party','dark'],        badge:'hot', draw: drawNeonBday },
+  { id:2,  cat:'birthday',  name:'PASTEL SURPRISE',   tags:['pastel','soft','cute'],                    draw: drawPastelBday },
+  { id:3,  cat:'birthday',  name:'RETRO BDAY',        tags:['retro','vintage','70s'],                   draw: drawRetroBday },
+  { id:4,  cat:'birthday',  name:'MINIMAL AGE DROP',  tags:['minimal','bold','type'],      badge:'new', draw: drawMinimalAge },
+  { id:5,  cat:'birthday',  name:'CONFETTI BLAST',    tags:['colorful','fun'],                          draw: drawConfetti },
+  { id:6,  cat:'birthday',  name:'DARK LUXURY',       tags:['dark','gold','luxury'],                    draw: drawDarkLux },
+  { id:7,  cat:'birthday',  name:'ARCADE BDAY',       tags:['pixel','gaming','fun'],                    draw: drawArcade },
+  { id:8,  cat:'birthday',  name:'TYPOGRAPHIC BASH',  tags:['type','editorial','bold'],                 draw: drawTypoBash },
+  { id:9,  cat:'wedding',   name:'ELEGANT SERIF',     tags:['luxury','serif','white'],                  draw: drawElegantWed },
+  { id:10, cat:'wedding',   name:'BOTANICAL',         tags:['botanical','green'],                       draw: drawBotanical },
+  { id:11, cat:'wedding',   name:'DARK ROMANCE',      tags:['dark','moody','floral'],      badge:'hot', draw: drawDarkWed },
+  { id:12, cat:'wedding',   name:'MINIMALIST MONO',   tags:['minimal','monochrome'],                    draw: drawMonoWed },
+  { id:13, cat:'wedding',   name:'DESI VIBES',        tags:['indian','colorful'],          badge:'new', draw: drawDesiWed },
+  { id:14, cat:'wedding',   name:'GEOMETRIC MODERN',  tags:['geometric','modern'],                      draw: drawGeoWed },
+  { id:15, cat:'concert',   name:'ACID RAVE',         tags:['rave','neon','techno'],       badge:'hot', draw: drawAcidRave },
+  { id:16, cat:'concert',   name:'ROCK DISTRESSED',   tags:['rock','grunge'],                           draw: drawRock },
+  { id:17, cat:'concert',   name:'METAL BAND',        tags:['metal','dark'],                            draw: drawMetal },
+  { id:18, cat:'concert',   name:'FESTIVAL LINEUP',   tags:['festival','type'],            badge:'new', draw: drawFestLine },
+  { id:19, cat:'concert',   name:'INDIE FOLK',        tags:['indie','warm'],                            draw: drawIndie },
+  { id:20, cat:'concert',   name:'SYNTHWAVE',         tags:['synthwave','retro','neon'],                draw: drawSynthwave },
+  { id:21, cat:'concert',   name:'DJ SET MERCH',      tags:['dj','electronic'],                         draw: drawDJMerch },
+  { id:22, cat:'sports',    name:'TEAM JERSEY',       tags:['team','jersey','sports'],     badge:'hot', draw: drawJersey },
+  { id:23, cat:'sports',    name:'CHAMPIONSHIP',      tags:['championship','gold','bold'],              draw: drawChamp },
+  { id:24, cat:'sports',    name:'CRICKET FEVER',     tags:['cricket','india','fan'],      badge:'new', draw: drawCricket },
+  { id:25, cat:'sports',    name:'MARATHON 42K',      tags:['run','marathon','minimal'],                draw: drawMarathon },
+  { id:26, cat:'sports',    name:'FOOTBALL ULTRAS',   tags:['football','fan'],                          draw: drawFootball },
+  { id:27, cat:'sports',    name:'RETRO ATHLETICS',   tags:['retro','athletics'],                       draw: drawRetroAthl },
+  { id:28, cat:'sports',    name:'ESPORTS SQUAD',     tags:['esports','gaming','neon'],                 draw: drawEsports },
+  { id:29, cat:'college',   name:"BATCH OF '25",      tags:['batch','farewell','bold'],    badge:'hot', draw: drawBatch },
+  { id:30, cat:'college',   name:'TECHFEST CORE',     tags:['tech','event','minimal'],                  draw: drawTechfest },
+  { id:31, cat:'college',   name:'CULTURAL FEST',     tags:['cultural','colorful'],        badge:'new', draw: drawCultural },
+  { id:32, cat:'college',   name:'FAREWELL DARK',     tags:['farewell','emotional'],                    draw: drawFarewell },
+  { id:33, cat:'college',   name:'HOSTEL LIFE',       tags:['hostel','casual','type'],                  draw: drawHostel },
+  { id:34, cat:'college',   name:'SPORTS MEET',       tags:['sports','college'],                        draw: drawCollegeSports },
+  { id:35, cat:'college',   name:'HACKATHON',         tags:['hack','tech','green'],                     draw: drawHackathon },
+  { id:36, cat:'college',   name:'ALUMNI REUNION',    tags:['alumni','classic'],                        draw: drawAlumni },
+  { id:37, cat:'festival',  name:'DIWALI GLOW',       tags:['diwali','golden','lights'],   badge:'hot', draw: drawDiwali },
+  { id:38, cat:'festival',  name:'HOLI SPLASH',       tags:['holi','color','splash'],                   draw: drawHoli },
+  { id:39, cat:'festival',  name:'EID MINIMAL',       tags:['eid','minimal','crescent'],                draw: drawEid },
+  { id:40, cat:'festival',  name:'CHRISTMAS',         tags:['christmas','festive','cold'],              draw: drawXmas },
+  { id:41, cat:'festival',  name:'NAVRATRI BOLD',     tags:['navratri','dance','bright'],               draw: drawNavratri },
+  { id:42, cat:'festival',  name:'NEW YEAR',          tags:['newyear','midnight','type'],               draw: drawNY },
+  { id:43, cat:'corporate', name:'BRAND COLLAB',      tags:['brand','corporate','clean'],               draw: drawBrand },
+  { id:44, cat:'corporate', name:'COMPANY OUTING',    tags:['team','outing','fun'],        badge:'new', draw: drawOuting },
+  { id:45, cat:'corporate', name:'CONFERENCE TEE',    tags:['conference','minimal'],                    draw: drawConf },
+  { id:46, cat:'corporate', name:'STARTUP VIBES',     tags:['startup','neon','hustle'],                 draw: drawStartup },
+  { id:47, cat:'corporate', name:'MERCH DROP',        tags:['merch','brand'],                           draw: drawMerchDrop },
+  { id:48, cat:'pride',     name:'PRIDE SPECTRUM',    tags:['pride','rainbow','bold'],     badge:'hot', draw: drawPride },
+  { id:49, cat:'pride',     name:'QUEER ART',         tags:['queer','art'],                             draw: drawQueerArt },
+  { id:50, cat:'pride',     name:'TRANS JOY',         tags:['trans','type','bold'],                     draw: drawTrans },
+  { id:51, cat:'pride',     name:'CLIMATE ACT',       tags:['climate','green','minimal'],               draw: drawClimate },
+  { id:52, cat:'pride',     name:'UNITY WAVE',        tags:['unity','cause'],                           draw: drawUnity },
+  { id:53, cat:'retro',     name:'70s PSYCHEDELIC',   tags:['70s','psychedelic','groovy'], badge:'hot', draw: drawPsycho },
+  { id:54, cat:'retro',     name:'80s BOLD TYPE',     tags:['80s','bold','neon'],                       draw: draw80s },
+  { id:55, cat:'retro',     name:'VARSITY LETTER',    tags:['varsity','college'],                       draw: drawVarsity },
+  { id:56, cat:'retro',     name:'DISTRESSED BADGE',  tags:['badge','distress','vintage'],              draw: drawDistress },
+  { id:57, cat:'retro',     name:'RACING STRIPES',    tags:['racing','bold'],                           draw: drawRacing },
+  { id:58, cat:'retro',     name:'SUNSET CHROME',     tags:['chrome','sunset'],                         draw: drawChrome },
+  { id:59, cat:'minimal',   name:'JUST TEXT',         tags:['type','minimal','clean'],                  draw: drawJustText },
+  { id:60, cat:'minimal',   name:'LINE BREAK',        tags:['minimal','editorial'],        badge:'new', draw: drawLineBreak },
+  { id:61, cat:'minimal',   name:'MONO GRID',         tags:['grid','mono','architecture'],              draw: drawMonoGrid },
+  { id:62, cat:'minimal',   name:'DOT MATRIX',        tags:['dot','matrix','industrial'],               draw: drawDotMatrix },
+  { id:63, cat:'minimal',   name:'SLASH EDITION',     tags:['slash','bold','graphic'],                  draw: drawSlash },
+  { id:64, cat:'streetwear',name:'GRUNGE GOTHIC',     tags:['grunge','gothic','dark'],     badge:'hot', draw: drawGothic },
+  { id:65, cat:'streetwear',name:'SKATE BRAND',       tags:['skate','bold','street'],                   draw: drawSkate },
+  { id:66, cat:'streetwear',name:'URBAN CAMO',        tags:['urban','camo','military'],                 draw: drawCamo },
+  { id:67, cat:'streetwear',name:'DROP SHADOW',       tags:['drop','shadow','bold'],                    draw: drawDropShadow },
+  { id:68, cat:'streetwear',name:'SPRAY STENCIL',     tags:['stencil','spray','raw'],                   draw: drawStencil },
+  { id:69, cat:'streetwear',name:'BARCODE EDIT',      tags:['barcode','consumer','art'],                draw: drawBarcode },
+];
+
+let tmplActiveCat='all', tmplActiveFilter='all', tmplSearchQ='';
+
+function openTemplateModal() { document.getElementById('tmplModalBackdrop').classList.add('open'); tmplRenderCats(); tmplRenderFilters(); tmplRenderGrid(); }
+function closeTemplateModal() { document.getElementById('tmplModalBackdrop').classList.remove('open'); }
+function handleBackdropClick(e) { if(e.target===document.getElementById('tmplModalBackdrop')) closeTemplateModal(); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeTemplateModal(); });
+
+function buildQuickCats() {
+  const el = document.getElementById('tmplQuickCats');
+  const colors = { birthday:'#e8ff00', wedding:'#c9a84c', concert:'#ff3c3c', sports:'#6effc0', college:'#00ccff', festival:'#ff9900' };
+  el.innerHTML = TMPL_CATS.slice(1,7).map(c => `<button class="tmpl-btn" onclick="openTemplateModal();tmplSetCat('${c.id}')"><span class="tmpl-dot" style="background:${colors[c.id]};"></span>${c.label}</button>`).join('');
+}
+
+function tmplRenderCats() {
+  document.getElementById('tmplCatList').innerHTML = TMPL_CATS.map(c => {
+    const count = c.id==='all' ? TMPL_LIST.length : TMPL_LIST.filter(t=>t.cat===c.id).length;
+    return `<div class="tmpl-cat${tmplActiveCat===c.id?' active':''}" onclick="tmplSetCat('${c.id}')"><span class="tmpl-cat-icon">${c.icon}</span><span>${c.label}</span><span class="tmpl-cat-count">${count}</span></div>`;
+  }).join('');
+}
+
+function tmplSetCat(id) {
+  tmplActiveCat=id; tmplActiveFilter='all'; tmplSearchQ='';
+  const inp=document.getElementById('tmplSearchInput'); if(inp) inp.value='';
+  const cat=TMPL_CATS.find(c=>c.id===id);
+  document.getElementById('tmplCatTitle').textContent=cat.label.toUpperCase();
+  document.getElementById('tmplCatDesc').textContent=cat.desc;
+  tmplRenderCats(); tmplRenderFilters(); tmplRenderGrid();
+}
+
+function tmplRenderFilters() {
+  const temps=tmplActiveCat==='all'?TMPL_LIST:TMPL_LIST.filter(t=>t.cat===tmplActiveCat);
+  const tags=['all',...new Set(temps.flatMap(t=>t.tags))];
+  document.getElementById('tmplFilterRow').innerHTML=tags.slice(0,9).map(tag=>`<button class="tmpl-ftag${tmplActiveFilter===tag?' active':''}" onclick="tmplSetFilter('${tag}')">${tag}</button>`).join('');
+}
+
+function tmplSetFilter(tag) { tmplActiveFilter=tag; tmplRenderFilters(); tmplRenderGrid(); }
+function tmplDoSearch(q) { tmplSearchQ=q.toLowerCase(); tmplRenderGrid(); }
+
+function tmplRenderGrid() {
+  let temps=tmplActiveCat==='all'?TMPL_LIST:TMPL_LIST.filter(t=>t.cat===tmplActiveCat);
+  if(tmplActiveFilter!=='all') temps=temps.filter(t=>t.tags.includes(tmplActiveFilter));
+  if(tmplSearchQ) temps=temps.filter(t=>t.name.toLowerCase().includes(tmplSearchQ)||t.tags.some(g=>g.includes(tmplSearchQ)));
+  const grid=document.getElementById('tmplGrid'), empty=document.getElementById('tmplEmpty');
+  if(!temps.length){grid.style.display='none';empty.style.display='flex';return;}
+  grid.style.display='grid'; empty.style.display='none';
+  grid.innerHTML=temps.map(t=>`<div class="tmpl-card">${t.badge==='hot'?'<div class="tmpl-badge hot">HOT</div>':t.badge==='new'?'<div class="tmpl-badge new">NEW</div>':''}<div class="tmpl-card-canvas-wrap"><canvas id="tcc${t.id}" width="190" height="190"></canvas></div><div class="tmpl-card-meta"><div class="tmpl-card-name">${t.name}</div><div class="tmpl-card-tags">${t.tags.map(g=>`<span class="tmpl-card-tag">${g}</span>`).join('')}</div></div><div class="tmpl-card-overlay"><button class="tmpl-use-btn" onclick="applyTmpl(${t.id})">USE TEMPLATE</button></div></div>`).join('');
+  temps.forEach(t=>{const cv=document.getElementById('tcc'+t.id);if(!cv)return;try{t.draw(cv.getContext('2d'));}catch(e){}});
+}
+
+function applyTmpl(id) {
+  const t=TMPL_LIST.find(x=>x.id===id); if(!t) return;
+  const canvas=getCanvas(); canvas.clear();
+  const tmp=document.createElement('canvas'); tmp.width=canvas.width; tmp.height=canvas.height;
+  const ctx=tmp.getContext('2d'); ctx.scale(canvas.width/190,canvas.height/190);
+  try{t.draw(ctx);}catch(e){}
+  fabric.Image.fromURL(tmp.toDataURL(),function(img){
+    img.set({left:canvas.width/2,top:canvas.height/2,originX:'center',originY:'center',selectable:true});
+    canvas.add(img); canvas.setActiveObject(img); canvas.renderAll();
+  });
+  closeTemplateModal();
+  let toast=document.getElementById('tmplToast');
+  if(!toast){toast=document.createElement('div');toast.id='tmplToast';toast.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--accent);color:#000;font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;padding:0.7rem 1.8rem;transition:transform 0.3s;z-index:300;pointer-events:none;font-weight:700;';document.body.appendChild(toast);}
+  toast.textContent=`"${t.name}" applied — customize away!`;
+  toast.style.transform='translateX(-50%) translateY(0)';
+  setTimeout(()=>{toast.style.transform='translateX(-50%) translateY(60px)';},2800);
+}
+
+/* ── All 69 draw functions ─────────────────── */
+const S=190,cx=95;
+function drawNeonBday(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.strokeStyle='#e8ff00';c.lineWidth=2;c.strokeRect(8,8,174,174);c.strokeStyle='#ff3c3c';c.lineWidth=1;c.strokeRect(14,14,162,162);c.fillStyle='#e8ff00';c.font='bold 38px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('HAPPY',cx,68);c.fillStyle='#ff3c3c';c.font='bold 50px Bebas Neue,sans-serif';c.fillText('BDAY',cx,118);c.fillStyle='#e8ff00';c.font='10px monospace';c.fillText('★ CELEBRATE BIG ★',cx,150);}
+function drawPastelBday(c){let g=c.createLinearGradient(0,0,S,S);g.addColorStop(0,'#ffe4f0');g.addColorStop(1,'#ffd6a5');c.fillStyle=g;c.fillRect(0,0,S,S);c.fillStyle='#d4608f';c.font='bold 36px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('HAPPY',cx,65);c.fillStyle='#c07040';c.font='bold 48px Bebas Neue,sans-serif';c.fillText('BIRTHDAY',cx,115);c.fillStyle='#d4608f';c.font='10px monospace';c.fillText('with love ♡',cx,150);}
+function drawRetroBday(c){c.fillStyle='#2a1a00';c.fillRect(0,0,S,S);c.fillStyle='#ff9900';c.fillRect(0,55,S,78);c.fillStyle='#2a1a00';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('BIRTHDAY',cx,108);c.fillStyle='#fff8e1';c.font='bold 14px Bebas Neue,sans-serif';c.fillText('★ EST. YOUR YEAR ★',cx,40);c.fillStyle='#ff9900';c.font='13px Bebas Neue,sans-serif';c.fillText('CELEBRATE IN STYLE',cx,155);}
+function drawMinimalAge(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#fff';c.font='bold 85px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('25',cx,130);c.fillStyle='#e8ff00';c.fillRect(28,138,134,2);c.fillStyle='#555';c.font='9px monospace';c.fillText('YEARS OF EXISTING',cx,160);}
+function drawConfetti(c){c.fillStyle='#111';c.fillRect(0,0,S,S);['#e8ff00','#ff3c3c','#6effc0','#ff9900','#00ccff'].forEach((col,i)=>{for(let j=0;j<8;j++){c.fillStyle=col;c.save();c.translate(20+j*22+i*3,15+i*25+j*8);c.rotate(j*0.8);c.fillRect(-4,-2,8,4);c.restore();}});c.fillStyle='#fff';c.font='bold 40px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('CELEBRATE',cx,82);c.font='bold 28px Bebas Neue,sans-serif';c.fillText('WITH US!',cx,120);}
+function drawDarkLux(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);c.strokeStyle='#c9a84c';c.lineWidth=1;c.strokeRect(10,10,170,170);c.strokeStyle='#c9a84c';c.lineWidth=0.5;c.strokeRect(16,16,158,158);c.fillStyle='#c9a84c';c.font='bold 12px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('━━━ CELEBRATING ━━━',cx,50);c.fillStyle='#fff';c.font='bold 48px Bebas Neue,sans-serif';c.fillText('GRAND',cx,106);c.fillStyle='#c9a84c';c.font='bold 18px Bebas Neue,sans-serif';c.fillText('CELEBRATION',cx,134);c.fillStyle='#333';c.font='9px monospace';c.fillText('━━━━━━━━━━━',cx,155);}
+function drawArcade(c){c.fillStyle='#0d0d1a';c.fillRect(0,0,S,S);for(let x=0;x<S;x+=20){c.strokeStyle='rgba(110,255,192,0.08)';c.lineWidth=0.5;c.beginPath();c.moveTo(x,0);c.lineTo(x,S);c.stroke();}for(let y=0;y<S;y+=20){c.strokeStyle='rgba(110,255,192,0.08)';c.lineWidth=0.5;c.beginPath();c.moveTo(0,y);c.lineTo(S,y);c.stroke();}c.fillStyle='#6effc0';c.font='bold 42px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('LEVEL UP',cx,90);c.fillStyle='#ff3c3c';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('BIRTHDAY BOSS',cx,120);c.fillStyle='#e8ff00';c.font='9px monospace';c.fillText('INSERT COIN TO PARTY',cx,152);}
+function drawTypoBash(c){c.fillStyle='#fff';c.fillRect(0,0,S,S);c.fillStyle='#111';c.font='bold 85px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('BASH',cx,116);c.fillRect(0,0,S,26);c.fillRect(0,164,S,26);c.fillStyle='#fff';c.font='bold 13px Bebas Neue,sans-serif';c.fillText('BIRTHDAY',cx,18);c.fillText('EST. 2000',cx,182);}
+function drawElegantWed(c){c.fillStyle='#fff';c.fillRect(0,0,S,S);c.fillStyle='#c9a84c';c.fillRect(0,0,S,4);c.fillRect(0,186,S,4);c.fillStyle='#c9a84c';c.font='italic 14px Georgia,serif';c.textAlign='center';c.fillText('We are getting married',cx,52);c.fillStyle='#111';c.font='bold 36px Bebas Neue,sans-serif';c.fillText('FOREVER',cx,100);c.fillStyle='#c9a84c';c.font='12px Georgia,serif';c.fillText('& always',cx,124);c.strokeStyle='#c9a84c';c.lineWidth=0.8;c.beginPath();c.moveTo(40,136);c.lineTo(150,136);c.stroke();c.fillStyle='#888';c.font='9px monospace';c.fillText('SAVE THE DATE',cx,156);}
+function drawBotanical(c){c.fillStyle='#1a2e1a';c.fillRect(0,0,S,S);c.strokeStyle='#6effc0';c.lineWidth=1;for(let i=0;i<8;i++){c.beginPath();c.moveTo(cx,S);let a=-60+i*25;c.quadraticCurveTo(cx+Math.cos((a-15)*Math.PI/180)*50,S-80,cx+Math.cos(a*Math.PI/180)*75,S-115);c.stroke();}c.fillStyle='#fff';c.font='bold 32px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('LOVE IN BLOOM',cx,68);c.fillStyle='#6effc0';c.font='11px monospace';c.fillText('WEDDING CELEBRATION',cx,92);}
+function drawDarkWed(c){c.fillStyle='#1a0a0a';c.fillRect(0,0,S,S);c.fillStyle='#c9a84c';c.font='italic 13px Georgia,serif';c.textAlign='center';c.fillText('with love & roses',cx,42);c.fillStyle='#fff';c.font='bold 48px Bebas Neue,sans-serif';c.fillText('FOREVER',cx,104);c.fillStyle='#ff3c3c';c.beginPath();c.arc(cx,126,4,0,6.28);c.fill();c.fillStyle='#c9a84c';c.font='10px monospace';c.fillText('TILL DEATH DO US PART',cx,154);}
+function drawMonoWed(c){c.fillStyle='#f5f5f0';c.fillRect(0,0,S,S);c.fillStyle='#111';c.fillRect(0,86,S,20);c.fillStyle='#f5f5f0';c.font='bold 20px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('MARRIED',cx,101);c.fillStyle='#111';c.font='bold 13px monospace';c.fillText('ALEX + PRIYA',cx,62);c.font='9px monospace';c.fillStyle='#555';c.fillText('12 . 12 . 2025',cx,134);}
+function drawDesiWed(c){c.fillStyle='#4a0010';c.fillRect(0,0,S,S);c.fillStyle='#c9a84c';for(let i=0;i<S;i+=13){c.fillRect(i,0,2,S);}c.fillStyle='#4a0010';c.fillRect(8,8,174,174);c.fillStyle='#c9a84c';c.font='bold 40px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('SHAADI',cx,96);c.fillStyle='#fff';c.font='11px monospace';c.fillText('CELEBRATIONS',cx,126);}
+function drawGeoWed(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.strokeStyle='#e8ff00';c.lineWidth=1;c.beginPath();c.moveTo(cx,18);c.lineTo(172,76);c.lineTo(172,136);c.lineTo(cx,174);c.lineTo(18,136);c.lineTo(18,76);c.closePath();c.stroke();c.fillStyle='#fff';c.font='bold 26px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('UNITED',cx,90);c.fillStyle='#e8ff00';c.font='bold 13px Bebas Neue,sans-serif';c.fillText('& FOREVER',cx,114);}
+function drawAcidRave(c){c.fillStyle='#0a0014';c.fillRect(0,0,S,S);for(let i=0;i<5;i++){let g=c.createRadialGradient(cx,cx,i*10,cx,cx,i*28+36);g.addColorStop(0,'transparent');g.addColorStop(1,'rgba(255,0,255,0.05)');c.fillStyle=g;c.fillRect(0,0,S,S);}c.fillStyle='#e8ff00';c.font='bold 40px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('ACID',cx,82);c.fillStyle='#ff00ff';c.font='bold 36px Bebas Neue,sans-serif';c.fillText('NIGHTS',cx,120);c.fillStyle='#fff';c.font='9px monospace';c.fillText('NO SLEEP ◈ ALL NIGHT',cx,152);}
+function drawRock(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#fff';c.font='bold 50px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('ROCK',cx,84);c.fillStyle='#ff3c3c';c.fillRect(0,96,S,4);c.fillStyle='#fff';c.font='bold 32px Bebas Neue,sans-serif';c.fillText('NEVER DIES',cx,134);}
+function drawMetal(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);c.strokeStyle='#444';c.lineWidth=2;c.strokeRect(6,6,178,178);c.fillStyle='#fff';c.font='bold 46px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('DEATH',cx,84);c.fillStyle='#333';c.fillRect(28,96,134,3);c.fillStyle='#fff';c.font='bold 24px Bebas Neue,sans-serif';c.fillText('METAL TOUR',cx,128);}
+function drawFestLine(c){c.fillStyle='#1a0030';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('HEADLINER',cx,66);c.fillStyle='#fff';c.font='bold 18px Bebas Neue,sans-serif';c.fillText('ARTIST NAME',cx,96);c.fillStyle='rgba(255,255,255,0.4)';c.font='11px Bebas Neue,sans-serif';c.fillText('ARTIST A · ARTIST B · ARTIST C',cx,122);c.strokeStyle='#e8ff00';c.lineWidth=1;c.beginPath();c.moveTo(18,74);c.lineTo(172,74);c.stroke();}
+function drawIndie(c){c.fillStyle='#1a1000';c.fillRect(0,0,S,S);c.fillStyle='#ff9900';c.beginPath();c.arc(cx,cx,58,0,Math.PI);c.fill();c.fillStyle='#1a1000';c.font='bold 32px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('INDIE TOUR',cx,90);c.fillStyle='#fff8e1';c.font='11px monospace';c.fillText('acoustic sessions',cx,142);}
+function drawSynthwave(c){c.fillStyle='#0a001a';c.fillRect(0,0,S,S);c.strokeStyle='rgba(0,255,255,0.25)';c.lineWidth=1;for(let i=1;i<8;i++){c.beginPath();c.moveTo(0,98+i*14);c.lineTo(S,98+i*14);c.stroke();}for(let i=0;i<8;i++){c.beginPath();c.moveTo(i*26,104);c.lineTo(cx,S);c.stroke();c.beginPath();c.moveTo(S-i*26,104);c.lineTo(cx,S);c.stroke();}c.fillStyle='#ff00aa';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('SYNTH',cx,56);c.fillStyle='#00ffff';c.font='bold 28px Bebas Neue,sans-serif';c.fillText('WAVE',cx,88);}
+function drawDJMerch(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.strokeStyle='#e8ff00';c.lineWidth=2;c.beginPath();c.arc(cx,86,48,0,6.28);c.stroke();c.strokeStyle='#e8ff00';c.lineWidth=1;c.beginPath();c.arc(cx,86,34,0,6.28);c.stroke();c.fillStyle='#e8ff00';c.beginPath();c.arc(cx,86,8,0,6.28);c.fill();c.fillStyle='#fff';c.font='bold 22px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('DJ MERCH',cx,155);}
+function drawJersey(c){c.fillStyle='#0a1a3a';c.fillRect(0,0,S,S);c.fillStyle='rgba(255,255,255,0.05)';for(let i=0;i<S;i+=16){c.fillRect(i,0,8,S);}c.fillStyle='#e8ff00';c.fillRect(0,0,S,5);c.fillRect(0,185,S,5);c.fillStyle='#fff';c.font='bold 20px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('STORE89',cx,46);c.fillStyle='#e8ff00';c.font='bold 76px Bebas Neue,sans-serif';c.fillText('10',cx,138);c.fillStyle='#fff';c.font='11px monospace';c.fillText('HOME JERSEY',cx,162);}
+function drawChamp(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);c.fillStyle='#c9a84c';c.beginPath();c.moveTo(cx,18);c.lineTo(160,58);c.lineTo(150,138);c.lineTo(cx,166);c.lineTo(40,138);c.lineTo(30,58);c.closePath();c.fill();c.fillStyle='#0a0a0a';c.font='bold 24px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('CHAMPIONS',cx,96);c.fillStyle='#fff';c.font='bold 13px Bebas Neue,sans-serif';c.fillText('2025',cx,120);}
+function drawCricket(c){c.fillStyle='#003366';c.fillRect(0,0,S,S);c.fillStyle='#ff6600';c.fillRect(0,0,S,10);c.fillRect(0,180,S,10);c.fillStyle='#fff';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('CRICKET',cx,92);c.fillStyle='#ff6600';c.font='bold 18px Bebas Neue,sans-serif';c.fillText('INDIA ◈ FAN',cx,122);c.fillStyle='rgba(255,255,255,0.8)';c.font='11px monospace';c.fillText('BLEED BLUE',cx,155);}
+function drawMarathon(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.fillRect(0,152,S,38);c.fillStyle='#111';c.font='bold 24px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('MARATHON',cx,178);c.fillStyle='#fff';c.font='bold 58px Bebas Neue,sans-serif';c.fillText('42K',cx,108);c.fillStyle='#e8ff00';c.fillRect(0,114,S,3);}
+function drawFootball(c){c.fillStyle='#1a0000';c.fillRect(0,0,S,S);c.fillStyle='#ff3c3c';c.font='bold 50px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('ULTRA',cx,82);c.fillStyle='#fff';c.font='bold 26px Bebas Neue,sans-serif';c.fillText('FAN CLUB',cx,114);c.strokeStyle='#ff3c3c';c.lineWidth=2;c.beginPath();c.moveTo(18,126);c.lineTo(172,126);c.stroke();}
+function drawRetroAthl(c){c.fillStyle='#2a1a00';c.fillRect(0,0,S,S);c.fillStyle='#ff9900';c.fillRect(0,0,S,58);c.fillRect(0,134,S,56);c.fillStyle='#2a1a00';c.font='bold 38px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('ATHLETICS',cx,44);c.fillStyle='#fff';c.font='bold 26px Bebas Neue,sans-serif';c.fillText('EST. 1985',cx,150);c.fillStyle='#fff8e1';c.font='bold 22px Bebas Neue,sans-serif';c.fillText('TRACK & FIELD',cx,104);}
+function drawEsports(c){c.fillStyle='#0a0a1a';c.fillRect(0,0,S,S);for(let i=0;i<S;i+=20){c.strokeStyle='rgba(110,255,192,0.05)';c.lineWidth=1;c.beginPath();c.moveTo(i,0);c.lineTo(i,S);c.stroke();c.beginPath();c.moveTo(0,i);c.lineTo(S,i);c.stroke();}c.fillStyle='#6effc0';c.font='bold 40px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('ESPORTS',cx,82);c.fillStyle='#e8ff00';c.font='bold 22px Bebas Neue,sans-serif';c.fillText('SQUAD',cx,112);c.fillStyle='#6effc0';c.font='9px monospace';c.fillText('◈ GG NO RE ◈',cx,150);}
+function drawBatch(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.font="bold 96px Bebas Neue,sans-serif";c.textAlign='center';c.fillText("'25",cx,140);c.fillStyle='#fff';c.font='bold 16px Bebas Neue,sans-serif';c.fillText('BATCH OF',cx,54);c.strokeStyle='#e8ff00';c.lineWidth=1;c.beginPath();c.moveTo(18,162);c.lineTo(172,162);c.stroke();}
+function drawTechfest(c){c.fillStyle='#0a0a14';c.fillRect(0,0,S,S);c.strokeStyle='rgba(0,204,255,0.12)';c.lineWidth=1;for(let i=0;i<S;i+=24){c.beginPath();c.moveTo(0,i);c.lineTo(S,i);c.stroke();}c.fillStyle='#00ccff';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('TECHFEST',cx,88);c.fillStyle='#fff';c.font='bold 16px Bebas Neue,sans-serif';c.fillText('2025',cx,116);c.fillStyle='rgba(0,204,255,0.55)';c.font='9px monospace';c.fillText('INNOVATE . BUILD . WIN',cx,152);}
+function drawCultural(c){c.fillStyle='#1a0030';c.fillRect(0,0,S,S);['#ff9900','#e8ff00','#ff3c3c','#6effc0'].forEach((col,i)=>{c.fillStyle=col;c.fillRect(0,i*48,S,48);c.fillStyle='rgba(26,0,48,0.7)';c.fillRect(0,i*48,S,48);});c.fillStyle='#fff';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('CULTURAL',cx,82);c.fillStyle='#ff9900';c.font='bold 24px Bebas Neue,sans-serif';c.fillText('FEST 2025',cx,114);}
+function drawFarewell(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);c.fillStyle='#555';c.font='bold 16px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('IT WAS GOOD WHILE',cx,52);c.fillStyle='#fff';c.font='bold 48px Bebas Neue,sans-serif';c.fillText('IT LASTED',cx,104);c.fillStyle='#e8ff00';c.fillRect(28,112,134,2);c.fillStyle='#555';c.font='9px monospace';c.fillText('FAREWELL BATCH',cx,138);}
+function drawHostel(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#fff';c.font='bold 32px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('HOSTEL LIFE',cx,76);c.fillStyle='#e8ff00';c.font='13px monospace';c.fillText('no sleep.',cx,106);c.fillStyle='#555';c.font='12px monospace';c.fillText('no money.',cx,128);c.fillText('no regrets.',cx,150);}
+function drawCollegeSports(c){c.fillStyle='#003366';c.fillRect(0,0,S,S);c.fillStyle='#ff6600';c.font='bold 54px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('SPORTS',cx,88);c.fillStyle='#fff';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('MEET 2025',cx,118);c.strokeStyle='#ff6600';c.lineWidth=3;c.beginPath();c.moveTo(28,130);c.lineTo(162,130);c.stroke();}
+function drawHackathon(c){c.fillStyle='#0a1a0a';c.fillRect(0,0,S,S);c.fillStyle='#6effc0';c.font='bold 11px monospace';c.textAlign='center';c.fillText('> building solutions',cx,38);c.fillStyle='#fff';c.font='bold 48px Bebas Neue,sans-serif';c.fillText('HACK',cx,100);c.fillStyle='#6effc0';c.font='bold 24px Bebas Neue,sans-serif';c.fillText('ATHON',cx,130);c.fillStyle='rgba(110,255,192,0.4)';c.font='9px monospace';c.fillText('24HRS . CODE . WIN',cx,158);}
+function drawAlumni(c){c.fillStyle='#1a0a00';c.fillRect(0,0,S,S);c.strokeStyle='#c9a84c';c.lineWidth=1;c.strokeRect(12,12,166,166);c.fillStyle='#c9a84c';c.font='bold 13px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('ALUMNI',cx,52);c.fillStyle='#fff';c.font='bold 40px Bebas Neue,sans-serif';c.fillText('REUNION',cx,104);c.fillStyle='#c9a84c';c.font='10px monospace';c.fillText('once always family',cx,136);}
+function drawDiwali(c){c.fillStyle='#1a0a00';c.fillRect(0,0,S,S);for(let i=0;i<12;i++){let x=16+i*14,y=160+Math.sin(i*0.5)*6;c.fillStyle='#ff9900';c.beginPath();c.arc(x,y,3,0,6.28);c.fill();c.strokeStyle='rgba(255,153,0,0.25)';c.lineWidth=1;c.beginPath();c.arc(x,y,8,0,6.28);c.stroke();}c.fillStyle='#c9a84c';c.font='bold 42px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('DIWALI',cx,82);c.fillStyle='#ff9900';c.font='bold 18px Bebas Neue,sans-serif';c.fillText('CELEBRATIONS',cx,110);c.fillStyle='#fff8e1';c.font='10px monospace';c.fillText('✦ light up your world ✦',cx,142);}
+function drawHoli(c){c.fillStyle='#fff';c.fillRect(0,0,S,S);['rgba(255,60,60,0.55)','rgba(232,255,0,0.55)','rgba(110,255,192,0.55)','rgba(255,153,0,0.55)','rgba(0,204,255,0.45)'].forEach(col=>{for(let j=0;j<10;j++){c.fillStyle=col;c.beginPath();c.arc(Math.random()*S,Math.random()*S,Math.random()*18+4,0,6.28);c.fill();}});c.fillStyle='rgba(0,0,0,0.72)';c.font='bold 52px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('HOLI',cx,115);}
+function drawEid(c){c.fillStyle='#003366';c.fillRect(0,0,S,S);c.strokeStyle='#c9a84c';c.lineWidth=1;c.strokeRect(8,8,174,174);c.fillStyle='#c9a84c';c.beginPath();c.arc(90,86,38,0.4*Math.PI,1.8*Math.PI);c.arc(100,86,38,1.8*Math.PI,0.4*Math.PI,true);c.fill();c.fillStyle='#003366';c.beginPath();c.arc(95,86,30,0.4*Math.PI,1.8*Math.PI);c.arc(104,86,30,1.8*Math.PI,0.4*Math.PI,true);c.fill();c.fillStyle='#fff';c.font='bold 26px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('EID MUBARAK',cx,152);}
+function drawXmas(c){c.fillStyle='#0a1a0a';c.fillRect(0,0,S,S);c.fillStyle='#2a4a2a';c.beginPath();c.moveTo(cx,28);c.lineTo(148,88);c.lineTo(128,88);c.lineTo(162,136);c.lineTo(28,136);c.lineTo(62,88);c.lineTo(42,88);c.closePath();c.fill();for(let i=0;i<10;i++){c.fillStyle=['#ff3c3c','#e8ff00','#6effc0','#fff'][i%4];c.beginPath();c.arc(65+Math.random()*60,60+Math.random()*70,4,0,6.28);c.fill();}c.fillStyle='#c9a84c';c.font='bold 26px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('MERRY XMAS',cx,170);}
+function drawNavratri(c){c.fillStyle='#4a0010';c.fillRect(0,0,S,S);for(let i=0;i<8;i++){c.fillStyle=['#ff9900','#ff3c3c','#e8ff00','#6effc0'][i%4];c.beginPath();c.moveTo(cx,cx);c.arc(cx,cx,68,i*Math.PI/4,(i+0.7)*Math.PI/4);c.closePath();c.fill();c.fillStyle='rgba(74,0,16,0.58)';c.fill();}c.fillStyle='#fff';c.font='bold 38px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('NAVRATRI',cx,98);c.fillStyle='#ff9900';c.font='10px monospace';c.fillText('CELEBRATE & DANCE',cx,130);}
+function drawNY(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);for(let i=0;i<28;i++){c.fillStyle=['#c9a84c','#e8ff00','#fff'][i%3];c.beginPath();c.arc(Math.random()*S,Math.random()*96,Math.random()*2+1,0,6.28);c.fill();}c.fillStyle='#c9a84c';c.font='bold 18px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('HAPPY',cx,58);c.fillStyle='#e8ff00';c.font='bold 68px Bebas Neue,sans-serif';c.fillText('2026',cx,130);c.fillStyle='#555';c.font='9px monospace';c.fillText('NEW YEAR ◈ NEW ERA',cx,158);}
+function drawBrand(c){c.fillStyle='#fff';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.fillRect(0,0,S,8);c.fillRect(0,182,S,8);c.fillStyle='#111';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('BRAND',cx,98);c.fillStyle='#333';c.font='11px monospace';c.fillText('× COLLAB',cx,124);}
+function drawOuting(c){c.fillStyle='#0a1a3a';c.fillRect(0,0,S,S);c.fillStyle='#6effc0';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('TEAM',cx,82);c.fillStyle='#fff';c.font='bold 24px Bebas Neue,sans-serif';c.fillText('OUTING 2025',cx,114);c.strokeStyle='#6effc0';c.lineWidth=1;c.beginPath();c.moveTo(28,124);c.lineTo(162,124);c.stroke();}
+function drawConf(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#fff';c.fillRect(0,90,S,3);c.fillStyle='#fff';c.font='bold 40px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('CONF',cx,84);c.fillStyle='#555';c.font='bold 40px Bebas Neue,sans-serif';c.fillText('2025',cx,134);c.fillStyle='#e8ff00';c.font='9px monospace';c.fillText('KNOWLEDGE IS POWER',cx,165);}
+function drawStartup(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.font='bold 48px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('HUSTLE',cx,90);c.fillStyle='#fff';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('MODE ON',cx,118);c.fillStyle='#333';c.font='9px monospace';c.fillText('SLEEP IS OVERRATED',cx,155);}
+function drawMerchDrop(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#ff3c3c';c.fillRect(0,0,S,52);c.fillStyle='#fff';c.font='bold 26px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('LIMITED DROP',cx,36);c.fillStyle='#fff';c.font='bold 50px Bebas Neue,sans-serif';c.fillText('MERCH',cx,116);c.fillStyle='#ff3c3c';c.font='9px monospace';c.fillText('◈ SOLD OUT SOON ◈',cx,156);}
+function drawClimate(c){c.fillStyle='#0a1a0a';c.fillRect(0,0,S,S);c.fillStyle='#6effc0';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('ACT NOW',cx,88);c.fillStyle='#fff';c.font='bold 15px Bebas Neue,sans-serif';c.fillText('CLIMATE CRISIS',cx,116);c.strokeStyle='#6effc0';c.lineWidth=1;c.beginPath();c.moveTo(18,126);c.lineTo(172,126);c.stroke();}
+function drawUnity(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.strokeStyle='#e8ff00';c.lineWidth=1;for(let i=0;i<6;i++){c.beginPath();c.arc(cx,cx,18+i*14,0,6.28);c.stroke();}c.fillStyle='#fff';c.font='bold 36px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('UNITY',cx,104);}
+function drawPsycho(c){c.fillStyle='#2a1a00';c.fillRect(0,0,S,S);for(let i=8;i<96;i+=10){c.strokeStyle=`rgba(255,153,0,${i/96})`;c.lineWidth=1;c.beginPath();c.arc(cx,cx,i,0,6.28);c.stroke();}c.fillStyle='#e8ff00';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('GROOVY',cx,92);c.fillStyle='#ff9900';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('BABY',cx,120);}
+function draw80s(c){c.fillStyle='#0a0a1a';c.fillRect(0,0,S,S);c.strokeStyle='#ff00ff';c.lineWidth=2;c.strokeRect(8,8,174,174);c.fillStyle='#ff00ff';c.font='bold 50px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('80S',cx,90);c.fillStyle='#e8ff00';c.font='bold 26px Bebas Neue,sans-serif';c.fillText('ALL NIGHT',cx,122);}
+function drawVarsity(c){c.fillStyle='#1a0030';c.fillRect(0,0,S,S);c.fillStyle='#c9a84c';c.beginPath();c.arc(cx,86,52,0,6.28);c.fill();c.fillStyle='#1a0030';c.beginPath();c.arc(cx,86,42,0,6.28);c.fill();c.fillStyle='#c9a84c';c.font='bold 28px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('VARSITY',cx,95);c.fillStyle='#fff';c.font='bold 13px Bebas Neue,sans-serif';c.fillText('LETTER',cx,162);}
+function drawDistress(c){c.fillStyle='#2a1a0a';c.fillRect(0,0,S,S);for(let i=0;i<70;i++){c.fillStyle='rgba(255,255,255,0.025)';c.fillRect(Math.random()*S,Math.random()*S,Math.random()*28,1);}c.fillStyle='#ff9900';c.font='bold 48px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('WORN',cx,82);c.fillStyle='#fff';c.font='bold 24px Bebas Neue,sans-serif';c.fillText('& WEATHERED',cx,114);}
+function drawRacing(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);c.fillStyle='#ff3c3c';c.fillRect(0,0,18,S);c.fillRect(172,0,18,S);c.fillStyle='#fff';c.font='bold 48px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('RACING',cx,88);c.fillStyle='#ff3c3c';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('TEAM 1',cx,118);}
+function drawChrome(c){c.fillStyle='#0a0010';c.fillRect(0,0,S,S);let g=c.createLinearGradient(0,0,S,S);g.addColorStop(0,'rgba(255,102,0,0.38)');g.addColorStop(0.5,'rgba(255,0,170,0.28)');g.addColorStop(1,'rgba(255,102,0,0.38)');c.fillStyle=g;c.fillRect(0,0,S,S);c.fillStyle='#fff';c.font='bold 48px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('CHROME',cx,90);c.fillStyle='#ff00aa';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('SUNSET',cx,118);}
+function drawJustText(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#fff';c.font='bold 34px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('YOUR TEXT',cx,86);c.fillStyle='#e8ff00';c.font='bold 15px Bebas Neue,sans-serif';c.fillText('GOES HERE',cx,114);c.fillStyle='#333';c.font='9px monospace';c.fillText('minimal and clean',cx,152);}
+function drawLineBreak(c){c.fillStyle='#f5f5f0';c.fillRect(0,0,S,S);c.fillStyle='#111';c.fillRect(0,86,S,20);c.fillStyle='#111';c.font='bold 46px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('BREAK',cx,78);c.fillStyle='#f5f5f0';c.font='bold 26px Bebas Neue,sans-serif';c.fillText('FREE',cx,106);c.fillStyle='#111';c.font='9px monospace';c.fillText('TYPE — ONLY — EDITION',cx,158);}
+function drawMonoGrid(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.strokeStyle='rgba(232,255,0,0.12)';c.lineWidth=0.5;for(let i=0;i<S;i+=24){c.beginPath();c.moveTo(i,0);c.lineTo(i,S);c.stroke();c.beginPath();c.moveTo(0,i);c.lineTo(S,i);c.stroke();}c.fillStyle='#e8ff00';c.font='bold 42px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('GRID',cx,86);c.fillStyle='#fff';c.font='bold 24px Bebas Neue,sans-serif';c.fillText('EDITION',cx,118);}
+function drawDotMatrix(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);for(let x=10;x<S;x+=10){for(let y=10;y<S;y+=10){c.fillStyle='rgba(255,255,255,0.1)';c.beginPath();c.arc(x,y,1,0,6.28);c.fill();}}c.fillStyle='#fff';c.font='bold 44px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('MATRIX',cx,115);}
+function drawSlash(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.beginPath();c.moveTo(58,18);c.lineTo(86,18);c.lineTo(132,172);c.lineTo(104,172);c.closePath();c.fill();c.fillStyle='#fff';c.font='bold 32px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('SLASH',cx,88);c.font='bold 20px Bebas Neue,sans-serif';c.fillText('EDITION',cx,158);}
+function drawGothic(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);for(let i=0;i<S;i+=3){if(Math.random()>0.88){c.strokeStyle='rgba(255,255,255,0.04)';c.lineWidth=1;c.beginPath();c.moveTo(Math.random()*S,i);c.lineTo(Math.random()*S,i+3);c.stroke();}}c.fillStyle='#fff';c.font='bold 48px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('GOTHIC',cx,88);c.fillStyle='#ff3c3c';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('FOREVER DARK',cx,118);}
+function drawSkate(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.beginPath();c.moveTo(cx,18);c.lineTo(164,58);c.lineTo(164,136);c.lineTo(cx,172);c.lineTo(26,136);c.lineTo(26,58);c.closePath();c.fill();c.fillStyle='#111';c.font='bold 34px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('SKATE',cx,90);c.font='bold 18px Bebas Neue,sans-serif';c.fillText('OR DIE',cx,115);}
+function drawCamo(c){c.fillStyle='#1a2a1a';c.fillRect(0,0,S,S);['#2a3a2a','#3a4a3a','#1a2a1a','#253525'].forEach(col=>{for(let i=0;i<5;i++){c.fillStyle=col;c.beginPath();c.ellipse(Math.random()*S,Math.random()*S,Math.random()*32+14,Math.random()*18+8,Math.random()*3,0,6.28);c.fill();}});c.fillStyle='#6effc0';c.font='bold 40px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('CAMO',cx,88);c.fillStyle='rgba(110,255,192,0.55)';c.font='11px monospace';c.fillText('URBAN OPS',cx,116);}
+function drawDropShadow(c){c.fillStyle='#111';c.fillRect(0,0,S,S);c.fillStyle='#e8ff00';c.font='bold 54px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('DROP',cx+3,90);c.fillStyle='#fff';c.fillText('DROP',cx,86);c.fillStyle='#e8ff00';c.font='bold 34px Bebas Neue,sans-serif';c.fillText('SHADOW',cx+3,128);c.fillStyle='#fff';c.fillText('SHADOW',cx,124);}
+function drawStencil(c){c.fillStyle='#0a0a0a';c.fillRect(0,0,S,S);c.fillStyle='rgba(255,255,255,0.88)';c.font='bold 50px Bebas Neue,sans-serif';c.textAlign='center';c.fillText('STENCIL',cx,92);c.font='bold 24px Bebas Neue,sans-serif';c.fillText('CULTURE',cx,124);for(let i=0;i<25;i++){c.fillStyle='rgba(0,0,0,0.07)';c.fillRect(Math.random()*S,Math.random()*S,Math.random()*18,Math.random()*18);}}
+function drawBarcode(c){c.fillStyle='#fff';c.fillRect(0,0,S,S);for(let x=18;x<172;x+=4){let w=Math.random()>0.5?2:1;c.fillStyle='#111';c.fillRect(x,38,w,115);}c.fillStyle='#fff';c.fillRect(0,145,S,28);c.fillStyle='#111';c.font='9px monospace';c.textAlign='center';c.fillText('◈ 8 9 0 — S T O R E ◈',cx,162);c.fillStyle='#111';c.font='bold 20px Bebas Neue,sans-serif';c.fillText('CONSUMER ART',cx,28);}
+</script>
 </body>
 </html>
-
