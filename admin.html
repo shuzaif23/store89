@@ -138,23 +138,53 @@ select.sf-input option{background:var(--off-black);}
 </head>
 <body>
 
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-brand">STORE<span>89</span></div>
-    <div class="login-sub">Admin Panel — Restricted Access</div>
-    <label class="login-label" for="loginUser">Username</label>
-    <input class="login-input" id="loginUser" type="text" placeholder="admin" autocomplete="username">
-    <label class="login-label" for="loginPass">Password</label>
-    <input class="login-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
-    <button class="login-btn" onclick="doLogin()">Access Admin Panel →</button>
-    <div class="login-err" id="loginErr">✕ Invalid credentials. Try again.</div>
-    <div class="login-hint">
-      Default credentials:<br>
-      Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>store89admin</strong><br>
-      Change these in production via backend config.
-    </div>
-  </div>
-</div>
+// ── AUTH ──────────────────────────────────────
+const ADMIN_KEY='store89_admin_auth';
+const DEFAULT_CREDS={user:'admin',pass:'store89admin'};
+
+function getStoredCreds(){
+  try{return JSON.parse(localStorage.getItem('store89_admin_creds'))||DEFAULT_CREDS;}
+  catch{return DEFAULT_CREDS;}
+}
+
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const creds=getStoredCreds();
+  const err=document.getElementById('loginErr');
+  const ui=document.getElementById('loginUser');
+  const pi=document.getElementById('loginPass');
+
+  if(u===creds.user&&p===creds.pass){
+    localStorage.setItem(ADMIN_KEY,'1');
+    err.style.display='none';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminApp').style.display='block';
+    initAdmin();
+  } else {
+    err.style.display='block';
+    ui.classList.add('error');pi.classList.add('error');
+    setTimeout(()=>{ui.classList.remove('error');pi.classList.remove('error');},1500);
+  }
+}
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+function doLogout(){
+  localStorage.removeItem(ADMIN_KEY);
+  document.getElementById('adminApp').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+
+// Check if already logged in
+if(localStorage.getItem(ADMIN_KEY)==='1'){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  initAdmin();
+}
+
+
 
 <div id="adminApp">
   <div class="admin-layout">
