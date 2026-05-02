@@ -60,6 +60,7 @@ async function fetchFromFirebase() {
           sku:       data.sku       || '',
           desc:      data.desc      || data.description || '',
           dateAdded: data.dateAdded || new Date().toISOString().split('T')[0],
+          imageUrl:  data.imageUrl  || '',
           svg:       data.svg       || `<rect width="200" height="200" fill="#111"/><text x="100" y="110" font-family="sans-serif" font-size="18" fill="#e8ff00" text-anchor="middle">${data.name||''}</text>`,
           viewBox:   data.viewBox   || '0 0 200 200',
           emoji:     data.emoji     || '👕',
