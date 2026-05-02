@@ -110,7 +110,16 @@
   .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.2rem; }
 
   /* PRODUCT IMAGE */
-  .product-img { width: 40px; height: 40px; background: #222; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+ .product-img { width: 40px; height: 40px; background: #222; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; overflow:hidden; }
+.product-img img { width:100%; height:100%; object-fit:cover; border-radius:6px; }
+.img-upload-box { border: 2px dashed #2a2a2a; border-radius: 10px; padding: 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s; position: relative; }
+.img-upload-box:hover { border-color: #c8a96e; }
+.img-upload-box input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.img-upload-box .upload-icon { font-size: 28px; margin-bottom: 6px; }
+.img-upload-box .upload-text { font-size: 12px; color: #666; }
+.img-preview { width: 100%; max-height: 160px; object-fit: contain; border-radius: 8px; margin-top: 10px; display: none; }
+.img-progress { height: 4px; background: #222; border-radius: 4px; margin-top: 10px; display:none; }
+.img-progress-bar { height: 100%; background: #c8a96e; border-radius: 4px; width: 0%; transition: width 0.3s; }
 
   /* PRICING */
   .price-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e1e1e; }
@@ -454,6 +463,17 @@
         </select>
       </div>
       <div class="form-group fullwidth"><label class="form-label">DESCRIPTION</label><textarea class="form-control" id="pDesc" rows="3" placeholder="Product description..."></textarea></div>
+      <div class="form-group fullwidth">
+        <label class="form-label">PRODUCT IMAGE</label>
+        <div class="img-upload-box" id="uploadBox">
+          <input type="file" id="pImageFile" accept="image/*" onchange="previewImage(event)" />
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">Click to upload image (JPG, PNG, WEBP)</div>
+        </div>
+        <img id="imgPreview" class="img-preview" alt="Preview" />
+        <div class="img-progress" id="imgProgress"><div class="img-progress-bar" id="imgProgressBar"></div></div>
+        <input type="hidden" id="pImageUrl" />
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('productModal')">Cancel</button>
@@ -512,6 +532,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyByc62uc1v97pf5ZV26ycLA0SPmfsD5pTU",
@@ -523,6 +544,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
+const storage = getStorage(app);
   // ---- CREDENTIALS ----
   const ADMIN_USER = 'store89admin';
   const ADMIN_PASS = 'Scarface@123';
@@ -685,7 +707,7 @@ const db  = getFirestore(app);
       <tr>
         <td style="padding:8px 16px;">
           <div style="display:flex;align-items:center;gap:10px;">
-            <div class="product-img">${p.emoji}</div>
+            <div class="product-img">${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" />` : p.emoji}</div>
             <div>
               <div style="font-size:13px;color:#e0e0e0;">${p.name}</div>
               <div style="font-size:11px;color:#555;">${p.sku || ''}</div>
@@ -712,56 +734,120 @@ const db  = getFirestore(app);
   }
 
   function openAddProduct() {
-    editingId = null;
-    document.getElementById('productModalTitle').textContent = 'Add New Product';
-    ['pName','pPrice','pMrp','pStock','pSize','pSku','pDesc'].forEach(id => document.getElementById(id).value = '');
-    rebuildCatDropdown();
-    document.getElementById('pStatus').value = 'Active';
-    openModal('productModal');
+  editingId = null;
+  document.getElementById('productModalTitle').textContent = 'Add New Product';
+  ['pName','pPrice','pMrp','pStock','pSize','pSku','pDesc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pImageUrl').value = '';
+  document.getElementById('pImageFile').value = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('imgProgress').style.display = 'none';
+  document.getElementById('uploadBox').querySelector('.upload-icon').textContent = '📷';
+  document.getElementById('uploadBox').querySelector('.upload-text').textContent = 'Click to upload image (JPG, PNG, WEBP)';
+  rebuildCatDropdown();
+  document.getElementById('pStatus').value = 'Active';
+  openModal('productModal');
+}
   }
 
   function editProduct(id) {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-    editingId = id;
-    document.getElementById('productModalTitle').textContent = 'Edit Product';
-    rebuildCatDropdown();
-    document.getElementById('pName').value   = p.name;
-    document.getElementById('pCat').value    = p.cat;
-    document.getElementById('pPrice').value  = p.price;
-    document.getElementById('pMrp').value    = p.mrp || '';
-    document.getElementById('pStock').value  = p.stock;
-    document.getElementById('pStatus').value = p.status;
-    document.getElementById('pSku').value    = p.sku || '';
-    document.getElementById('pSize').value   = '';
-    document.getElementById('pDesc').value   = '';
-    openModal('productModal');
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('productModalTitle').textContent = 'Edit Product';
+  rebuildCatDropdown();
+  document.getElementById('pName').value     = p.name;
+  document.getElementById('pCat').value      = p.cat;
+  document.getElementById('pPrice').value    = p.price;
+  document.getElementById('pMrp').value      = p.mrp || '';
+  document.getElementById('pStock').value    = p.stock;
+  document.getElementById('pStatus').value   = p.status;
+  document.getElementById('pSku').value      = p.sku || '';
+  document.getElementById('pSize').value     = (p.sizes||[]).join(', ');
+  document.getElementById('pDesc').value     = p.desc || '';
+  document.getElementById('pImageUrl').value = p.imageUrl || '';
+  document.getElementById('pImageFile').value = '';
+  document.getElementById('imgProgress').style.display = 'none';
+  const preview = document.getElementById('imgPreview');
+  if (p.imageUrl) {
+    preview.src = p.imageUrl;
+    preview.style.display = 'block';
+    document.getElementById('uploadBox').querySelector('.upload-text').textContent = 'Click to replace image';
+  } else {
+    preview.style.display = 'none';
+    document.getElementById('uploadBox').querySelector('.upload-text').textContent = 'Click to upload image (JPG, PNG, WEBP)';
   }
+  openModal('productModal');
+}
+  }
+window.previewImage = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const preview = document.getElementById('imgPreview');
+    preview.src = ev.target.result;
+    preview.style.display = 'block';
+    document.getElementById('uploadBox').querySelector('.upload-text').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+};
+
+async function uploadImageToStorage(file, productName) {
+  return new Promise((resolve, reject) => {
+    const ext = file.name.split('.').pop();
+    const filename = `products/${Date.now()}_${productName.replace(/\s+/g,'_')}.${ext}`;
+    const ref = storageRef(storage, filename);
+    const task = uploadBytesResumable(ref, file);
+    const bar = document.getElementById('imgProgressBar');
+    const prog = document.getElementById('imgProgress');
+    prog.style.display = 'block';
+    task.on('state_changed',
+      snap => { bar.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
+      reject,
+      async () => { resolve(await getDownloadURL(task.snapshot.ref)); }
+    );
+  });
+}
+
 async function saveProduct() {
-    const name  = document.getElementById('pName').value.trim();
-    const price = parseInt(document.getElementById('pPrice').value);
-    const stock = parseInt(document.getElementById('pStock').value);
-    const mrp   = parseInt(document.getElementById('pMrp').value) || 0;
-    const sku   = document.getElementById('pSku').value.trim();
-    if (!name || !price || isNaN(stock)) { alert('Please fill Name, Price & Stock.'); return; }
-    const emojis = ['👗','🧥','👘','👖','👚','🎀','🩱','👙','🩲','🧣','👒'];
-    const data = {
-      name, price, mrp, stock, sku,
-      cat:    document.getElementById('pCat').value,
-      status: document.getElementById('pStatus').value,
-      emoji:  editingId ? products.find(x => x.id === editingId).emoji : emojis[Math.floor(Math.random() * emojis.length)]
-    };
-    if (editingId) {
-      await setDoc(doc(db, 'products', editingId), data);
-      const p = products.find(x => x.id === editingId);
-      Object.assign(p, data);
-    } else {
-      const ref = await addDoc(collection(db, 'products'), data);
-      products.push({ ...data, id: ref.id });
+  const name  = document.getElementById('pName').value.trim();
+  const price = parseInt(document.getElementById('pPrice').value);
+  const stock = parseInt(document.getElementById('pStock').value);
+  const mrp   = parseInt(document.getElementById('pMrp').value) || 0;
+  const sku   = document.getElementById('pSku').value.trim();
+  if (!name || !price || isNaN(stock)) { alert('Please fill Name, Price & Stock.'); return; }
+
+  let imageUrl = document.getElementById('pImageUrl').value || '';
+  const fileInput = document.getElementById('pImageFile');
+  if (fileInput.files[0]) {
+    try {
+      imageUrl = await uploadImageToStorage(fileInput.files[0], name);
+    } catch(e) {
+      alert('Image upload failed: ' + e.message); return;
     }
-    closeModal('productModal');
-    renderAll();
   }
+
+  const emojis = ['👗','🧥','👘','👖','👚','🎀','🩱','👙','🩲','🧣','👒'];
+  const sizesRaw = document.getElementById('pSize').value.trim();
+  const data = {
+    name, price, mrp, stock, sku, imageUrl,
+    cat:    document.getElementById('pCat').value,
+    status: document.getElementById('pStatus').value,
+    desc:   document.getElementById('pDesc').value.trim(),
+    sizes:  sizesRaw ? sizesRaw.split(',').map(s => s.trim()).filter(Boolean) : ['S','M','L','XL'],
+    emoji:  editingId ? products.find(x => x.id === editingId).emoji : emojis[Math.floor(Math.random() * emojis.length)]
+  };
+  if (editingId) {
+    await setDoc(doc(db, 'products', editingId), data);
+    const p = products.find(x => x.id === editingId);
+    Object.assign(p, data);
+  } else {
+    const ref = await addDoc(collection(db, 'products'), data);
+    products.push({ ...data, id: ref.id });
+  }
+  closeModal('productModal');
+  renderAll();
+}
  
 async function deleteProduct(id) {
     if (!confirm('Delete this product? This cannot be undone.')) return;
