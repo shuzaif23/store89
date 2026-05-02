@@ -367,7 +367,7 @@ function renderFeaturedCard(p) {
   return `
     <div class="product-card reveal" onclick="openQV(${p.id})">
       <div class="product-img">
-        <div class="product-placeholder"><svg width="${isPoster?'90':'120'}" height="${isPoster?'130':'120'}" viewBox="${p.viewBox}">${p.svg}</svg></div>
+        <div class="product-placeholder">${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />` : `<svg width="${isPoster?'90':'120'}" height="${isPoster?'130':'120'}" viewBox="${p.viewBox}">${p.svg}</svg>`}</div>
         ${badge}
         <button class="product-quick" onclick="event.stopPropagation();addCard(${p.id})">Add to Cart →</button>
       </div>
@@ -402,7 +402,9 @@ function openQV(id) {
   const p = getProducts().find(x => x.id === id);
   if (!p) return;
   const isPoster = p.category === 'poster';
-  document.getElementById('qvImg').innerHTML = `<svg width="${isPoster?'120':'150'}" height="${isPoster?'170':'150'}" viewBox="${p.viewBox}">${p.svg}</svg>`;
+  document.getElementById('qvImg').innerHTML = p.imageUrl
+  ? `<img src="${p.imageUrl}" alt="${p.name}" style="width:100%;max-height:300px;object-fit:contain;border-radius:8px;" />`
+  : `<svg width="${isPoster?'120':'150'}" height="${isPoster?'170':'150'}" viewBox="${p.viewBox}">${p.svg}</svg>`;
   const sizes = p.sizes || (isPoster ? ['A4','A3','A2'] : ['S','M','L','XL']);
   document.getElementById('qvInfo').innerHTML = `
     <div>
