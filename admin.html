@@ -728,8 +728,8 @@ window.openAddProduct = openAddProduct;
         <td>${statusBadge(p.status)}</td>
         <td>
           <div class="action-btns">
-            <button class="icon-btn" onclick="editProduct(${p.id})" title="Edit">&#x270E;</button>
-            <button class="icon-btn del" onclick="deleteProduct(${p.id})" title="Delete">&#x2715;</button>
+           <button class="icon-btn" onclick="editProduct('${p.id}')" title="Edit">&#x270E;</button>
+<button class="icon-btn del" onclick="deleteProduct('${p.id}')" title="Delete">&#x2715;</button>
           </div>
         </td>
       </tr>`).join('');
