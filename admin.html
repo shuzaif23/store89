@@ -958,51 +958,72 @@ function openEditProduct(id) {
 async function saveProduct() {
   const name  = document.getElementById('prodName').value.trim();
   const price = document.getElementById('prodPrice').value;
-  if (!name || !price) { notify('Name and price are required.', 'error'); return; }
+  
+  // Validation
+  if (!name || !price) { 
+    notify('Name and price are required.', 'error'); 
+    return; 
+  }
 
   const btn = document.getElementById('saveProdBtn');
-  btn.disabled = true; btn.textContent = 'Saving...';
+  btn.disabled = true; 
+  btn.textContent = 'Saving...';
 
   try {
-    let imageUrl = editingProdId ? (_products.find(p => p.id === editingProdId)?.imageUrl || '') : '';
+    let imageUrl = "";
+    
+    // If we are editing, start with the existing image URL
+    if (editingProdId) {
+      const existingProd = _products.find(p => p.id === editingProdId);
+      imageUrl = existingProd ? existingProd.imageUrl : "";
+    }
 
-    // Upload image to Storage if new file selected
+    // Only attempt upload if a NEW file was actually selected
     if (pendingProdFile) {
       const bar = document.getElementById('prodImgBar');
-      imageUrl = await uploadFile(pendingProdFile, `products/${Date.now()}_${pendingProdFile.name}`, bar);
+      // Clean filename to prevent storage path issues
+      const safeName = pendingProdFile.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
+      const path = `products/${Date.now()}_${safeName}`;
+      imageUrl = await uploadFile(pendingProdFile, path, bar);
     }
 
     const data = {
       name,
       cat:    document.getElementById('prodCat').value,
       price:  parseInt(price),
-      stock:  document.getElementById('prodStock').value,
+      stock:  document.getElementById('prodStock').value || 0,
       sizes:  document.getElementById('prodSizes').value,
       badge:  document.getElementById('prodBadge').value,
       desc:   document.getElementById('prodDesc').value,
       status: document.getElementById('prodStatus').value,
-      imageUrl,
+      imageUrl: imageUrl || "", // Ensure it's at least an empty string
     };
 
     if (editingProdId) {
       await fsSet('products', editingProdId, data);
       const idx = _products.findIndex(x => x.id === editingProdId);
       if (idx > -1) _products[idx] = { ..._products[idx], ...data };
-      notify('Product updated!');
+      notify('Product updated successfully!');
     } else {
       const newId = await fsAdd('products', data);
       _products.unshift({ id: newId, ...data });
-      notify('Product added!');
+      notify('Product added successfully!');
     }
 
-    renderProducts(); renderDashboard();
+    renderProducts(); 
+    renderDashboard();
     closeSheet('productSheet');
-  } catch(e) {
-    console.error(e);
-    notify('Error saving product: ' + e.message, 'error');
-  }
+    
+    // Reset pending file
+    pendingProdFile = null;
 
-  btn.disabled = false; btn.textContent = 'Save Product';
+  } catch(e) {
+    console.error("Save Error:", e);
+    notify('Error saving: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; 
+    btn.textContent = 'Save Product';
+  }
 }
 
 async function deleteProduct(id) {
