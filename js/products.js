@@ -75,9 +75,6 @@ async function fetchFromFirebase() {
 
 async function initProducts() {
   _liveProducts = await fetchFromFirebase();
-  document.dispatchEvent(new CustomEvent('productsLoaded', {
-    detail: { products: _liveProducts || PRODUCTS_DATA }
-  }));
 }
 
 // Main function — used by all pages
