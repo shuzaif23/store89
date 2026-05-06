@@ -929,7 +929,30 @@ function handleAdd(id){
 
 renderGrid();
 </script>
-<script src="js/products.js"></script>
-<script src="js/main.js"></script>
+<script type="module" src="js/products.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
+  <div id="comingSoonOverlay" style="
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,0.92);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;
+  font-family:'Bebas Neue',sans-serif;
+">
+  <div style="font-size:clamp(60px,12vw,120px);letter-spacing:0.15em;color:#fff;line-height:1;">B&W</div>
+  <div style="font-size:clamp(14px,3vw,22px);letter-spacing:0.4em;color:#555;margin-bottom:2rem;">APPARELS</div>
+  <div style="width:60px;height:2px;background:#fff;margin:0 auto 2.5rem;"></div>
+  <div style="font-size:clamp(28px,6vw,56px);letter-spacing:0.25em;color:#fff;margin-bottom:0.5rem;">COMING SOON</div>
+  <div style="font-size:13px;letter-spacing:0.2em;color:#555;font-family:'Courier New',monospace;margin-bottom:3rem;">THE MONOCHROME DROP IS LOADING</div>
+  <a href="index.html" style="
+    font-family:'Bebas Neue',sans-serif;
+    font-size:14px;letter-spacing:0.25em;
+    border:1px solid #333;color:#888;
+    padding:12px 32px;text-decoration:none;
+  " onmouseover="this.style.borderColor='#fff';this.style.color='#fff';"
+     onmouseout="this.style.borderColor='#333';this.style.color='#888';">
+    ← BACK TO STORE
+  </a>
+</div>
 </html>

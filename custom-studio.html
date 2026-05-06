@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Custom Studio — Store 89</title>
-<link rel="stylesheet" href="css/styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 <style>
 .studio-layout { display: grid; grid-template-columns: 300px 1fr 280px; height: calc(100vh - var(--nav-height)); overflow: hidden; }
@@ -52,6 +51,46 @@
 .qty-btn { width: 28px; height: 28px; border: 1px solid var(--border); background: none; color: var(--white); font-size: 1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
 .qty-btn:hover { border-color: var(--accent); color: var(--accent); }
 .qty-num { font-family: var(--font-mono); font-size: 0.8rem; min-width: 1.5rem; text-align: center; }
+
+/* Template Gallery */
+.template-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+.tmpl-card { position: relative; cursor: pointer; border: 1px solid var(--border); overflow: hidden; transition: all 0.2s; background: #111; }
+.tmpl-card:hover { border-color: var(--accent); }
+.tmpl-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+.tmpl-card .tmpl-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.65); opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.4rem; }
+.tmpl-card:hover .tmpl-overlay { opacity: 1; }
+.tmpl-use-btn { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.4rem 0.9rem; background: var(--accent); color: var(--black); border: none; cursor: pointer; font-weight: 700; }
+.tmpl-name { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.8); text-align: center; padding: 0 0.5rem; }
+
+/* Image Search Modal */
+.search-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 8000; display: none; flex-direction: column; }
+.search-modal.open { display: flex; }
+.search-modal-header { display: flex; align-items: center; gap: 1rem; padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); background: var(--off-black); }
+.search-modal-title { font-family: var(--font-display); font-size: 1.8rem; letter-spacing: 0.05em; flex: 1; }
+.search-input-wrap { display: flex; gap: 0.5rem; flex: 2; }
+.search-input { flex: 1; background: var(--black); border: 1px solid var(--border); color: var(--white); font-family: var(--font-mono); font-size: 0.78rem; padding: 0.7rem 1rem; outline: none; letter-spacing: 0.08em; }
+.search-input:focus { border-color: var(--accent); }
+.search-btn { background: var(--accent); color: var(--black); border: none; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; font-weight: 700; padding: 0 1.4rem; cursor: pointer; transition: background 0.15s; }
+.search-btn:hover { background: #d4eb00; }
+.search-close { background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; padding: 0.5rem 1rem; cursor: pointer; transition: all 0.2s; }
+.search-close:hover { border-color: var(--accent2); color: var(--accent2); }
+.search-modal-body { flex: 1; overflow-y: auto; padding: 1.5rem 2rem; }
+.search-provider-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+.sp-tab { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.4rem 1rem; border: 1px solid var(--border); color: var(--muted); background: none; cursor: pointer; transition: all 0.2s; }
+.sp-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,0,0.05); }
+.search-results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.8rem; }
+.search-result-item { position: relative; cursor: pointer; border: 1px solid var(--border); overflow: hidden; aspect-ratio: 1; background: #111; transition: border-color 0.2s; }
+.search-result-item:hover { border-color: var(--accent); }
+.search-result-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.search-result-item .sri-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; }
+.search-result-item:hover .sri-overlay { opacity: 1; }
+.use-image-btn { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; padding: 0.4rem 1rem; background: var(--accent); color: var(--black); border: none; cursor: pointer; font-weight: 700; }
+.sri-credit { font-family: var(--font-mono); font-size: 0.5rem; color: rgba(255,255,255,0.7); letter-spacing: 0.08em; }
+.search-status { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--muted); padding: 2rem; text-align: center; }
+.search-suggestions { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.sugg-chip { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; padding: 0.3rem 0.8rem; border: 1px solid var(--border); color: var(--muted); background: none; cursor: pointer; transition: all 0.2s; }
+.sugg-chip:hover { border-color: var(--accent); color: var(--accent); }
+
 @media (max-width: 1100px) { .studio-layout { grid-template-columns: 260px 1fr 240px; } }
 @media (max-width: 900px) {
   .studio-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; height: auto; overflow: visible; }
@@ -80,6 +119,41 @@
   <a href="index.html">Home</a><a href="collection.html">Collection</a>
   <a href="custom-studio.html">Customize</a><a href="bw-collection.html">B&amp;W</a>
   <a href="index.html#contact">Contact</a><a href="cart.html" style="color:var(--accent)">Cart</a>
+</div>
+
+<!-- IMAGE SEARCH MODAL -->
+<div class="search-modal" id="imageSearchModal">
+  <div class="search-modal-header">
+    <div class="search-modal-title">FIND INSPIRATION</div>
+    <div class="search-input-wrap">
+      <input class="search-input" id="imgSearchInput" type="text" placeholder="Search: minimal streetwear, abstract art, typography..." onkeydown="if(event.key==='Enter')runImageSearch()">
+      <button class="search-btn" onclick="runImageSearch()">Search</button>
+    </div>
+    <button class="search-close" onclick="closeImageSearch()">✕ Close</button>
+  </div>
+  <div class="search-modal-body">
+    <div class="search-provider-tabs">
+      <button class="sp-tab active" onclick="switchProvider('unsplash',this)">Unsplash Photos</button>
+      <button class="sp-tab" onclick="switchProvider('google',this)">Google Images</button>
+      <button class="sp-tab" onclick="switchProvider('pinterest',this)">Pinterest</button>
+    </div>
+    <div class="search-suggestions" id="searchSuggestions">
+      <span class="panel-label" style="width:100%;margin-bottom:0.3rem;">Quick searches:</span>
+      <button class="sugg-chip" onclick="quickSearch('minimal streetwear design')">minimal streetwear</button>
+      <button class="sugg-chip" onclick="quickSearch('abstract graphic art')">abstract art</button>
+      <button class="sugg-chip" onclick="quickSearch('vintage typography poster')">vintage typography</button>
+      <button class="sugg-chip" onclick="quickSearch('dark aesthetic wallpaper')">dark aesthetic</button>
+      <button class="sugg-chip" onclick="quickSearch('geometric pattern design')">geometric pattern</button>
+      <button class="sugg-chip" onclick="quickSearch('neon cyberpunk art')">neon cyberpunk</button>
+      <button class="sugg-chip" onclick="quickSearch('japanese streetwear')">japanese streetwear</button>
+      <button class="sugg-chip" onclick="quickSearch('grunge texture overlay')">grunge texture</button>
+      <button class="sugg-chip" onclick="quickSearch('bold graphic tee design')">bold graphic tee</button>
+      <button class="sugg-chip" onclick="quickSearch('black white photography art')">black & white art</button>
+    </div>
+    <div id="searchResultsArea">
+      <div class="search-status">Search for images to use as design inspiration or add directly to your canvas.</div>
+    </div>
+  </div>
 </div>
 
 <div style="padding-top:var(--nav-height);">
@@ -113,7 +187,7 @@
       </div>
       <div class="panel-section">
         <div class="panel-label">Size</div>
-        <div class="size-grid">
+        <div class="size-grid" id="teeSizeGrid">
           <button class="size-btn" onclick="setSize('XS',this)">XS</button>
           <button class="size-btn" onclick="setSize('S',this)">S</button>
           <button class="size-btn active" onclick="setSize('M',this)">M</button>
@@ -142,6 +216,17 @@
           <button class="size-btn active" onclick="setSize('A3',this)">A3</button>
           <button class="size-btn" onclick="setSize('A2',this)">A2</button>
         </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATES SECTION -->
+    <div class="panel-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem;">
+        <div class="panel-label" style="margin-bottom:0;">Templates</div>
+        <button onclick="openImageSearch()" style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;padding:0.3rem 0.7rem;border:1px solid var(--border);color:var(--accent);background:none;cursor:pointer;border-color:var(--accent);">🔍 Find Online</button>
+      </div>
+      <div class="template-gallery" id="templateGallery">
+        <div style="grid-column:1/-1;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;line-height:1.6;">No templates yet. Admin can add templates from the Custom Studio panel.</div>
       </div>
     </div>
 
@@ -235,7 +320,7 @@
         </div>
       </div>
       <div class="order-total"><span>Total</span><span id="orderTotal">₹899</span></div>
-      <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--muted);line-height:1.7;margin-top:1rem;">Custom prints are processed within 3–5 working days. Design will be reviewed by our team before production.</div>
+      <div id="studioNoteText" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--muted);line-height:1.7;margin-top:1rem;">Custom prints are processed within 3–5 working days. Design will be reviewed by our team before production.</div>
       <button class="btn-primary" onclick="placeCustomOrder()" style="width:100%;justify-content:center;margin-top:1.5rem;">Add to Cart →</button>
       <a href="index.html#contact" class="btn-ghost" style="width:100%;justify-content:center;margin-top:0.6rem;text-align:center;">Contact for Bulk Order</a>
     </div>
@@ -244,6 +329,7 @@
       <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;">
         <p style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;color:var(--muted);line-height:1.6;">↗ Use high-res images (300dpi+) for best print quality</p>
         <p style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;color:var(--muted);line-height:1.6;">↗ PNG with transparent bg works best for tees</p>
+        <p style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;color:var(--muted);line-height:1.6;">↗ Use "Find Online" to search images for inspiration</p>
         <p style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;color:var(--muted);line-height:1.6;">↗ Drag elements to reposition. Scroll to zoom</p>
         <p style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;color:var(--muted);line-height:1.6;">↗ Save PNG to preview your final design</p>
       </div>
@@ -255,147 +341,344 @@
 <script src="js/products.js"></script>
 <script src="js/main.js"></script>
 <script>
-let currentProduct = 'tee', currentSide = 'front', currentFont = 'Bebas Neue', selectedSize = 'M', qty = 1;
-const basePrice = { tee: 899, poster: 649 };
-let tCanvas, pCanvas;
+let currentProduct='tee', currentSide='front', currentFont='Bebas Neue', selectedSize='M', qty=1;
+let basePrice={tee:899,poster:649};
+let tCanvas,pCanvas;
+let currentSearchProvider='unsplash';
 
-window.addEventListener('DOMContentLoaded', () => {
-  tCanvas = new fabric.Canvas('tshirtCanvas', { backgroundColor: 'transparent', selection: true, preserveObjectStacking: true, width: 220, height: 240 });
-  pCanvas = new fabric.Canvas('posterCanvas', { backgroundColor: '#ffffff', selection: true, preserveObjectStacking: true, width: 200, height: 280 });
-  addPlaceholder(tCanvas, 'YOUR DESIGN', '#e8ff00');
-  addPlaceholder(pCanvas, 'YOUR POSTER', '#111111');
+// Load studio settings from admin
+function loadStudioConfig(){
+  const s=JSON.parse(localStorage.getItem('store89_studio_settings'))||{};
+  if(s.teePrice)basePrice.tee=parseInt(s.teePrice);
+  if(s.posterPrice)basePrice.poster=parseInt(s.posterPrice);
+  if(s.note)document.getElementById('studioNoteText').textContent=s.note;
+
+  // Rebuild tee color grid from admin settings
+  if(s.teeColors){
+    const colors=s.teeColors.split(',').map(c=>c.trim()).filter(Boolean);
+    const grid=document.getElementById('teeColorGrid');
+    grid.innerHTML=colors.map((c,i)=>`<div class="color-btn ${i===0?'active':''}" style="background:${c};" onclick="setTeeColor(this,'${c}')"></div>`).join('');
+  }
+
+  // Rebuild tee sizes
+  if(s.teeSizes){
+    const sizes=s.teeSizes.split(',').map(x=>x.trim()).filter(Boolean);
+    const grid=document.getElementById('teeSizeGrid');
+    grid.innerHTML=sizes.map((sz,i)=>`<button class="size-btn ${sz==='M'?'active':''}" onclick="setSize('${sz}',this)">${sz}</button>`).join('');
+  }
+}
+
+// Load admin templates
+function loadTemplates(){
+  const templates=JSON.parse(localStorage.getItem('store89_studio_templates'))||[];
+  const gallery=document.getElementById('templateGallery');
+  if(!templates.length){
+    gallery.innerHTML=`<div style="grid-column:1/-1;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;line-height:1.6;">No templates yet. Admin can add templates from the Custom Studio panel.</div>`;
+    return;
+  }
+  const filtered=templates.filter(t=>t.type===currentProduct||true);
+  gallery.innerHTML=filtered.slice(0,6).map(t=>`
+    <div class="tmpl-card" title="${t.name}">
+      <img src="${t.imageData}" alt="${t.name}" loading="lazy">
+      <div class="tmpl-overlay">
+        <div class="tmpl-name">${t.name}</div>
+        <button class="tmpl-use-btn" onclick="useTemplate('${t.id}')">Use This</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function useTemplate(id){
+  const templates=JSON.parse(localStorage.getItem('store89_studio_templates'))||[];
+  const tmpl=templates.find(t=>t.id===id);
+  if(!tmpl||!tmpl.imageData)return;
+  const canvas=getCanvas();
+  fabric.Image.fromURL(tmpl.imageData,function(img){
+    canvas.getObjects().filter(o=>o.name==='placeholder').forEach(o=>canvas.remove(o));
+    const scale=Math.min((canvas.width*0.9)/img.width,(canvas.height*0.9)/img.height);
+    img.set({scaleX:scale,scaleY:scale,left:canvas.width/2,top:canvas.height/2,originX:'center',originY:'center'});
+    canvas.add(img);canvas.setActiveObject(img);canvas.renderAll();
+  });
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  tCanvas=new fabric.Canvas('tshirtCanvas',{backgroundColor:'transparent',selection:true,preserveObjectStacking:true,width:220,height:240});
+  pCanvas=new fabric.Canvas('posterCanvas',{backgroundColor:'#ffffff',selection:true,preserveObjectStacking:true,width:200,height:280});
+  addPlaceholder(tCanvas,'YOUR DESIGN','#e8ff00');
+  addPlaceholder(pCanvas,'YOUR POSTER','#111111');
+  loadStudioConfig();
+  loadTemplates();
   updateOrderPanel();
 });
 
-function addPlaceholder(canvas, text, color) {
-  const t = new fabric.Text(text, { left: canvas.width/2, top: canvas.height/2, originX:'center', originY:'center', fontSize:28, fontFamily:'Bebas Neue', fill:color, opacity:0.3, selectable:false, evented:false, name:'placeholder' });
-  canvas.add(t); canvas.renderAll();
+function addPlaceholder(canvas,text,color){
+  const t=new fabric.Text(text,{left:canvas.width/2,top:canvas.height/2,originX:'center',originY:'center',fontSize:28,fontFamily:'Bebas Neue',fill:color,opacity:0.3,selectable:false,evented:false,name:'placeholder'});
+  canvas.add(t);canvas.renderAll();
 }
 
-function getCanvas() { return currentProduct === 'tee' ? tCanvas : pCanvas; }
+function getCanvas(){return currentProduct==='tee'?tCanvas:pCanvas;}
 
-function switchProduct(type) {
-  currentProduct = type;
-  document.getElementById('tabTee').classList.toggle('active', type==='tee');
-  document.getElementById('tabPoster').classList.toggle('active', type==='poster');
-  document.getElementById('teeControls').style.display = type==='tee' ? '' : 'none';
-  document.getElementById('posterControls').style.display = type==='poster' ? '' : 'none';
-  document.getElementById('teeWrapper').style.display = type==='tee' ? '' : 'none';
-  document.getElementById('posterWrapper').style.display = type==='poster' ? '' : 'none';
+function switchProduct(type){
+  currentProduct=type;
+  document.getElementById('tabTee').classList.toggle('active',type==='tee');
+  document.getElementById('tabPoster').classList.toggle('active',type==='poster');
+  document.getElementById('teeControls').style.display=type==='tee'?'':'none';
+  document.getElementById('posterControls').style.display=type==='poster'?'':'none';
+  document.getElementById('teeWrapper').style.display=type==='tee'?'':'none';
+  document.getElementById('posterWrapper').style.display=type==='poster'?'':'none';
+  loadTemplates();
   updateOrderPanel();
 }
 
-function switchSide(side, btn) {
-  currentSide = side;
-  document.querySelectorAll('#btnFront,#btnBack').forEach(b => b.classList.remove('active'));
+function switchSide(side,btn){
+  currentSide=side;
+  document.querySelectorAll('#btnFront,#btnBack').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('sideLabel').textContent = side.toUpperCase() + ' SIDE';
-  document.getElementById('orderSide').textContent = side.charAt(0).toUpperCase() + side.slice(1);
-  tCanvas.clear(); tCanvas.backgroundColor = 'transparent';
-  addPlaceholder(tCanvas, 'YOUR ' + side.toUpperCase() + ' DESIGN', '#e8ff00');
+  document.getElementById('sideLabel').textContent=side.toUpperCase()+' SIDE';
+  document.getElementById('orderSide').textContent=side.charAt(0).toUpperCase()+side.slice(1);
+  tCanvas.clear();tCanvas.backgroundColor='transparent';
+  addPlaceholder(tCanvas,'YOUR '+side.toUpperCase()+' DESIGN','#e8ff00');
   tCanvas.renderAll();
 }
 
-function setTeeColor(el, color) {
-  document.querySelectorAll('#teeColorGrid .color-btn').forEach(b => b.classList.remove('active'));
+function setTeeColor(el,color){
+  document.querySelectorAll('#teeColorGrid .color-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('teePath').setAttribute('fill', color);
-  const isLight = ['#f5f5f0','#e8ff00','#6effc0'].includes(color);
-  document.getElementById('teePath').setAttribute('stroke', isLight ? '#ccc' : '#333');
+  document.getElementById('teePath').setAttribute('fill',color);
+  const isLight=['#f5f5f0','#e8ff00','#6effc0','#fff','#ffffff'].includes(color.toLowerCase());
+  document.getElementById('teePath').setAttribute('stroke',isLight?'#ccc':'#333');
 }
 
-function setPosterBg(el, color) {
-  document.querySelectorAll('#posterColorGrid .color-btn').forEach(b => b.classList.remove('active'));
+function setPosterBg(el,color){
+  document.querySelectorAll('#posterColorGrid .color-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  pCanvas.backgroundColor = color; pCanvas.renderAll();
+  pCanvas.backgroundColor=color;pCanvas.renderAll();
 }
 
-function setSize(size, btn) {
-  selectedSize = size;
-  const grid = btn.parentElement;
-  grid.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+function setSize(size,btn){
+  selectedSize=size;
+  const grid=btn.parentElement;
+  grid.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('orderSize').textContent = size;
+  document.getElementById('orderSize').textContent=size;
 }
 
-function changeQty(delta) {
-  qty = Math.max(1, qty + delta);
-  document.getElementById('qtyNum').textContent = qty;
+function changeQty(delta){
+  qty=Math.max(1,qty+delta);
+  document.getElementById('qtyNum').textContent=qty;
   updateOrderPanel();
 }
 
-function updateOrderPanel() {
-  const price = basePrice[currentProduct];
-  document.getElementById('orderProduct').textContent = currentProduct==='tee' ? 'Custom T-Shirt' : 'Custom Poster';
-  document.getElementById('orderBase').textContent = `₹${price.toLocaleString()}`;
-  document.getElementById('orderTotal').textContent = `₹${(price * qty).toLocaleString()}`;
+function updateOrderPanel(){
+  const price=basePrice[currentProduct];
+  document.getElementById('orderProduct').textContent=currentProduct==='tee'?'Custom T-Shirt':'Custom Poster';
+  document.getElementById('orderBase').textContent=`₹${price.toLocaleString()}`;
+  document.getElementById('orderTotal').textContent=`₹${(price*qty).toLocaleString()}`;
 }
 
-function handleUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    fabric.Image.fromURL(e.target.result, function(img) {
-      const canvas = getCanvas();
-      canvas.getObjects().filter(o => o.name==='placeholder').forEach(o => canvas.remove(o));
-      const scale = Math.min((canvas.width*0.7)/img.width, (canvas.height*0.7)/img.height);
-      img.set({ scaleX:scale, scaleY:scale, left:canvas.width/2, top:canvas.height/2, originX:'center', originY:'center' });
-      canvas.add(img); canvas.setActiveObject(img); canvas.renderAll();
+function handleUpload(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    fabric.Image.fromURL(e.target.result,function(img){
+      const canvas=getCanvas();
+      canvas.getObjects().filter(o=>o.name==='placeholder').forEach(o=>canvas.remove(o));
+      const scale=Math.min((canvas.width*0.7)/img.width,(canvas.height*0.7)/img.height);
+      img.set({scaleX:scale,scaleY:scale,left:canvas.width/2,top:canvas.height/2,originX:'center',originY:'center'});
+      canvas.add(img);canvas.setActiveObject(img);canvas.renderAll();
     });
   };
   reader.readAsDataURL(file);
 }
 
-function setFont(font, btn) {
-  currentFont = font;
-  document.querySelectorAll('.font-opt').forEach(b => b.classList.remove('active'));
+function setFont(font,btn){
+  currentFont=font;
+  document.querySelectorAll('.font-opt').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const obj = getCanvas().getActiveObject();
-  if (obj && obj.type==='text') { obj.set('fontFamily', font); getCanvas().renderAll(); }
+  const obj=getCanvas().getActiveObject();
+  if(obj&&obj.type==='text'){obj.set('fontFamily',font);getCanvas().renderAll();}
 }
 
-function setTextColor(color) {
-  const obj = getCanvas().getActiveObject();
-  if (obj && obj.type==='text') { obj.set('fill', color); getCanvas().renderAll(); }
+function setTextColor(color){
+  const obj=getCanvas().getActiveObject();
+  if(obj&&obj.type==='text'){obj.set('fill',color);getCanvas().renderAll();}
 }
 
-function setFontSize(size) {
-  const obj = getCanvas().getActiveObject();
-  if (obj && obj.type==='text') { obj.set('fontSize', parseInt(size)); getCanvas().renderAll(); }
+function setFontSize(size){
+  const obj=getCanvas().getActiveObject();
+  if(obj&&obj.type==='text'){obj.set('fontSize',parseInt(size));getCanvas().renderAll();}
 }
 
-function addText() {
-  const val = document.getElementById('textInput').value.trim();
-  if (!val) return;
-  const canvas = getCanvas();
-  canvas.getObjects().filter(o => o.name==='placeholder').forEach(o => canvas.remove(o));
-  const color = document.getElementById('textColorPicker').value;
-  const size = parseInt(document.getElementById('fontSizeSlider').value);
-  const t = new fabric.Text(val, { left:canvas.width/2, top:canvas.height/2, originX:'center', originY:'center', fontSize:size, fontFamily:currentFont, fill:color, editable:true });
-  canvas.add(t); canvas.setActiveObject(t); canvas.renderAll();
-  document.getElementById('textInput').value = '';
+function addText(){
+  const val=document.getElementById('textInput').value.trim();
+  if(!val)return;
+  const canvas=getCanvas();
+  canvas.getObjects().filter(o=>o.name==='placeholder').forEach(o=>canvas.remove(o));
+  const color=document.getElementById('textColorPicker').value;
+  const size=parseInt(document.getElementById('fontSizeSlider').value);
+  const t=new fabric.Text(val,{left:canvas.width/2,top:canvas.height/2,originX:'center',originY:'center',fontSize:size,fontFamily:currentFont,fill:color,editable:true});
+  canvas.add(t);canvas.setActiveObject(t);canvas.renderAll();
+  document.getElementById('textInput').value='';
 }
 
-function deleteSelected() { const c=getCanvas(),o=c.getActiveObject(); if(o){c.remove(o);c.renderAll();} }
-function bringForward() { const c=getCanvas(),o=c.getActiveObject(); if(o){c.bringForward(o);c.renderAll();} }
-function sendBackward() { const c=getCanvas(),o=c.getActiveObject(); if(o){c.sendBackwards(o);c.renderAll();} }
-function flipH() { const c=getCanvas(),o=c.getActiveObject(); if(o){o.set('flipX',!o.flipX);c.renderAll();} }
-function clearCanvas() { if(!confirm('Clear all elements?'))return; const c=getCanvas(); c.getObjects().forEach(o=>c.remove(o)); c.renderAll(); }
-function saveCanvas() {
-  const dataURL = getCanvas().toDataURL({format:'png',multiplier:2});
-  const a = document.createElement('a');
-  a.href = dataURL; a.download = `store89-custom-${currentProduct}.png`; a.click();
+function deleteSelected(){const c=getCanvas(),o=c.getActiveObject();if(o){c.remove(o);c.renderAll();}}
+function bringForward(){const c=getCanvas(),o=c.getActiveObject();if(o){c.bringForward(o);c.renderAll();}}
+function sendBackward(){const c=getCanvas(),o=c.getActiveObject();if(o){c.sendBackwards(o);c.renderAll();}}
+function flipH(){const c=getCanvas(),o=c.getActiveObject();if(o){o.set('flipX',!o.flipX);c.renderAll();}}
+function clearCanvas(){if(!confirm('Clear all elements?'))return;const c=getCanvas();c.getObjects().forEach(o=>c.remove(o));c.renderAll();}
+function saveCanvas(){
+  const dataURL=getCanvas().toDataURL({format:'png',multiplier:2});
+  const a=document.createElement('a');
+  a.href=dataURL;a.download=`store89-custom-${currentProduct}.png`;a.click();
 }
 
-function placeCustomOrder() {
-  const p = { id:Date.now(), name:`Custom ${currentProduct==='tee'?'T-Shirt':'Poster'}`, category:currentProduct, price:basePrice[currentProduct], sizes:[selectedSize], svg:'', viewBox:'0 0 100 100', isCustom:true };
-  Cart.add(p, selectedSize, qty);
-  setTimeout(() => { window.location.href = 'cart.html'; }, 800);
+function placeCustomOrder(){
+  const p={id:Date.now(),name:`Custom ${currentProduct==='tee'?'T-Shirt':'Poster'}`,category:currentProduct,price:basePrice[currentProduct],sizes:[selectedSize],svg:'',viewBox:'0 0 100 100',isCustom:true};
+  Cart.add(p,selectedSize,qty);
+  setTimeout(()=>{window.location.href='cart.html';},800);
+}
+
+// ── IMAGE SEARCH ────────────────────────────────────────────────────────────
+
+function openImageSearch(){
+  document.getElementById('imageSearchModal').classList.add('open');
+}
+
+function closeImageSearch(){
+  document.getElementById('imageSearchModal').classList.remove('open');
+}
+
+function switchProvider(provider,btn){
+  currentSearchProvider=provider;
+  document.querySelectorAll('.sp-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // Clear results and update placeholder
+  const area=document.getElementById('searchResultsArea');
+  area.innerHTML=`<div class="search-status">Switch to <strong>${btn.textContent}</strong> — enter a search term above and press Search.</div>`;
+}
+
+function quickSearch(query){
+  document.getElementById('imgSearchInput').value=query;
+  runImageSearch();
+}
+
+function runImageSearch(){
+  const query=document.getElementById('imgSearchInput').value.trim();
+  if(!query)return;
+  const area=document.getElementById('searchResultsArea');
+  area.innerHTML=`<div class="search-status">Searching for "${query}"...</div>`;
+
+  if(currentSearchProvider==='unsplash'){
+    searchUnsplash(query);
+  } else if(currentSearchProvider==='google'){
+    openGoogleSearch(query);
+  } else if(currentSearchProvider==='pinterest'){
+    openPinterestSearch(query);
+  }
+}
+
+// Unsplash: uses their source API (no key needed for demo images)
+function searchUnsplash(query){
+  const area=document.getElementById('searchResultsArea');
+  // Unsplash Source API — generates themed images
+  // For a production app, use the Unsplash API with a proper key
+  // Demo: use picsum with search simulation + Unsplash direct links
+  const encodedQ=encodeURIComponent(query);
+  const unsplashSearchUrl=`https://unsplash.com/s/photos/${encodedQ}`;
+
+  // Since we can't call Unsplash API without a key in a pure JS file,
+  // we open the search in a new tab AND show a grid of relevant demo images
+  // using Unsplash Source which serves topic-based images
+  const topics=['design','streetwear','minimal','art','abstract','typography','dark','urban','graphic','texture'];
+  const queryWords=query.toLowerCase().split(' ');
+  const matchedTopic=topics.find(t=>queryWords.some(w=>t.includes(w)||w.includes(t)))||queryWords[0]||'design';
+
+  // Generate demo image cards pointing to Unsplash source
+  const images=Array.from({length:12},(_,i)=>({
+    url:`https://source.unsplash.com/400x400/?${encodedQ}&sig=${i}`,
+    thumb:`https://source.unsplash.com/400x400/?${encodedQ}&sig=${i}`,
+    credit:'Unsplash',
+    link:unsplashSearchUrl
+  }));
+
+  area.innerHTML=`
+    <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;">
+      <span>Showing Unsplash results for "<strong style="color:var(--white);">${query}</strong>"</span>
+      <a href="${unsplashSearchUrl}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.58rem;">View all on Unsplash ↗</a>
+    </div>
+    <div class="search-results-grid">
+      ${images.map((img,i)=>`
+        <div class="search-result-item">
+          <img src="${img.url}" alt="Design inspiration ${i+1}" loading="lazy" onerror="this.parentElement.style.display='none'">
+          <div class="sri-overlay">
+            <button class="use-image-btn" onclick="addImageFromUrl('${img.url}')">+ Add to Canvas</button>
+            <span class="sri-credit">via Unsplash</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--muted);letter-spacing:0.08em;margin-top:1rem;line-height:1.8;">
+      Images from Unsplash are free for commercial use. For production, integrate the 
+      <a href="https://unsplash.com/developers" target="_blank" style="color:var(--accent);">Unsplash API</a> with your key.
+    </div>
+  `;
+}
+
+function openGoogleSearch(query){
+  const area=document.getElementById('searchResultsArea');
+  const googleUrl=`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query+' tshirt design poster art')}`;
+  const pinterestUrl=`https://www.pinterest.com/search/pins/?q=${encodeURIComponent(query)}`;
+
+  area.innerHTML=`
+    <div style="border:1px solid var(--border);padding:2rem;text-align:center;">
+      <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:0.05em;margin-bottom:0.8rem;color:var(--accent);">GOOGLE IMAGES</div>
+      <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;line-height:1.8;margin-bottom:1.5rem;">
+        Google Images can't be embedded due to browser security policy.<br>
+        Click below to search in a new tab, then save images and upload them here.
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="${googleUrl}" target="_blank" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.12em;padding:0.8rem 1.8rem;background:var(--accent);color:var(--black);text-decoration:none;font-weight:700;">Open Google Images ↗</a>
+        <a href="${pinterestUrl}" target="_blank" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.12em;padding:0.8rem 1.8rem;border:1px solid var(--border);color:var(--white);text-decoration:none;">Open Pinterest ↗</a>
+      </div>
+      <div style="margin-top:1.5rem;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;line-height:1.7;">
+        After downloading, use the <strong style="color:var(--white);">Upload Design</strong> section below to add your image to the canvas.
+      </div>
+    </div>
+  `;
+}
+
+function openPinterestSearch(query){
+  const area=document.getElementById('searchResultsArea');
+  const pinterestUrl=`https://www.pinterest.com/search/pins/?q=${encodeURIComponent(query+' design')}`;
+
+  area.innerHTML=`
+    <div style="border:1px solid var(--border);padding:2rem;text-align:center;">
+      <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:0.05em;margin-bottom:0.8rem;" style="color:#e60023;">PINTEREST</div>
+      <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;line-height:1.8;margin-bottom:1.5rem;">
+        Pinterest boards can't be embedded here. Open Pinterest to browse thousands<br>
+        of design inspirations for tees and posters.
+      </div>
+      <a href="${pinterestUrl}" target="_blank" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.12em;padding:0.8rem 1.8rem;background:#e60023;color:#fff;text-decoration:none;font-weight:700;">Browse Pinterest ↗</a>
+    </div>
+  `;
+}
+
+// Add image from URL directly to canvas
+function addImageFromUrl(url){
+  const canvas=getCanvas();
+  fabric.Image.fromURL(url,function(img){
+    if(!img||!img.width){
+      alert('Could not load this image. Please try another or download and upload manually.');
+      return;
+    }
+    canvas.getObjects().filter(o=>o.name==='placeholder').forEach(o=>canvas.remove(o));
+    const scale=Math.min((canvas.width*0.7)/img.width,(canvas.height*0.7)/img.height);
+    img.set({scaleX:scale,scaleY:scale,left:canvas.width/2,top:canvas.height/2,originX:'center',originY:'center'});
+    canvas.add(img);canvas.setActiveObject(img);canvas.renderAll();
+    closeImageSearch();
+  },{crossOrigin:'anonymous'});
 }
 </script>
-  <script src="js/products.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>
-
