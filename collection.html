@@ -262,7 +262,14 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('category') === 'tee') document.getElementById('f-poster').checked = false;
 else if (urlParams.get('category') === 'poster') document.getElementById('f-tee').checked = false;
 
-document.addEventListener('productsLoaded', () => applyFilters());
+function tryRender() {
+  if (typeof getProducts === 'function' && getProducts() !== window.__PRODUCTS_DATA_FALLBACK) {
+    applyFilters();
+  }
+}
+document.addEventListener('productsLoaded', applyFilters);
+// Also call immediately in case event already fired
+if (typeof getProducts === 'function') applyFilters();
 </script>
 <script type="module" src="js/products.js"></script>
 <script type="module" src="js/main.js"></script>
