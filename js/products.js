@@ -66,7 +66,7 @@ async function fetchFromFirebase() {
           emoji:     data.emoji     || '👕',
         };
       })
-      .filter(p => !p.status || p.status === 'Active');
+     .filter(p => !p.status || p.status.toLowerCase() === 'active');
   } catch (e) {
     console.warn('[Store89] Firebase unavailable, using defaults.', e);
     return null;
