@@ -47,6 +47,9 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .admin-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
 
 /* ── SIDEBAR ── */
+#adminApp{display:none;}
+.admin-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
+
 .sidebar{background:var(--off-black);border-right:1px solid var(--border);padding:2rem 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
 .sidebar-brand{padding:0 2rem 2rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;}
 .sidebar-brand-logo{font-family:var(--font-display);font-size:2rem;letter-spacing:0.05em;}
@@ -78,6 +81,9 @@ body{background:var(--black);color:var(--white);font-family:var(--font-body);ove
 .tab-panel.active{display:block;}
 
 /* ── STATS ── */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:3rem;}
 .stat-card{background:var(--card-bg);border:1px solid var(--border);padding:1.8rem;position:relative;overflow:hidden;}
 .stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border);}
@@ -144,6 +150,7 @@ select.sf-input option{background:var(--off-black);}
 .admin-search::placeholder{color:var(--muted);}
 
 /* ── STUDIO STYLES ── */
+/* Studio admin styles */
 .template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;padding:1.5rem;}
 .template-card{background:var(--black);border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
 .template-card:hover{border-color:var(--accent);}
@@ -154,6 +161,13 @@ select.sf-input option{background:var(--off-black);}
 .template-card:hover .tc-del{opacity:1;}
 
 /* ── RESPONSIVE ── */
+.template-card .tc-type{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.12em;color:var(--muted);}
+.template-card .tc-del{position:absolute;top:0.5rem;right:0.5rem;background:var(--accent2);color:#fff;border:none;font-family:var(--font-mono);font-size:0.55rem;padding:0.25rem 0.5rem;cursor:pointer;opacity:0;transition:opacity 0.2s;}
+.template-card:hover .tc-del{opacity:1;}
+.color-swatch-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.color-swatch:hover,.color-swatch.active{border-color:var(--white);transform:scale(1.15);}
+
 @media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:900px){.admin-layout{grid-template-columns:1fr;}.sidebar{display:none;}.admin-main{padding:1.5rem;}}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.admin-main{padding:1rem;}.sheet{width:100%;}}
@@ -187,13 +201,12 @@ select.sf-input option{background:var(--off-black);}
 <div id="adminApp">
   <div class="admin-layout">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-brand">
         <div class="sidebar-brand-logo">STORE<span>89</span></div>
         <div class="sidebar-tag">Admin Panel v2.0 — Firebase</div>
+        <div class="sidebar-tag">Admin Panel v1.1</div>
       </div>
-
       <div class="nav-section-title">Main</div>
       <ul class="sidebar-nav">
         <li><a href="#" class="active" onclick="showTab('dashboard',this)"><span class="nav-icon">◈</span> Dashboard</a></li>
@@ -209,7 +222,6 @@ select.sf-input option{background:var(--off-black);}
         <li><a href="#" onclick="showTab('images',this)"><span class="nav-icon">◻</span> Images</a></li>
         <li><a href="#" onclick="showTab('settings',this)"><span class="nav-icon">◻</span> Settings</a></li>
       </ul>
-
       <div class="sidebar-bottom">
         <div class="firebase-status">
           <div class="status-dot" id="statusDot"></div>
@@ -219,7 +231,6 @@ select.sf-input option{background:var(--off-black);}
       </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="admin-main">
       <div class="admin-topbar">
         <div>
@@ -229,7 +240,7 @@ select.sf-input option{background:var(--off-black);}
         <div class="admin-date" id="adminDate"></div>
       </div>
 
-      <!-- ── DASHBOARD ── -->
+      <!-- DASHBOARD -->
       <div class="tab-panel active" id="tab-dashboard">
         <div class="stats-grid">
           <div class="stat-card accent-stat">
@@ -258,10 +269,11 @@ select.sf-input option{background:var(--off-black);}
           <div id="recentOrders" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">
             Loading orders...
           </div>
+          <div id="recentOrders" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">No orders yet.</div>
         </div>
       </div>
 
-      <!-- ── PRODUCTS ── -->
+      <!-- PRODUCTS -->
       <div class="tab-panel" id="tab-products">
         <div class="table-wrap">
           <div class="table-header">
@@ -274,13 +286,16 @@ select.sf-input option{background:var(--off-black);}
           <table>
             <thead>
               <tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr>
+              <tr>
+                <th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
+              </tr>
             </thead>
             <tbody id="productsTable"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- ── ORDERS ── -->
+      <!-- ORDERS -->
       <div class="tab-panel" id="tab-orders">
         <div class="table-wrap">
           <div class="table-header">
@@ -298,10 +313,11 @@ select.sf-input option{background:var(--off-black);}
             </div>
           </div>
           <div id="ordersTable" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">Loading orders...</div>
+          <div id="ordersTable" style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;color:var(--muted);">No orders found.</div>
         </div>
       </div>
 
-      <!-- ── CATEGORIES ── -->
+      <!-- CATEGORIES -->
       <div class="tab-panel" id="tab-categories">
         <div class="table-wrap">
           <div class="table-header">
@@ -317,6 +333,10 @@ select.sf-input option{background:var(--off-black);}
 
       <!-- ── CUSTOM STUDIO ── -->
       <div class="tab-panel" id="tab-studio">
+      <!-- CUSTOM STUDIO ADMIN -->
+      <div class="tab-panel" id="tab-studio">
+
+        <!-- Studio Settings -->
         <div class="table-wrap" style="margin-bottom:2rem;">
           <div class="table-header">
             <div class="table-title">STUDIO DEFAULTS</div>
@@ -335,6 +355,36 @@ select.sf-input option{background:var(--off-black);}
               <div style="margin-bottom:1rem;"><label class="sf-label">Background Colors (hex, comma-separated)</label><input class="sf-input" id="studioPosterColors" type="text" value="#fff,#111,#1a1a2a,#2a1a1a,#e8ff00"></div>
               <div><label class="sf-label">Available Sizes (comma-separated)</label><input class="sf-input" id="studioPosterSizes" type="text" value="A4,A3,A2"></div>
             </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;">T-Shirt Defaults</div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Base Price (₹)</label>
+                <input class="sf-input" id="studioTeePriceDefault" type="number" value="899">
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Default Colors (hex, comma-separated)</label>
+                <input class="sf-input" id="studioTeeColors" type="text" value="#111,#f5f5f0,#1a3a2a,#3a1a1a,#1a1a3a,#e8ff00,#ff3c3c,#6effc0">
+              </div>
+              <div>
+                <label class="sf-label">Available Sizes (comma-separated)</label>
+                <input class="sf-input" id="studioTeeSizes" type="text" value="XS,S,M,L,XL,XXL">
+              </div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;">Poster Defaults</div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Base Price (₹)</label>
+                <input class="sf-input" id="studioPosterPriceDefault" type="number" value="649">
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label class="sf-label">Background Colors (hex, comma-separated)</label>
+                <input class="sf-input" id="studioPosterColors" type="text" value="#fff,#111,#1a1a2a,#2a1a1a,#e8ff00">
+              </div>
+              <div>
+                <label class="sf-label">Available Sizes (comma-separated)</label>
+                <input class="sf-input" id="studioPosterSizes" type="text" value="A4,A3,A2">
+              </div>
+            </div>
           </div>
           <div style="padding:0 2rem 2rem;">
             <label class="sf-label">Studio Processing Time Note</label>
@@ -342,6 +392,7 @@ select.sf-input option{background:var(--off-black);}
           </div>
         </div>
 
+        <!-- Templates Manager -->
         <div class="table-wrap">
           <div class="table-header">
             <div class="table-title">DESIGN TEMPLATES</div>
@@ -364,6 +415,7 @@ select.sf-input option{background:var(--off-black);}
       </div>
 
       <!-- ── HOMEPAGE ── -->
+      <!-- HOMEPAGE -->
       <div class="tab-panel" id="tab-homepage">
         <div class="table-wrap">
           <div class="table-header">
@@ -381,7 +433,7 @@ select.sf-input option{background:var(--off-black);}
         </div>
       </div>
 
-      <!-- ── IMAGES ── -->
+      <!-- IMAGES -->
       <div class="tab-panel" id="tab-images">
         <div class="table-wrap">
           <div class="table-header">
@@ -399,7 +451,7 @@ select.sf-input option{background:var(--off-black);}
         </div>
       </div>
 
-      <!-- ── SETTINGS ── -->
+      <!-- SETTINGS -->
       <div class="tab-panel" id="tab-settings">
         <div class="table-wrap">
           <div class="table-header">
@@ -506,6 +558,7 @@ select.sf-input option{background:var(--off-black);}
 </div>
 
 <!-- ══ TEMPLATE SHEET ══ -->
+<!-- TEMPLATE SHEET -->
 <div class="sheet-overlay" id="templateSheet">
   <div class="sheet" style="position:relative;">
     <button class="sheet-close" onclick="closeSheet('templateSheet')">✕ Close</button>
@@ -518,6 +571,15 @@ select.sf-input option{background:var(--off-black);}
         <select class="sf-input" id="tmplType"><option value="tee">T-Shirt</option><option value="poster">Poster</option></select>
       </div>
       <div><label class="sf-label">Tags (comma-separated)</label><input class="sf-input" id="tmplTags" type="text" placeholder="minimal, dark, streetwear"></div>
+        <select class="sf-input" id="tmplType">
+          <option value="tee">T-Shirt</option>
+          <option value="poster">Poster</option>
+        </select>
+      </div>
+      <div>
+        <label class="sf-label">Tags (comma-separated)</label>
+        <input class="sf-input" id="tmplTags" type="text" placeholder="minimal, dark, streetwear">
+      </div>
       <div>
         <label class="sf-label">Template Image *</label>
         <label style="display:flex;align-items:center;gap:1rem;padding:1rem;border:1px dashed var(--border);cursor:pointer;font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--muted);">
@@ -529,6 +591,10 @@ select.sf-input option{background:var(--off-black);}
       </div>
       <div style="display:flex;gap:1rem;margin-top:0.5rem;">
         <button class="admin-btn primary" style="flex:1;" id="saveTmplBtn" onclick="saveTemplate()">Save Template</button>
+        <img id="tmplImgPreview" src="" alt="" style="display:none;width:100%;max-height:200px;object-fit:contain;margin-top:0.8rem;border:1px solid var(--border);background:var(--black);">
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+        <button class="admin-btn primary" style="flex:1;" onclick="saveTemplate()">Save Template</button>
         <button class="admin-btn ghost" onclick="closeSheet('templateSheet')">Cancel</button>
       </div>
     </div>
@@ -609,6 +675,26 @@ function doLogin() {
     err.style.display = 'none';
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
+const ADMIN_KEY='store89_admin_auth';
+const DEFAULT_CREDS={user:'admin',pass:'store89admin'};
+
+function getStoredCreds(){
+  try{return JSON.parse(localStorage.getItem('store89_admin_creds'))||DEFAULT_CREDS;}
+  catch{return DEFAULT_CREDS;}
+}
+
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const creds=getStoredCreds();
+  const err=document.getElementById('loginErr');
+  const ui=document.getElementById('loginUser');
+  const pi=document.getElementById('loginPass');
+  if(u===creds.user&&p===creds.pass){
+    localStorage.setItem(ADMIN_KEY,'1');
+    err.style.display='none';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminApp').style.display='block';
     initAdmin();
   } else {
     err.style.display = 'block';
@@ -733,6 +819,73 @@ window.initAdmin = async function() {
   } catch(e) {
     console.error('Init error:', e);
     notify('Firebase error: ' + e.message, 'error');
+  document.getElementById('adminApp').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+
+if(localStorage.getItem(ADMIN_KEY)==='1'){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  initAdmin();
+}
+
+// DATA LAYER
+const PRODS_KEY='store89_admin_products';
+const CATS_KEY='store89_admin_cats';
+const CART_KEY='store89_cart';
+const TEMPLATES_KEY='store89_studio_templates';
+const STUDIO_SETTINGS_KEY='store89_studio_settings';
+
+function getProducts(){try{return JSON.parse(localStorage.getItem(PRODS_KEY))||[];}catch{return[];}}
+function saveProducts(p){localStorage.setItem(PRODS_KEY,JSON.stringify(p));}
+function getCats(){try{return JSON.parse(localStorage.getItem(CATS_KEY))||[
+  {id:'c1',name:'T-Shirts',slug:'tshirts',status:'active'},
+  {id:'c2',name:'Posters',slug:'posters',status:'active'},
+  {id:'c3',name:'B&W T-Shirts',slug:'bw-tshirts',status:'active'},
+  {id:'c4',name:'B&W Posters',slug:'bw-posters',status:'active'},
+];}catch{return[];}}
+function saveCats(c){localStorage.setItem(CATS_KEY,JSON.stringify(c));}
+function getTemplates(){try{return JSON.parse(localStorage.getItem(TEMPLATES_KEY))||[];}catch{return[];}}
+function saveTemplates(t){localStorage.setItem(TEMPLATES_KEY,JSON.stringify(t));}
+
+function initAdmin(){
+  document.getElementById('adminDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  loadStudioSettings();
+  renderDashboard();renderProducts();renderCategories();renderOrders();renderImages();renderTemplates();
+}
+
+function showTab(id,link){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('#tab-'+id).classList.add('active');
+  document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
+  if(link)link.classList.add('active');
+  const titles={dashboard:'DASHBOARD',products:'PRODUCTS',orders:'ORDERS',categories:'CATEGORIES',studio:'CUSTOM STUDIO',homepage:'HOMEPAGE',images:'IMAGES',settings:'SETTINGS'};
+  document.getElementById('pageTitle').textContent=titles[id]||id.toUpperCase();
+  document.getElementById('pageBreadcrumb').textContent='Store 89 / Admin / '+(titles[id]||id);
+}
+
+// DASHBOARD
+function renderDashboard(){
+  const prods=getProducts();
+  const cart=JSON.parse(localStorage.getItem(CART_KEY))||[];
+  const lastOrder=JSON.parse(localStorage.getItem('store89_last_order'));
+  document.getElementById('statProducts').textContent=prods.length;
+  document.getElementById('statCart').textContent=cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('statOrders').textContent=lastOrder?1:0;
+  document.getElementById('statRevenue').textContent=lastOrder?'₹'+lastOrder.total.toLocaleString('en-IN'):'₹0';
+  const ro=document.getElementById('recentOrders');
+  if(lastOrder){
+    ro.innerHTML=`<table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
+    <tr>
+      <td style="font-family:var(--font-mono);font-size:0.72rem;">${lastOrder.id}</td>
+      <td>${lastOrder.customer.name}</td>
+      <td style="font-family:var(--font-mono);font-size:0.7rem;">${lastOrder.items.length} item(s)</td>
+      <td style="font-family:var(--font-mono);font-size:0.82rem;font-weight:700;">₹${lastOrder.total.toLocaleString('en-IN')}</td>
+      <td><span class="badge green">${lastOrder.payment.toUpperCase()}</span></td>
+      <td style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);">${new Date(lastOrder.timestamp).toLocaleDateString('en-IN')}</td>
+    </tr></tbody></table>`;
   }
   hideLoading();
 };
@@ -885,6 +1038,16 @@ function renderProducts() {
 
   if (!prods.length) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2.5rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);">No products yet. Add your first product.</td></tr>`;
+// PRODUCTS — FIX: image data is now stored alongside product data
+let editingProdId=null;
+let currentProdImgData=''; // holds base64 of uploaded image
+
+function renderProducts(){
+  const q=(document.getElementById('prodSearch')?.value||'').toLowerCase();
+  const prods=getProducts().filter(p=>!q||p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
+  const tbody=document.getElementById('productsTable');
+  if(!prods.length){
+    tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:2.5rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);">No products yet. Add your first product.</td></tr>`;
     return;
   }
 
@@ -895,6 +1058,7 @@ function renderProducts() {
           ${p.imageUrl
             ? `<img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border);" alt="">`
             : `<div style="width:40px;height:40px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:var(--muted);font-family:var(--font-mono);">NO IMG</div>`}
+          ${p.imageData ? `<img src="${p.imageData}" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border);" alt="">` : `<div style="width:40px;height:40px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:var(--muted);font-family:var(--font-mono);">NO IMG</div>`}
           <div>
             <strong style="font-family:var(--font-display);font-size:1.1rem;letter-spacing:0.03em;">${p.name}</strong><br>
             <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);">${p.id}</span>
@@ -905,6 +1069,10 @@ function renderProducts() {
       <td style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;">₹${parseInt(p.price||0).toLocaleString('en-IN')}</td>
       <td style="font-family:var(--font-mono);font-size:0.8rem;">${p.stock || 'N/A'}</td>
       <td><span class="badge ${p.status === 'active' ? 'green' : p.status === 'draft' ? 'yellow' : 'red'}">${p.status || 'active'}</span></td>
+      <td><span class="badge grey">${p.cat}</span></td>
+      <td style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;">₹${parseInt(p.price).toLocaleString('en-IN')}</td>
+      <td style="font-family:var(--font-mono);font-size:0.8rem;">${p.stock||'N/A'}</td>
+      <td><span class="badge ${p.status==='active'?'green':p.status==='draft'?'yellow':'red'}">${p.status||'active'}</span></td>
       <td>
         <div style="display:flex;gap:0.5rem;">
           <button class="admin-btn ghost" style="padding:0.4rem 0.8rem;" onclick="openEditProduct('${p.id}')">Edit</button>
@@ -951,6 +1119,42 @@ function openEditProduct(id) {
   } else {
     document.getElementById('imgPreview').style.display = 'none';
     document.getElementById('imgLabel').textContent = 'Click to upload image (JPG, PNG, SVG)';
+function openAddProduct(){
+  editingProdId=null;
+  currentProdImgData='';
+  document.getElementById('sheetTitle').textContent='ADD PRODUCT';
+  document.getElementById('prodId').value='';
+  ['prodName','prodPrice','prodStock','prodSizes','prodBadge','prodDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('prodCat').value='';
+  document.getElementById('prodStatus').value='active';
+  document.getElementById('imgPreview').style.display='none';
+  document.getElementById('imgPreview').src='';
+  document.getElementById('imgLabel').textContent='Click to upload image (JPG, PNG, SVG)';
+  document.getElementById('productSheet').classList.add('open');
+}
+
+function openEditProduct(id){
+  const p=getProducts().find(x=>x.id===id);
+  if(!p)return;
+  editingProdId=id;
+  currentProdImgData=p.imageData||'';
+  document.getElementById('sheetTitle').textContent='EDIT PRODUCT';
+  document.getElementById('prodId').value=p.id;
+  document.getElementById('prodName').value=p.name||'';
+  document.getElementById('prodCat').value=p.cat||'';
+  document.getElementById('prodPrice').value=p.price||'';
+  document.getElementById('prodStock').value=p.stock||'';
+  document.getElementById('prodSizes').value=p.sizes||'';
+  document.getElementById('prodBadge').value=p.badge||'';
+  document.getElementById('prodDesc').value=p.desc||'';
+  document.getElementById('prodStatus').value=p.status||'active';
+  if(p.imageData){
+    const img=document.getElementById('imgPreview');
+    img.src=p.imageData;img.style.display='block';
+    document.getElementById('imgLabel').textContent='Image loaded — click to replace';
+  } else {
+    document.getElementById('imgPreview').style.display='none';
+    document.getElementById('imgLabel').textContent='Click to upload image (JPG, PNG, SVG)';
   }
   document.getElementById('productSheet').classList.add('open');
 }
@@ -1023,6 +1227,30 @@ async function saveProduct() {
   } finally {
     btn.disabled = false; 
     btn.textContent = 'Save Product';
+// FIX: saveProduct now properly includes imageData in the saved object
+function saveProduct(){
+  const name=document.getElementById('prodName').value.trim();
+  const price=document.getElementById('prodPrice').value;
+  if(!name||!price){notify('Name and price are required.','error');return;}
+  const prods=getProducts();
+  const data={
+    id:editingProdId||('p'+Date.now()),
+    name,
+    cat:document.getElementById('prodCat').value,
+    price:parseInt(price),
+    stock:document.getElementById('prodStock').value,
+    sizes:document.getElementById('prodSizes').value,
+    badge:document.getElementById('prodBadge').value,
+    desc:document.getElementById('prodDesc').value,
+    status:document.getElementById('prodStatus').value,
+    imageData:currentProdImgData,   // ← THE FIX: was missing before
+    updatedAt:new Date().toISOString()
+  };
+  if(editingProdId){
+    const idx=prods.findIndex(x=>x.id===editingProdId);
+    if(idx>-1)prods[idx]=data;
+  } else {
+    prods.unshift(data);
   }
 }
 
@@ -1056,6 +1284,25 @@ function previewImg(input) {
 // ══════════════════════════════════════════════
 function renderCategories() {
   document.getElementById('categoriesTable').innerHTML = _categories.map(c => `
+// FIX: previewImg now saves image data to currentProdImgData
+function previewImg(input){
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      currentProdImgData=e.target.result; // ← THE FIX: save to variable
+      const img=document.getElementById('imgPreview');
+      img.src=e.target.result;img.style.display='block';
+      document.getElementById('imgLabel').textContent=input.files[0].name;
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+
+// CATEGORIES
+function renderCategories(){
+  const cats=getCats();
+  const prods=getProducts();
+  document.getElementById('categoriesTable').innerHTML=cats.map(c=>`
     <tr>
       <td><strong style="font-family:var(--font-display);font-size:1.1rem;">${c.name}</strong></td>
       <td style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">/${c.slug}</td>
@@ -1181,6 +1428,56 @@ function renderImages() {
   grid.innerHTML = _images.map(img => `
     <div style="position:relative;background:var(--off-black);aspect-ratio:1;border:1px solid var(--border);overflow:hidden;">
       <img src="${img.url}" alt="${img.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+function openAddCategory(){document.getElementById('catName').value='';document.getElementById('catSlug').value='';document.getElementById('categorySheet').classList.add('open');}
+function saveCategory(){
+  const name=document.getElementById('catName').value.trim();
+  const slug=document.getElementById('catSlug').value.trim();
+  if(!name||!slug){notify('Name and slug are required.','error');return;}
+  const cats=getCats();
+  cats.push({id:'c'+Date.now(),name,slug,status:document.getElementById('catStatus').value});
+  saveCats(cats);renderCategories();closeSheet('categorySheet');notify('Category added!');
+}
+function deleteCategory(id){
+  if(!confirm('Delete this category?'))return;
+  saveCats(getCats().filter(c=>c.id!==id));renderCategories();notify('Category deleted.','error');
+}
+
+// ORDERS
+function renderOrders(){
+  const lastOrder=JSON.parse(localStorage.getItem('store89_last_order'));
+  const el=document.getElementById('ordersTable');
+  if(!lastOrder){el.innerHTML='<p style="padding:2rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);">No orders found.</p>';return;}
+  el.innerHTML=`<table><thead><tr><th>ID</th><th>Customer</th><th>Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th></tr></thead><tbody>
+  <tr>
+    <td style="font-family:var(--font-mono);font-size:0.7rem;">${lastOrder.id}</td>
+    <td>${lastOrder.customer.name}<br><span style="font-size:0.75rem;color:var(--muted)">${lastOrder.customer.email}</span></td>
+    <td style="font-size:0.8rem;color:var(--muted);max-width:180px;">${lastOrder.customer.address}</td>
+    <td>${lastOrder.items.map(i=>`<div style="font-size:0.8rem">${i.name} x${i.qty}</div>`).join('')}</td>
+    <td style="font-family:var(--font-mono);font-weight:700;">₹${lastOrder.total.toLocaleString('en-IN')}</td>
+    <td><span class="badge green">${lastOrder.payment.toUpperCase()}</span></td>
+    <td style="font-family:var(--font-mono);font-size:0.62rem;color:var(--muted)">${new Date(lastOrder.timestamp).toLocaleDateString('en-IN')}</td>
+  </tr></tbody></table>`;
+}
+
+function exportOrders(){
+  const lastOrder=JSON.parse(localStorage.getItem('store89_last_order'));
+  if(!lastOrder){notify('No orders to export.','error');return;}
+  const csv=`Order ID,Customer,Email,Phone,Address,Items,Total,Payment,Date\n${lastOrder.id},${lastOrder.customer.name},${lastOrder.customer.email},${lastOrder.customer.phone},"${lastOrder.customer.address}","${lastOrder.items.map(i=>i.name+' x'+i.qty).join('; ')}",${lastOrder.total},${lastOrder.payment},${lastOrder.timestamp}`;
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='store89_orders.csv';a.click();
+  notify('Exported!');
+}
+
+// IMAGES
+let uploadedImages=JSON.parse(localStorage.getItem('store89_admin_images'))||[];
+function renderImages(){
+  const grid=document.getElementById('imageGrid');
+  const noImg=document.getElementById('noImages');
+  if(!uploadedImages.length){grid.style.display='none';noImg.style.display='block';return;}
+  noImg.style.display='none';grid.style.display='grid';
+  grid.innerHTML=uploadedImages.map((img,i)=>`
+    <div style="position:relative;background:var(--off-black);aspect-ratio:1;border:1px solid var(--border);overflow:hidden;">
+      <img src="${img.data}" alt="${img.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
       <div style="position:absolute;inset:0;background:rgba(0,0,0,0.7);opacity:0;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;"
         onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
         <span style="font-family:var(--font-mono);font-size:0.55rem;color:var(--white);letter-spacing:0.1em;text-align:center;padding:0 0.5rem;">${img.name}</span>
@@ -1213,6 +1510,21 @@ async function handleImgUpload(input) {
   }
 
   progressWrap.style.display = 'none';
+function handleImgUpload(input){
+  Array.from(input.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      uploadedImages.push({name:file.name,data:e.target.result,size:file.size});
+      localStorage.setItem('store89_admin_images',JSON.stringify(uploadedImages));
+      renderImages();
+    };
+    reader.readAsDataURL(file);
+  });
+  notify('Images uploaded!');
+}
+function deleteImage(idx){
+  uploadedImages.splice(idx,1);
+  localStorage.setItem('store89_admin_images',JSON.stringify(uploadedImages));
   renderImages();
   notify(files.length + ' image(s) uploaded!');
 }
@@ -1232,6 +1544,162 @@ async function deleteImage(id, storagePath) {
     notify('Image removed.', 'error');
   } catch(e) {
     notify('Error: ' + e.message, 'error');
+// CUSTOM STUDIO ADMIN
+function loadStudioSettings(){
+  const s=JSON.parse(localStorage.getItem(STUDIO_SETTINGS_KEY))||{};
+  if(s.teePrice)document.getElementById('studioTeePriceDefault').value=s.teePrice;
+  if(s.teeColors)document.getElementById('studioTeeColors').value=s.teeColors;
+  if(s.teeSizes)document.getElementById('studioTeeSizes').value=s.teeSizes;
+  if(s.posterPrice)document.getElementById('studioPosterPriceDefault').value=s.posterPrice;
+  if(s.posterColors)document.getElementById('studioPosterColors').value=s.posterColors;
+  if(s.posterSizes)document.getElementById('studioPosterSizes').value=s.posterSizes;
+  if(s.note)document.getElementById('studioNote').value=s.note;
+}
+
+function saveStudioSettings(){
+  const s={
+    teePrice:document.getElementById('studioTeePriceDefault').value,
+    teeColors:document.getElementById('studioTeeColors').value,
+    teeSizes:document.getElementById('studioTeeSizes').value,
+    posterPrice:document.getElementById('studioPosterPriceDefault').value,
+    posterColors:document.getElementById('studioPosterColors').value,
+    posterSizes:document.getElementById('studioPosterSizes').value,
+    note:document.getElementById('studioNote').value,
+  };
+  localStorage.setItem(STUDIO_SETTINGS_KEY,JSON.stringify(s));
+  notify('Studio settings saved! Changes will reflect in Custom Studio.');
+}
+
+// TEMPLATES
+let currentTmplImgData='';
+let editingTmplId=null;
+
+function renderTemplates(){
+  const filter=document.getElementById('templateTypeFilter')?.value||'all';
+  const templates=getTemplates().filter(t=>filter==='all'||t.type===filter);
+  const grid=document.getElementById('templateGrid');
+  const noTmpl=document.getElementById('noTemplates');
+  if(!templates.length){
+    grid.innerHTML='';noTmpl.style.display='block';return;
+  }
+  noTmpl.style.display='none';
+  grid.innerHTML=templates.map(t=>`
+    <div class="template-card">
+      ${t.imageData ? `<img src="${t.imageData}" alt="${t.name}" loading="lazy">` : `<div style="aspect-ratio:3/4;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);">NO IMAGE</div>`}
+      <div class="tc-info">
+        <div class="tc-name">${t.name}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span class="badge ${t.type==='tee'?'yellow':'blue'}" style="font-size:0.5rem;">${t.type==='tee'?'T-SHIRT':'POSTER'}</span>
+          ${t.tags ? `<span style="font-family:var(--font-mono);font-size:0.52rem;color:var(--muted);">${t.tags}</span>` : ''}
+        </div>
+      </div>
+      <button class="tc-del" onclick="deleteTemplate('${t.id}')">✕ Remove</button>
+    </div>
+  `).join('');
+}
+
+function openAddTemplate(){
+  editingTmplId=null;
+  currentTmplImgData='';
+  document.getElementById('templateSheetTitle').textContent='ADD TEMPLATE';
+  document.getElementById('tmplId').value='';
+  document.getElementById('tmplName').value='';
+  document.getElementById('tmplTags').value='';
+  document.getElementById('tmplType').value='tee';
+  document.getElementById('tmplImgPreview').style.display='none';
+  document.getElementById('tmplImgPreview').src='';
+  document.getElementById('tmplImgLabel').textContent='Click to upload template image';
+  document.getElementById('templateSheet').classList.add('open');
+}
+
+function handleTemplateUpload(input){
+  Array.from(input.files).forEach((file,idx)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const templates=getTemplates();
+      templates.unshift({
+        id:'t'+Date.now()+idx,
+        name:file.name.replace(/\.[^.]+$/,''),
+        type:'tee',
+        tags:'',
+        imageData:e.target.result,
+        createdAt:new Date().toISOString()
+      });
+      saveTemplates(templates);
+      renderTemplates();
+    };
+    reader.readAsDataURL(file);
+  });
+  notify(input.files.length+' template(s) uploaded!');
+}
+
+function previewTmplImg(input){
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      currentTmplImgData=e.target.result;
+      const img=document.getElementById('tmplImgPreview');
+      img.src=e.target.result;img.style.display='block';
+      document.getElementById('tmplImgLabel').textContent=input.files[0].name;
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+
+function saveTemplate(){
+  const name=document.getElementById('tmplName').value.trim();
+  if(!name){notify('Template name is required.','error');return;}
+  if(!currentTmplImgData){notify('Please upload a template image.','error');return;}
+  const templates=getTemplates();
+  const data={
+    id:editingTmplId||('t'+Date.now()),
+    name,
+    type:document.getElementById('tmplType').value,
+    tags:document.getElementById('tmplTags').value,
+    imageData:currentTmplImgData,
+    createdAt:new Date().toISOString()
+  };
+  if(editingTmplId){
+    const idx=templates.findIndex(x=>x.id===editingTmplId);
+    if(idx>-1)templates[idx]=data;
+  } else {
+    templates.unshift(data);
+  }
+  saveTemplates(templates);
+  renderTemplates();
+  closeSheet('templateSheet');
+  notify('Template saved!');
+}
+
+function deleteTemplate(id){
+  if(!confirm('Remove this template?'))return;
+  saveTemplates(getTemplates().filter(t=>t.id!==id));
+  renderTemplates();
+  notify('Template removed.','error');
+}
+
+// HOMEPAGE
+function saveHomepage(){
+  const data={
+    headline1:document.getElementById('hpHeadline1').value,
+    headline2:document.getElementById('hpHeadline2').value,
+    subtitle:document.getElementById('hpSubtitle').value,
+    cta1:document.getElementById('hpCta1').value,
+    cta2:document.getElementById('hpCta2').value,
+    announce:document.getElementById('hpAnnounce').value,
+  };
+  localStorage.setItem('store89_homepage',JSON.stringify(data));
+  notify('Homepage content saved!');
+}
+
+// SETTINGS
+function saveSettings(){
+  const newUser=document.getElementById('setUser').value.trim();
+  const newPass=document.getElementById('setPass').value;
+  const creds=getStoredCreds();
+  if(newUser||newPass){
+    localStorage.setItem('store89_admin_creds',JSON.stringify({user:newUser||creds.user,pass:newPass||creds.pass}));
+    notify('Credentials updated! You may need to re-login.');
   }
 }
 
@@ -1271,6 +1739,9 @@ function renderTemplates() {
   const templates = _templates.filter(t => filter === 'all' || t.type === filter);
   const grid      = document.getElementById('templateGrid');
   const noTmpl    = document.getElementById('noTemplates');
+// UTILS
+function closeSheet(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.sheet-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
   if (!templates.length) { grid.innerHTML = ''; noTmpl.style.display = 'block'; return; }
   noTmpl.style.display = 'none';
