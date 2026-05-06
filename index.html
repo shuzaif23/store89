@@ -454,6 +454,7 @@ function handleContactSubmit(e) {
 }
 
 document.addEventListener('productsLoaded', () => renderFeatured());
+if (typeof getProducts === 'function') renderFeatured();
 </script>
 </body>
 </html>
