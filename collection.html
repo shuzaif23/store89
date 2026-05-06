@@ -262,7 +262,7 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('category') === 'tee') document.getElementById('f-poster').checked = false;
 else if (urlParams.get('category') === 'poster') document.getElementById('f-tee').checked = false;
 
-applyFilters();
+document.addEventListener('productsLoaded', () => applyFilters());
 </script>
 <script type="module" src="js/products.js"></script>
 <script type="module" src="js/main.js"></script>
