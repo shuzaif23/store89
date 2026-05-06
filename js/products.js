@@ -89,4 +89,11 @@ function getProducts() {
 window.getProducts = getProducts;
 
 // Start fetching on load
-initProducts();
+initProducts().then(() => {
+  // Retry dispatch after a short delay to ensure page scripts are ready
+  setTimeout(() => {
+    document.dispatchEvent(new CustomEvent('productsLoaded', {
+      detail: { products: _liveProducts || PRODUCTS_DATA }
+    }));
+  }, 0);
+});
