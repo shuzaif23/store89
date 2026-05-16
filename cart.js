@@ -37,12 +37,13 @@ import { getFirestore, doc, getDoc, setDoc }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey: "AIzaSyByc62uc1v97pf5ZV26ycLA0SPmfsD5pTU",
+  authDomain: "store890007.firebaseapp.com",
+  databaseURL: "https://store890007-default-rtdb.firebaseio.com",
+  projectId: "store890007",
+  storageBucket: "store890007.firebasestorage.app",
+  messagingSenderId: "987669883544",
+  appId: "1:987669883544:web:dbdff7958f416b6089beed"
 };
 
 // ─────────────────────────────────────────────────────────────
