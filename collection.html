@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="cart.js" type="module"></script>
 <link rel="stylesheet" href="css/styles.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -143,8 +142,6 @@
   </div>
 </div>
 
-<script type="module" src="js/products.js"></script>
-
 <script>
 function renderCard(p) {
   const isPoster = p.category === 'poster';
@@ -259,18 +256,23 @@ function addQV(id) {
 function closeQV() { document.getElementById('quickViewModal').classList.remove('open'); }
 document.getElementById('quickViewModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeQV(); });
 
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('category') === 'tee') document.getElementById('f-poster').checked = false;
-else if (urlParams.get('category') === 'poster') document.getElementById('f-tee').checked = false;
-
-function tryRender() {
-  if (typeof getProducts === 'function' && getProducts() !== window.__PRODUCTS_DATA_FALLBACK) {
-    applyFilters();
+function initFiltersFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('category') === 'tee') {
+    document.getElementById('f-poster').checked = false;
+  } else if (urlParams.get('category') === 'poster') {
+    document.getElementById('f-tee').checked = false;
   }
 }
-document.addEventListener('productsLoaded', applyFilters);
-// Also call immediately in case event already fired
-if (typeof getProducts === 'function') applyFilters();
+
+document.addEventListener('productsLoaded', function() {
+  initFiltersFromUrl();
+  applyFilters();
+});
+document.addEventListener('DOMContentLoaded', function() {
+  initFiltersFromUrl();
+  if (typeof getProducts === 'function') applyFilters();
+});
 </script>
 <script type="module" src="js/products.js"></script>
 <script src="js/main.js"></script>

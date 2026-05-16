@@ -62,13 +62,13 @@
         return snap.exists() ? (snap.data().items || []) : [];
       } catch (e) {
         console.warn("Firestore unavailable, using cache:", e);
-        return JSON.parse(localStorage.getItem("_shop_cart_cache") || "[]");
+        return JSON.parse(localStorage.getItem("store89_cart") || "[]");
       }
     }
 
     // Save cart to Firestore + local cache
     async function saveCart(items) {
-      localStorage.setItem("_shop_cart_cache", JSON.stringify(items));
+      localStorage.setItem("store89_cart", JSON.stringify(items));
       try {
         await setDoc(cartRef, {
           items,
@@ -844,7 +844,7 @@
 
     function persist() {
       if (window.__saveCart) window.__saveCart(cartItems);
-      else localStorage.setItem("_shop_cart_cache", JSON.stringify(cartItems));
+      else localStorage.setItem("store89_cart", JSON.stringify(cartItems));
     }
 
     // ─────────────────────────────────────────────
@@ -972,7 +972,7 @@
 
       cartItems = [];
       wishlist  = [];
-      localStorage.removeItem("_shop_cart_cache");
+      localStorage.removeItem("store89_cart");
       localStorage.removeItem("_shop_wish");
       closeModal();
       orderPlaced = true;

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="cart.js" type="module"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Store 89 — Premium Printed Apparel & Posters</title>
@@ -449,15 +448,27 @@ function changeColor(bg, accent, el) {
 
 function handleContactSubmit(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.textContent = '✓ Message Sent!'; btn.style.background = '#4caf50';
+  const form = e.target;
+  const name = form.querySelector('input[type="text"]').value || '';
+  const email = form.querySelector('input[type="email"]').value || '';
+  const msg = form.querySelector('textarea').value || '';
+  const inquiry = form.querySelector('select') ? form.querySelector('select').value : '';
+  const waText = encodeURIComponent('Hi Store 89!
+Name: ' + name + '
+Email: ' + email + '
+Inquiry: ' + inquiry + '
+Message: ' + msg);
+  window.open('https://wa.me/919541670034?text=' + waText, '_blank');
+  const btn = form.querySelector('button[type="submit"]');
+  btn.textContent = '✓ Opening WhatsApp!'; btn.style.background = '#25D366';
   setTimeout(() => { btn.textContent = 'Send Message →'; btn.style.background = ''; }, 3000);
 }
 
 document.addEventListener('productsLoaded', () => renderFeatured());
-if (typeof getProducts === 'function') renderFeatured();
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof getProducts === 'function') renderFeatured();
+});
 </script>
+<script src="js/main.js"></script>
 </body>
 </html>
-<script type="module" src="js/products.js"></script>
-<script src="js/main.js"></script>
