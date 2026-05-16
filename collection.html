@@ -265,16 +265,18 @@ function initFiltersFromUrl() {
   }
 }
 
+// getProducts is always available (set by products.js before DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {
+  initFiltersFromUrl();
+  applyFilters();
+});
+// Re-render if Firebase loads fresher data
 document.addEventListener('productsLoaded', function() {
   initFiltersFromUrl();
   applyFilters();
 });
-document.addEventListener('DOMContentLoaded', function() {
-  initFiltersFromUrl();
-  if (typeof getProducts === 'function') applyFilters();
-});
 </script>
-<script type="module" src="js/products.js"></script>
+<script src="js/products.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
