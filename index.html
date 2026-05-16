@@ -451,11 +451,7 @@ function handleContactSubmit(e) {
   const email = form.querySelector('input[type="email"]').value || '';
   const msg = form.querySelector('textarea').value || '';
   const inquiry = form.querySelector('select') ? form.querySelector('select').value : '';
-  const waText = encodeURIComponent('Hi Store 89!
-Name: ' + name + '
-Email: ' + email + '
-Inquiry: ' + inquiry + '
-Message: ' + msg);
+  const waText = encodeURIComponent('Hi Store 89!\nName: ' + name + '\nEmail: ' + email + '\nInquiry: ' + inquiry + '\nMessage: ' + msg);
   window.open('https://wa.me/919541670034?text=' + waText, '_blank');
   const btn = form.querySelector('button[type="submit"]');
   btn.textContent = '✓ Opening WhatsApp!'; btn.style.background = '#25D366';
