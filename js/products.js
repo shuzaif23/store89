@@ -35,6 +35,9 @@ const PRODUCTS_DATA = [
   { id:12, name:"SILENCE",        category:"poster", price:429, sizes:["A4","A3","A2"],               badge:"B&W",  isNew:false, isBW:true,  dateAdded:"2024-09-10", desc:"Nothing but white space and one word. Minimal art print. Statement piece.",              viewBox:"0 0 140 200", svg:`<rect width="140" height="200" fill="#fafafa"/><rect x="1" y="1" width="138" height="198" fill="none" stroke="#000" stroke-width="1"/><text x="70" y="110" font-family="Bebas Neue,sans-serif" font-size="28" fill="#000" text-anchor="middle" letter-spacing="12">SILENCE</text>` },
 ];
 
+// Expose fallback data immediately so pages can render without waiting for Firebase
+window.getProducts = () => PRODUCTS_DATA;
+
 // ---- LIVE PRODUCTS from Firebase ----
 let _liveProducts = null;
 

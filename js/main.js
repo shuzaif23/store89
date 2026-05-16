@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', initScrollReveal);
 
 // === CART SYSTEM ===
 const Cart = (() => {
-  const KEY = 's89_cart';
+  const KEY = 'store89_cart';
 
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; }
@@ -129,3 +129,4 @@ const Cart = (() => {
   return { load, add, remove, updateQty, clear, total, showToast, updateBadge };
 })();
 
+window.Cart = Cart;
