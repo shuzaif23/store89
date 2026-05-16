@@ -735,26 +735,22 @@
     // INIT — wait for Firebase module to load
     // ─────────────────────────────────────────────
     async function init() {
-      // Wait for Firebase module to expose helpers (up to 3s)
-      let waited = 0;
-      while (!window.__loadCart && waited < 3000) {
-        await new Promise(r => setTimeout(r, 100));
-        waited += 100;
-      }
+      // Always read from localStorage first — that's where Cart.add() writes
+      const stored = localStorage.getItem("store89_cart");
+      cartItems = stored ? JSON.parse(stored) : [];
 
-      if (window.__loadCart) {
-        cartItems = await window.__loadCart();
-        // Update UPI ID display
-        document.getElementById("upi-id-display").textContent = CONFIG.upiId;
-        // Generate QR dynamically if no static image
-        generateQR();
-      } else {
-        // Firebase not configured — use local demo data
-        cartItems = getDemoItems();
-      }
+      // Update UPI display and QR
+      const upiEl = document.getElementById("upi-id-display");
+      if (upiEl) upiEl.textContent = CONFIG.upiId;
+      generateQR();
 
       window.__renderCart = render;
       render();
+
+      // Optionally sync to Firestore in background (non-blocking)
+      if (window.__saveCart && cartItems.length > 0) {
+        window.__saveCart(cartItems).catch(() => {});
+      }
     }
 
     // Demo items shown before Firebase is configured
@@ -802,7 +798,7 @@
     // CART ACTIONS
     // ─────────────────────────────────────────────
     function updateQty(id, delta) {
-      cartItems = cartItems.map(i => i.id === id
+      cartItems = cartItems.map(i => i.id == id
         ? { ...i, qty: Math.max(1, Math.min(CONFIG.maxQty, i.qty + delta)) }
         : i
       );
@@ -810,13 +806,13 @@
     }
 
     function removeItem(id) {
-      cartItems = cartItems.filter(i => i.id !== id);
+      cartItems = cartItems.filter(i => i.id != id);
       persist(); render();
       toast("Item removed", "🗑");
     }
 
     function saveForLater(id) {
-      const item = cartItems.find(i => i.id === id);
+      const item = cartItems.find(i => i.id == id);
       if (item && !wishlist.find(w => w.id === id)) wishlist.push({ ...item, qty: 1 });
       cartItems = cartItems.filter(i => i.id !== id);
       localStorage.setItem("_shop_wish", JSON.stringify(wishlist));
@@ -825,9 +821,9 @@
     }
 
     function moveToCart(id) {
-      const item = wishlist.find(w => w.id === id);
+      const item = wishlist.find(w => w.id == id);
       if (!item) return;
-      const existing = cartItems.find(c => c.id === id);
+      const existing = cartItems.find(c => c.id == id);
       if (existing) cartItems = cartItems.map(c => c.id === id ? { ...c, qty: c.qty + 1 } : c);
       else cartItems.push({ ...item, qty: 1 });
       wishlist = wishlist.filter(w => w.id !== id);
@@ -1049,7 +1045,9 @@
                 <div class="item-img-wrap">
                   ${item.imageUrl
                     ? `<img src="${item.imageUrl}" alt="${item.name}" loading="lazy" />`
-                    : `<div class="item-img-placeholder">${item.emoji || "📦"}</div>`}
+                    : item.svg
+                      ? `<svg viewBox="${item.viewBox || '0 0 200 200'}" style="width:100%;height:100%;">${item.svg}</svg>`
+                      : `<div class="item-img-placeholder">${item.emoji || '👕'}</div>`}
                   ${item.stock === 0 ? `<div class="oos-overlay">Out of stock</div>` : ""}
                 </div>
                 <div class="item-info">
